@@ -6,17 +6,24 @@
   </head>
   <body>
     <div class="base">
+
+
       <div class="progress-div">
-        <label for="progress-bar">Progress:</label>
-        <progress id="progress-bar" value="12" max="100"></progress>
+        <label for="progress-bar">Progress:</label><progress id="progress-bar" value="12" max="100"></progress>
       </div>
+
+
       <div class="main-box">
+
         <div class="work-box">
-          <div class="score-box">
-            <p>Score: <strong>40</strong></p>
+
+          <div class="score-box" id="xp-div">
+            <p>Experience Points: <strong>40</strong></p>
           </div>
-          <div class="items-box"></div>
-          <div class="reaction-box">
+
+          <div class="items-box"><table class="worktop-table" id="items-box-demo"></table></div>
+
+          <!-- <div class="reaction-box">
             <div class="reactor-box">
               <p>Reactor</p>
               <div class="reactor-content"></div>
@@ -25,15 +32,28 @@
             <div class="reactee-box">
               <img src="../imgs/bow-icon.jpeg" alt="Bow" height="80px">
             </div>
+          </div> -->
+
+          <div class="reactor-button-div">
+            <button class="reactor-button" style="visibility: hidden">None</button>
+            <button class="reactor-button" onclick=combineClick()>Combine!</button>
+            <!-- <button class="reactor-button">Save recipe</button> -->
+            <button class="reactor-button">Next</button>
           </div>
+
         </div>
-        <div class="history-box">
-          <div class="history-box-in">
-            <p>Past attempts</p>
-            <div class="history-box-content"></div>
+
+        <!-- <div class="recipe-box">
+          <div class="recipe-box-in">
+            <p>Saved recipes</p>
+            <div class="recipe-box-content"></div>
           </div>
-        </div>
+        </div> -->
+
+
       </div>
+
+
     </div>
   </body>
   <script src="../js/utilities.js"></script>
