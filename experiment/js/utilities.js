@@ -116,8 +116,24 @@ const REWARDS = {
 
 
 /* Helper functions */
-function sampleOne (arr) {
-  return (arr[Math.floor(Math.random()*arr.length)])
+function randFromRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+function sampleFromList(arr, n=1, replace=true) {
+  if (n==1) {
+    return (arr[Math.floor(Math.random()*arr.length)])
+  }
+  else {
+    let sampled = [];
+    for (let j = 0; j < n; j++) {
+      let randomIndex = Math.floor(Math.random()*arr.length);
+      sampled.push(arr[randomIndex]);
+      if (replace == 0) {
+        arr.slice(randomIndex, 1)[0];
+      }
+    }
+    return sampled;
+  }
 }
 function swapObjectKeyValue(obj){
   var ret = {};
@@ -139,15 +155,15 @@ function makeTabVar(default_value=0, tabPrefix = 'demoGrid-', nrow=NROW, ncol=NC
   }
   return tabVar
 }
-function cellClick (cell_id) {
-  demoStateCount[cell_id] += 1;
-  if (demoState[cell_id].length > 0 && demoStateCount[cell_id] % 2 == 1) {
-    getEl(cell_id).style.border = 'solid red 2px';
-  } else {
-    getEl(cell_id).style.border = '0px';
+function getAllCellIds(ncol=NCOL, nrow=NROW) {
+  let ret = [];
+  for (let i = 0; i < nrow; i++) {
+    for (let j = 0; j < ncol; j++) {
+      ret.push((j+1).toString() + '-' + (NROW-i).toString());
+    }
   }
+  return ret
 }
-
 
 
 

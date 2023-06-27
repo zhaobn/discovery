@@ -14,134 +14,56 @@ progress {
 h1 {
   font-size: 32px;
 }
+
 .base{
   height: 600px;
   width: 800px;
   margin: auto;
   /* border: solid 1px goldenrod; */
 }
+
 .button-group-vc {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   margin-top: 12px;
 }
-
-.task-button, .big-button {
+.big-button {
   border: #e0e0e0 1px solid;
   text-align: center;
   border-radius: 10%;
   margin: 2px;
-  padding: 5px 10px;
+  padding: 10px 30px;
+  font-size: 18px;
 }
-
-.task-button:hover:enabled,
-.big-button:hover:enabled,
-#sure-btn:hover {
+.big-button:hover:enabled {
   background-color: #116466;
   color: #e0e0e0;
 }
-
-.task-button:disabled,
 .big-button:disabled,
-.task-button:disabled:hover,
 .big-button:disabled:hover {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.big-button {
-  font-size: 18px;
-  padding: 10px 30px;
+.progress-div {
+  margin-top: 20px;
+  margin-bottom: 40px;
 }
-
 .main-box {
-  height: 96%;
-  width: 100%;
-  display: flex;
-  /* background-color: red; */
-}
-.work-box {
-  height: 100%;
-  width: 90%;
-
-}
-.score-box {
-  height: 10%;
-  width: 100%;
-}
-.score-box p {
-  text-align: center;
-  font-size: 30px;
+  height: 400px;
+  width: 780px;
+  margin-bottom: 40px;
 }
 .items-box {
-  background-color: #f6f6f6;
-  height: 72%;
+  /* background-color: #f6f6f6; */
+  border: solid 1px black;
+  height: 100%;
   width: 100%;
 }
 .worktop-table {
   width: 100%;
   height: 100%;
-}
-.reaction-box {
-  height: 35%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-.reactor-box {
-  height: 100%;
-  width: 70%;
-  padding: 10px;
-}
-.reactor-box p {
-  margin: 5px;
-}
-.reactor-content {
-  border: black solid 2px;
-  height: 120px;
-  width: 500px;
-  margin-left: 5px;
-}
-.reactor-button-div {
-  display: flex;
-  justify-content: space-between;
-
-}
-.reactor-button {
-  font-size: 20px;
-  border: #e0e0e0 1px solid;
-  text-align: center;
-  border-radius: 10%;
-  margin: 20px;
-  padding: 5px 10px;
-}
-.reactor-button:hover {
-  background-color: #116466;
-  color: #e0e0e0;
-}
-.reactee-box {
-  height: 60%;
-  width: 20%;
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
-}
-.recipe-box {
-  height: 100%;
-  width: 25%;
-}
-.recipe-box-in {
-  height: 100%;
-  width: 90%;
-  background-color: #e2e2e2;
-  border: #808080 solid 1px;
-  margin: auto;
-  margin-top: 10px;
-}
-.recipe-box-in p {
-  margin: 5px;
-  text-align: center;
 }
 #consent-info {
   height: 400px;
