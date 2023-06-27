@@ -29,7 +29,76 @@ function setAttributes(el, attrs) {
     el.setAttribute(key, attrs[key]);
   }
 }
+function showNext(id, display = "flex", center = true) {
+  let div = document.getElementById(id);
+  div.style.display = display;
+  div.scrollIntoView(center);
+}
+function hide(id) {
+  let div = document.getElementById(id);
+  div.style.display = "none";
+}
+function hideAndShowNext(hid, sid, display, center = true) {
+  hide(hid);
+  showNext(sid, display, center)
+}
 
+
+function compIsFilled () {
+  let radios = document.getElementsByTagName('input');
+  let checked = 0;
+  for (let i = 0; i < radios.length; i++) {
+      checked += radios[i].checked;
+  }
+  return (checked > checks.length-1)
+}
+function isFilled (formID) {
+  let notFilled = false;
+  const nulls = [ '', '--', '', '--', '', '--' ];
+  const form = document.getElementById(formID);
+  const inputs = form.elements;
+  (Object.keys(inputs)).forEach((input, idx) => {
+    let field = inputs[input];
+    notFilled = (notFilled || (field.value === nulls[idx]));
+  });
+  return (!notFilled)
+}
+function removeSpecial (text) {
+  text = text.replace(/[&\/\\#,$~%"\[\]{}@^_|`']/gi, '');
+  text = text.replace(/(\r\n|\n|\r|\t)/gm, " ")
+  return text
+}
+function generateToken (length) {
+  let tokens = '';
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  for (let i = 0; i < length; i ++) {
+      tokens += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return tokens;
+}
+function formatDates (date, option = 'date') {
+  let year = date.getFullYear();
+  let month = String(date.getMonth() + 1).padStart(2, '0');
+  let day = String(date.getDate() + 1).padStart(2, '0');
+  let hour = String(date.getHours()+ 1).padStart(2, '0');
+  let min = String(date.getMinutes() + 1).padStart(2, '0');
+  let sec = String(date.getSeconds() + 1).padStart(2, '0');
+  dateParts = (option === 'date') ? [ year, month, day ] : [ hour, min, sec ];
+  return dateParts.join('_');
+}
+function showCompletion(code) {
+  hide("debrief")
+  showNext("completed")
+  let t = document.createTextNode(code);
+  document.getElementById('completion-code').append(t);
+}
+function download(content, fileName, contentType) {
+  var a = document.createElement("a");
+  var file = new Blob([content], {type: contentType});
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+}
 
 
 /* Draw grid */
@@ -159,30 +228,30 @@ let gameStates = [];
 
 
 
-// Draw random positions for given items
-const initial_items = [ 'berry', 'berry', 'berry', 'soil', 'soil', 'water', 'water', 'stone', 'branch', 'rabbit' ]; // can customize weights
-let all_cells = Object.keys(demoState);
-let demo_pos = [];
-for (let i = 0; i < initial_items.length; i++) {
-  let pos = sampleOne(all_cells);
-  while (demo_pos.length > 0 && demo_pos.indexOf(pos) > 0) {
-    pos = sampleOne(all_cells);
-  }
-  demo_pos.push(pos);
-  demoState[pos] = initial_items[i];
-}
+// // Draw random positions for given items
+// const initial_items = [ 'berry', 'berry', 'berry', 'soil', 'soil', 'water', 'water', 'stone', 'branch', 'rabbit' ]; // can customize weights
+// let all_cells = Object.keys(demoState);
+// let demo_pos = [];
+// for (let i = 0; i < initial_items.length; i++) {
+//   let pos = sampleOne(all_cells);
+//   while (demo_pos.length > 0 && demo_pos.indexOf(pos) > 0) {
+//     pos = sampleOne(all_cells);
+//   }
+//   demo_pos.push(pos);
+//   demoState[pos] = initial_items[i];
+// }
 
 
 
-// Make the interface
-for (let i = 0; i < NROW; i++) {
-  let wtrows = getEl('items-box-demo').insertRow();
-  for (let j = 0; j < NCOL; j++) {
-    let tcell = wtrows.insertCell();
-    tcell.id = `demoGrid-` + (j+1).toString() + '-' + (NROW-i).toString();
-    tcell.innerHTML = drawItem(demoState[tcell.id]);
-    // tcell.style.border = 'red solid 1px';
-    tcell.style.width = '40px';
-    tcell.onclick = () => cellClick(tcell.id);
-  }
-}
+// // Make the interface
+// for (let i = 0; i < NROW; i++) {
+//   let wtrows = getEl('items-box-demo').insertRow();
+//   for (let j = 0; j < NCOL; j++) {
+//     let tcell = wtrows.insertCell();
+//     tcell.id = `demoGrid-` + (j+1).toString() + '-' + (NROW-i).toString();
+//     tcell.innerHTML = drawItem(demoState[tcell.id]);
+//     // tcell.style.border = 'red solid 1px';
+//     tcell.style.width = '40px';
+//     tcell.onclick = () => cellClick(tcell.id);
+//   }
+// }
