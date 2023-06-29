@@ -1,4 +1,7 @@
 
+const NCOL = 6
+const NROW = 10
+
 /* Custom wrappers */
 function createCustomElement (type = 'div', className, id) {
   let element = (["svg", "polygon"].indexOf(type) < 0)?
@@ -29,6 +32,9 @@ function setAttributes(el, attrs) {
     el.setAttribute(key, attrs[key]);
   }
 }
+
+
+/* Transition functions */
 function showNext(id, display = "flex", center = true) {
   let div = document.getElementById(id);
   div.style.display = display;
@@ -44,6 +50,8 @@ function hideAndShowNext(hid, sid, display, center = true) {
 }
 
 
+
+/* Form-related functions */
 function compIsFilled () {
   let radios = document.getElementsByTagName('input');
   let checked = 0;
@@ -63,6 +71,9 @@ function isFilled (formID) {
   });
   return (!notFilled)
 }
+
+
+/* Data-related functions */
 function removeSpecial (text) {
   text = text.replace(/[&\/\\#,$~%"\[\]{}@^_|`']/gi, '');
   text = text.replace(/(\r\n|\n|\r|\t)/gm, " ")
@@ -86,12 +97,6 @@ function formatDates (date, option = 'date') {
   dateParts = (option === 'date') ? [ year, month, day ] : [ hour, min, sec ];
   return dateParts.join('_');
 }
-function showCompletion(code) {
-  hide("debrief")
-  showNext("completed")
-  let t = document.createTextNode(code);
-  document.getElementById('completion-code').append(t);
-}
 function download(content, fileName, contentType) {
   var a = document.createElement("a");
   var file = new Blob([content], {type: contentType});
@@ -101,21 +106,7 @@ function download(content, fileName, contentType) {
 }
 
 
-/* Draw grid */
-let total_xp = 40;
-const [ NROW, NCOL ] = [ 6, 10 ];
-const TECH_TREE = {
-  'branchstone': ['arrow', 0.8],
-  'berrysoilwater': ['seedling', 1],
-  'bowrabbit': ['rabbit-caught', 0.5],
-  'bowrabbitstone': ['rabbit-caught', 0.9],
-}
-const REWARDS = {
-  'berry': 10,
-}
-
-
-/* Helper functions */
+/* Random functions */
 function randFromRange(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -135,6 +126,9 @@ function sampleFromList(arr, n=1, replace=true) {
     return sampled;
   }
 }
+
+
+/* Object functions */
 function swapObjectKeyValue(obj){
   var ret = {};
   for(var key in obj){
@@ -142,18 +136,11 @@ function swapObjectKeyValue(obj){
   }
   return ret;
 }
+
+
+/* Task-specific functions */
 function drawItem (item) {
   return (item.length > 0)? `<img src="../imgs/${item}.png" style="height:60px">`: '';
-}
-function makeTabVar(default_value=0, tabPrefix = 'demoGrid-', nrow=NROW, ncol=NCOL) {
-  let tabVar = {};
-  for (let i = 0; i < nrow; i++) {
-    for (let j = 0; j < ncol; j++) {
-      let vid = tabPrefix + (j+1).toString() + '-' + (NROW-i).toString();
-      tabVar[vid] = default_value;
-    }
-  }
-  return tabVar
 }
 function getAllCellIds(ncol=NCOL, nrow=NROW) {
   let ret = [];
@@ -164,12 +151,6 @@ function getAllCellIds(ncol=NCOL, nrow=NROW) {
   }
   return ret
 }
-
-
-
-/*
-MAIN COMBINE BUTTON FUNCTION - NEEDS DEBUGGING
-*/
 function combineClick() {
   // Get selected items
   let selected_items = [];
@@ -229,45 +210,4 @@ function combineClick() {
   if (Object.keys(REWARDS).indexOf(combo) > -1) {
     console.log('Get ' + REWARDS[combo] + 'XP!')
   }
-
-
-
 }
-
-
-
-
-// Prep data
-let demoState = makeTabVar('');
-let demoStateCount = makeTabVar();
-let gameStates = [];
-
-
-
-// // Draw random positions for given items
-// const initial_items = [ 'berry', 'berry', 'berry', 'soil', 'soil', 'water', 'water', 'stone', 'branch', 'rabbit' ]; // can customize weights
-// let all_cells = Object.keys(demoState);
-// let demo_pos = [];
-// for (let i = 0; i < initial_items.length; i++) {
-//   let pos = sampleOne(all_cells);
-//   while (demo_pos.length > 0 && demo_pos.indexOf(pos) > 0) {
-//     pos = sampleOne(all_cells);
-//   }
-//   demo_pos.push(pos);
-//   demoState[pos] = initial_items[i];
-// }
-
-
-
-// // Make the interface
-// for (let i = 0; i < NROW; i++) {
-//   let wtrows = getEl('items-box-demo').insertRow();
-//   for (let j = 0; j < NCOL; j++) {
-//     let tcell = wtrows.insertCell();
-//     tcell.id = `demoGrid-` + (j+1).toString() + '-' + (NROW-i).toString();
-//     tcell.innerHTML = drawItem(demoState[tcell.id]);
-//     // tcell.style.border = 'red solid 1px';
-//     tcell.style.width = '40px';
-//     tcell.onclick = () => cellClick(tcell.id);
-//   }
-// }

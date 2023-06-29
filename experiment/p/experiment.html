@@ -11,7 +11,7 @@
 
   <body>
 
-    <div id="welcome" class="base" style="display:none;">
+    <div id="welcome" class="base">
       <h1>Information for participants</h1>
       <div id="consent-info">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ullamcorper diam semper dignissim pretium. Sed porttitor turpis sed quam dignissim accumsan. Sed nec dolor non est malesuada porta ut vitae nibh. Morbi feugiat quam sem, ut aliquet eros malesuada sed. Phasellus congue nulla felis, sed faucibus odio mollis interdum. Cras vel pharetra libero. Duis ut egestas arcu.</p>
@@ -42,15 +42,18 @@
 
       <div id="instruction-1">
         <div style="padding-left:5px;height:400px;">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ullamcorper diam semper dignissim pretium. Sed porttitor turpis sed quam dignissim accumsan. Sed nec dolor non est malesuada porta ut vitae nibh. Morbi feugiat quam sem, ut aliquet eros malesuada sed. Phasellus congue nulla felis, sed faucibus odio mollis interdum. Cras vel pharetra libero. Duis ut egestas arcu.</p>
-          <p>Pellentesque mauris lectus, commodo in pharetra in, dignissim ut ipsum. Vestibulum eu lectus augue. Aliquam tincidunt feugiat justo viverra tempor. Aenean varius tellus ac molestie semper. In hac habitasse platea dictumst. Donec volutpat hendrerit mi, eu rhoncus est aliquam ut. Vestibulum consequat mauris eget purus consequat, eget condimentum orci tempor.</p>
+          <p>You will be presented with several items. Some items, when combined together, can produce a new item.</p>
+          <p>For example, combining a “flint” and a “wood” can make a “fire”.</p>
+          <p><strong>We are interested in your intuition about which items you would like to combine</strong>, if you are playing such a game.</p>
+          <p>The whole task consists of 20 rounds. In each round, you can select the items you'd like to combine by clicking on them. To unselect an item, just click on that item again.</p>
+          <p>When you are happy about the item selections, click the “confirm” button and proceed to the next round.</p>
         </div>
         <div class='button-group-vc'>
-          <button class='big-button' id='instruction-btn-1' onclick="hideAndShowNext('instruction-1', 'instruction-2', 'block')">Next</button>
+          <button class='big-button' id='instruction-btn-1' onclick="hideAndShowNext('instruction', 'quiz', 'block')">Next</button>
         </div>
       </div>
 
-      <div id="instruction-2" style="display:none;">
+      <!-- <div id="instruction-2" style="display:none;">
         <div style="padding-left:5px;height:400px;">
           <p>Aliquam erat volutpat. Donec quam nisl, mollis at tincidunt vitae, aliquam in ipsum. Suspendisse potenti. Donec venenatis dui quis vestibulum dignissim. Donec congue orci vitae congue bibendum. Donec eget imperdiet erat. Cras semper blandit arcu, a finibus augue laoreet non.</p>
           <p>Curabitur quis rhoncus felis, non hendrerit purus. Ut dignissim egestas metus eget vulputate. Suspendisse bibendum tellus eu lorem aliquet, a pulvinar odio viverra. In vulputate purus ut libero vehicula, ut euismod mi sodales. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur in velit a dolor dignissim fermentum. Fusce nec tellus purus. Sed tortor neque, tincidunt vitae pellentesque eget, gravida eu nunc.</p>
@@ -58,7 +61,7 @@
         <div class='button-group-vc'>
           <button class='big-button' id='instruction-btn-2' onclick="hideAndShowNext('instruction', 'quiz', 'block')">Next</button>
         </div>
-      </div>
+      </div> -->
 
     </div>
 
@@ -67,27 +70,27 @@
       <div>
         <form id='prequiz'>
           <ol>
-            <li>The first comprehension question</li>
+            <li>Your task is to select items you like.</li>
             <p>
               <input type="radio" name="check1">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check1">False
             </p>
-            <li>The second comprehension question</li>
+            <li>Your task is to select the items that appear the most often.</li>
             <p>
               <input type="radio" name="check2">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check2">False
             </p>
-            <li>The third comprehension question</li>
+            <li>Your task is to select items that you'd like to combine together.</li>
             <p>
               <input type="radio" name="check3">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check3">False
             </p>
-            <li>The fourth comprehension question</li>
+            <li>Once selected, you cannot unselect an item.</li>
             <p>
               <input type="radio" name="check4">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check4">False
             </p>
-            <li>The fifith comprehension question</li>
+            <li>When the selected item are combined, you expect them to make something new.</li>
             <p>
               <input type="radio" name="check5">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check5">False
@@ -113,7 +116,7 @@
     </div>
 
 
-    <div id="task" class="base"></div>
+    <div id="task" class="base" style="display:none;"></div>
 
 
     <div id="debrief" class="base" style="display:none;">
