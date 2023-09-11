@@ -1,6 +1,6 @@
 
-const NCOL = 6
-const NROW = 10
+const NCOL = 10
+const NROW = 6
 
 /* Custom wrappers */
 function createCustomElement (type = 'div', className, id) {
@@ -120,7 +120,7 @@ function sampleFromList(arr, n=1, replace=true) {
       let randomIndex = Math.floor(Math.random()*arr.length);
       sampled.push(arr[randomIndex]);
       if (replace == 0) {
-        arr.slice(randomIndex, 1)[0];
+        arr.splice(randomIndex, 1)[0];
       }
     }
     return sampled;
@@ -139,8 +139,99 @@ function swapObjectKeyValue(obj){
 
 
 /* Task-specific functions */
+function showScoreText(x) {
+  return `<h3>Total XP: ${x}</h3>`
+}
+function showFeedback(x) {
+  if (x>0) {
+    return `<h1><font color="green">+${x}</font></h1>`
+  } else if (x<0) {
+    return `<h1><font color="red">${x}</font></h1>`
+  } else {
+    return ''
+  }
+}
+function drawCircle(fillColor, radius=24, borderColor='black', borderSize=2) {
+  let retCanvas = createCustomElement('canvas', 'drawings', '');
+  retCanvas.height = 60;
+  retCanvas.width = 60;
+  let context = retCanvas.getContext('2d');
+
+  context.beginPath();
+  context.arc(retCanvas.width/2, retCanvas.height/2, radius, 0, 2 * Math.PI, false);
+
+  context.fillStyle = fillColor;
+  context.fill();
+
+  context.lineWidth = borderSize;
+  context.strokeStyle = borderColor;
+  context.stroke();
+
+  return retCanvas
+}
+function drawTriangle(edgeLength=30, fillColor='black', borderColor='black', borderSize=1) {
+  let retCanvas = createCustomElement('canvas', 'drawings', '');
+  retCanvas.height = 60;
+  retCanvas.width = 60;
+  let context = retCanvas.getContext('2d');
+
+  let height = edgeLength * Math.cos(Math.PI / 6);
+  context.beginPath();
+  context.moveTo((retCanvas.width-edgeLength)/2, (retCanvas.height+height)/2);
+  context.lineTo((retCanvas.width+edgeLength)/2, (retCanvas.height+height)/2);
+  context.lineTo(retCanvas.width/2, (retCanvas.height-height)/2);
+  context.closePath();
+
+  context.lineWidth = borderSize;
+  context.strokeStyle = borderColor;
+  context.stroke();
+
+  context.fillStyle = fillColor;
+  context.fill();
+
+  return retCanvas;
+}
+function drawStar(fillColor, spikes=5, outerRadius=30,innerRadius=15,borderColor='black', borderSize=3) {
+  let retCanvas = createCustomElement('canvas', 'drawings', '');
+  retCanvas.height = 60;
+  retCanvas.width = 60;
+
+  let context = retCanvas.getContext('2d');
+  context.save();
+  context.beginPath();
+  context.translate(retCanvas.width/2, retCanvas.height/2);
+  context.moveTo(0, 0-outerRadius);
+  for (var i = 0; i < spikes; i++) {
+    context.rotate(Math.PI / spikes);
+    context.lineTo(0, 0 - innerRadius);
+    context.rotate(Math.PI / spikes);
+    context.lineTo(0, 0 - outerRadius);
+  }
+  context.closePath();
+  context.lineWidth=borderSize;
+  context.strokeStyle=borderColor;
+  context.stroke();
+
+  context.fillStyle=fillColor;
+  context.fill();
+  context.restore();
+  return retCanvas;
+}
+
+function drawBlock(letter, color) {
+  let block = createCustomElement('div', '', '');
+  block.style.height = '20px';
+  block.style.width = '20px';
+  block.style.border = 'solid 1px black';
+  block.style.backgroundColor = color;
+  block.style.color='white';
+  block.innerHTML = letter;
+  return block
+}
+
+
 function drawItem (item) {
-  return (item.length > 0)? `<img src="../imgs/${item}.png" style="height:60px">`: '';
+  return (item.length > 0)? `<img src="static/imgs/${item}.png" style="height:60px">`: '';
 }
 function getAllCellIds(ncol=NCOL, nrow=NROW) {
   let ret = [];
@@ -151,63 +242,37 @@ function getAllCellIds(ncol=NCOL, nrow=NROW) {
   }
   return ret
 }
-function combineClick() {
-  // Get selected items
-  let selected_items = [];
-  let selected_cells = [];
-  Object.keys(demoState).forEach(key => {
-    if (demoState[key].length > 0 && demoStateCount[key] % 2 == 1) {
-      selected_items.push(demoState[key]);
-      selected_cells.push(key);
-    }
-  });
-  console.log(selected_items)
-
-
-  let combo = selected_items.sort().join('');
-  //console.log(combo)
-
-  // Check if a change should happen
-  if (Object.keys(TECH_TREE).indexOf(combo) > -1 && Math.random() < TECH_TREE[combo][1] ) {
-
-    let items_to_combine = {};
-    selected_cells.forEach(key => items_to_combine[key] = demoState[key]);
-    items_to_combine = swapObjectKeyValue(items_to_combine);
-
-    switch (combo) {
-
-      case 'berrysoilwater':
-        // Make soil => seedling and other two disappear
-        getEl(items_to_combine['soil']).innerHTML = drawItem('seedling');
-        getEl(items_to_combine['soil']).style.border = 'gold solid 10px';
-        getEl(items_to_combine['water']).innerHTML = '';
-        getEl(items_to_combine['water']).style.border = '0px';
-        getEl(items_to_combine['berry']).innerHTML = '';
-        getEl(items_to_combine['berry']).style.border = '0px';
-        selected_items = []; // <-- Not working now
-
-        break;
-
-      case 'branchstone':
-        // Make branch => arrow and stone disappears
-        getEl(items_to_combine['branch']).innerHTML = drawItem('arrow');
-        getEl(items_to_combine['branch']).style.border = 'gold solid 10px';
-        getEl(items_to_combine['stone']).innerHTML = '';
-        getEl(items_to_combine['stone']).style.border = '0px';
-        selected_items = [];
-
-        break;
-
-    }
-
-
+function readTaskData (obj, taskId, refObj, retType = 'obj') {
+  let taskData = Object.fromEntries(Object.entries(obj).
+    filter(([key, value]) => (key.split('-')[0] == taskId) & (value%2==1)));
+  let selected = Object.fromEntries(Object.entries(refObj).
+    filter(([key]) => Object.keys(taskData).includes(key)));
+  if (retType == 'obj') {
+    return Object.values(selected)
+  } else if (retType == 'id') {
+    return Object.keys(selected)
   } else {
-    console.log('Nothing happens')
+    return taskData
+  }
+}
+function getTaskFeedbackChunk (item, config) {
+  if (Math.random() < config[item]['prob']) {
+    return Math.abs(config[item]['reward'])
+  } else {
+    return -1*Math.abs(config[item]['cost'])
+  }
+}
+function showNewItem (ids, item) {
+  getEl(ids[0]).removeChild(getEl(ids[0]).firstChild);
+  getEl(ids[1]).removeChild(getEl(ids[1]).firstChild);
+  getEl(ids[1]).style.borderColor = 'white';
+
+  if (item == 'star') {
+    getEl(ids[0]).append(drawStar('limegreen'));
+    getEl(ids[0]).style.borderColor = 'limegreen';
+  } else if (item == 'circ') {
+    getEl(ids[0]).append(drawCircle('lightblue'));
+    getEl(ids[0]).style.borderColor = 'lightblue';
   }
 
-
-  // Check if is a reward
-  if (Object.keys(REWARDS).indexOf(combo) > -1) {
-    console.log('Get ' + REWARDS[combo] + 'XP!')
-  }
 }

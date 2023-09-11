@@ -3,14 +3,6 @@ body {
   /* background-color: #e0e0e0; */
   font-size: 20px;
 }
-progress[value] {
-  width: 77%;
-  height: 20px;
-  margin-left: 10px;
-}
-progress {
-  accent-color: grey;
-}
 h1 {
   font-size: 32px;
 }
@@ -45,37 +37,111 @@ h1 {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-.progress-div {
-  margin-top: 20px;
-  margin-bottom: 40px;
+.combine-btn-wrapper {
+  display: flex;
+  justify-content: center;
 }
 .main-box {
-  height: 400px;
+  height: 500px;
   width: 780px;
-  margin-bottom: 40px;
+  margin-top: 50px;
 }
 .items-box {
   /* background-color: #f6f6f6; */
   border: solid 1px black;
-  height: 100%;
-  width: 100%;
+  height: 300px;
+  width: 750px;
+  margin: 0 auto;
+  overflow: scroll;
+  padding: 4px;
 }
-.worktop-table {
-  width: 100%;
-  height: 100%;
+.items-tab {
+  height: 10000px;
+  width: 20000px;
 }
 .work-box {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: bottom;
+  width: 100%;
+  height: 180px;
 }
-.sample-item {
-  /* background-color: #F00; */
+.selection-box{
   height: 80px;
-  width: 80px;
+  width: 200px;
+  padding: 10px;
+  margin: 15px;
+}
+.result-box {
+  height: 100px;
+  width: 100px;
+  display: flex;
+  background-color: lightgray;
+  margin-top: 15px;
+}
+.score-wrapper {
+  display: flex;
+}
+.score-box {
+  font-size: 90px;
+  margin-top: 10px;
+  margin-top: 20px;
+  color: red
+}
+.chance-box {
+  height: 150px;
+}
+.chance-bar-containter {
+  background-color: green;
+  position: relative;
+  transform: translateY(-50%);
+  top: 50%;
+  margin-left: 50px;
+  width: 30px;
+  height: 120px;
+  float: left;
+}
+.chance-bar {
+  background-color: lightgray;
   position: absolute;
+  top: 0;
+  width: 100%;
+  height: 80%;
+  border-top: 2px solid #FFF;
+  box-sizing: border-box;
+  animation: grow 1.5s ease-out forwards;
+  transform-origin: top;
+}
+@keyframes grow{
+  from{
+    transform: scaleY(0);
+  }
+}
+.feedback-box, .score-box {
+  width: 33%;
+  /* border: #f6f6f6 solid 2pt; */
+  text-align: center;
+  vertical-align: bottom;
+}
+/* @keyframes fadeInOutAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+} */
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+.feedback-box {
+  animation: fadeIn ease-in-out 3s;
+  /* cursor: pointer;
+  animation: fadeInOutAnimation 1.5s infinite;
+  animation-direction: alternate-reverse;
+  animation-timing-function: ease-in-out; */
 }
 #consent-info {
   height: 400px;
