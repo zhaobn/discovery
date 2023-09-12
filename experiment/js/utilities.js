@@ -1,7 +1,3 @@
-
-const NCOL = 10
-const NROW = 6
-
 /* Custom wrappers */
 function createCustomElement (type = 'div', className, id) {
   let element = (["svg", "polygon"].indexOf(type) < 0)?
@@ -74,6 +70,10 @@ function isFilled (formID) {
 
 
 /* Data-related functions */
+function removeBrackets (text) {
+  text = text.replace(/[\[\]']+/g,'');
+  return text
+}
 function removeSpecial (text) {
   text = text.replace(/[&\/\\#,$~%"\[\]{}@^_|`']/gi, '');
   text = text.replace(/(\r\n|\n|\r|\t)/gm, " ")
@@ -128,6 +128,15 @@ function sampleFromList(arr, n=1, replace=true) {
 }
 
 
+
+/* Array functions */
+function getCombos(array) {
+  let ret = array.reduce( (acc, v, i) => acc.concat(array.slice(i+1).map( w => `[${v}][${w}]`)), []);
+  return ret
+}
+
+
+
 /* Object functions */
 function swapObjectKeyValue(obj){
   var ret = {};
@@ -151,97 +160,27 @@ function showFeedback(x) {
     return ''
   }
 }
-function drawCircle(fillColor, radius=24, borderColor='black', borderSize=2) {
-  let retCanvas = createCustomElement('canvas', 'drawings', '');
-  retCanvas.height = 60;
-  retCanvas.width = 60;
-  let context = retCanvas.getContext('2d');
 
-  context.beginPath();
-  context.arc(retCanvas.width/2, retCanvas.height/2, radius, 0, 2 * Math.PI, false);
-
-  context.fillStyle = fillColor;
-  context.fill();
-
-  context.lineWidth = borderSize;
-  context.strokeStyle = borderColor;
-  context.stroke();
-
-  return retCanvas
-}
-function drawTriangle(edgeLength=30, fillColor='black', borderColor='black', borderSize=1) {
-  let retCanvas = createCustomElement('canvas', 'drawings', '');
-  retCanvas.height = 60;
-  retCanvas.width = 60;
-  let context = retCanvas.getContext('2d');
-
-  let height = edgeLength * Math.cos(Math.PI / 6);
-  context.beginPath();
-  context.moveTo((retCanvas.width-edgeLength)/2, (retCanvas.height+height)/2);
-  context.lineTo((retCanvas.width+edgeLength)/2, (retCanvas.height+height)/2);
-  context.lineTo(retCanvas.width/2, (retCanvas.height-height)/2);
-  context.closePath();
-
-  context.lineWidth = borderSize;
-  context.strokeStyle = borderColor;
-  context.stroke();
-
-  context.fillStyle = fillColor;
-  context.fill();
-
-  return retCanvas;
-}
-function drawStar(fillColor, spikes=5, outerRadius=30,innerRadius=15,borderColor='black', borderSize=3) {
-  let retCanvas = createCustomElement('canvas', 'drawings', '');
-  retCanvas.height = 60;
-  retCanvas.width = 60;
-
-  let context = retCanvas.getContext('2d');
-  context.save();
-  context.beginPath();
-  context.translate(retCanvas.width/2, retCanvas.height/2);
-  context.moveTo(0, 0-outerRadius);
-  for (var i = 0; i < spikes; i++) {
-    context.rotate(Math.PI / spikes);
-    context.lineTo(0, 0 - innerRadius);
-    context.rotate(Math.PI / spikes);
-    context.lineTo(0, 0 - outerRadius);
-  }
-  context.closePath();
-  context.lineWidth=borderSize;
-  context.strokeStyle=borderColor;
-  context.stroke();
-
-  context.fillStyle=fillColor;
-  context.fill();
-  context.restore();
-  return retCanvas;
-}
-
-function drawBlock(letter, color) {
+function drawBlock(letter, color, id, size='base') {
   let block = createCustomElement('div', '', '');
-  block.style.height = '20px';
-  block.style.width = '20px';
+  block.id = id;
+  if (size == 'base') {
+    block.style.height = '20px';
+    block.style.width = '20px';
+  } else {
+    block.style.height = '20px';
+    block.style.width = (20*(size)-2).toString() + 'px';
+  }
   block.style.border = 'solid 1px black';
   block.style.backgroundColor = color;
   block.style.color='white';
   block.innerHTML = letter;
   return block
 }
-
-
-function drawItem (item) {
-  return (item.length > 0)? `<img src="static/imgs/${item}.png" style="height:60px">`: '';
+function chanceTobar(x) {
+  return Math.round((1-x)*100).toString() + '%'
 }
-function getAllCellIds(ncol=NCOL, nrow=NROW) {
-  let ret = [];
-  for (let i = 0; i < nrow; i++) {
-    for (let j = 0; j < ncol; j++) {
-      ret.push((j+1).toString() + '-' + (NROW-i).toString());
-    }
-  }
-  return ret
-}
+
 function readTaskData (obj, taskId, refObj, retType = 'obj') {
   let taskData = Object.fromEntries(Object.entries(obj).
     filter(([key, value]) => (key.split('-')[0] == taskId) & (value%2==1)));

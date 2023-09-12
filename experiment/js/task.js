@@ -3,47 +3,13 @@
 let start_task_time = 0;
 let subjectData = {};
 
+let states = {};
+let testData = [];
+let currentDisplays = [];
+let scoreHistory = [];
+let disData = {};
 
-/* Assign task items */
-const CONDITION = 0.6; //
-
-const ALL_ITEMS = [ 'tria', 'star', 'circ'];
-const CONFIGS = {
-  'tria': { 'prob': 0, 'cost': 0, 'reward': 0 },
-  'star': { 'prob': CONDITION, 'cost': 10, 'reward': 50 },
-  'circ': { 'prob': 0.2, 'cost': 10, 'reward': 200 },
-}
-
-const TASK_COUNT = [ 5, 5 ];
-const N_TASK = TASK_COUNT.reduce((partialSum, a) => partialSum + a, 0);
-
-let [ clickData, clickDataKeys ] =[ {}, [] ];
-let [ task_items, task_cells, task_cell_item ] = [ {}, {}, {} ];
-let task_scores = [ 0, 0 ];
-
-for (let i = 0; i < N_TASK; i++) {
-  let task_size = 0; //randFromRange(2, 9);
-
-  if (i < TASK_COUNT[0]) {
-    task_size = 6;
-    task_items[`task_${i+1}`] = [ 'tria', 'tria', 'tria', 'star', 'star', 'star' ]; //sampleFromList(ALL_ITEMS, n=task_size); // sample items
-  } else {
-    task_size = 9;
-    task_items[`task_${i+1}`] = [ 'tria', 'tria', 'tria', 'star', 'star', 'star', 'circ', 'circ', 'circ' ];
-  }
-
-  let all_cell_ids = getAllCellIds();
-  task_cells[`task_${i+1}`] = sampleFromList(all_cell_ids, n=task_size, replace=0); // sample cell-ids
-
-  let fullCellIds = task_cells[`task_${i+1}`].map(el => `task${i+1}-grid-${el}`); // get full-name cell-ids
-  fullCellIds.forEach((el, idx) => task_cell_item[el] = task_items[`task_${i+1}`][idx]); // append items
-
-  clickDataKeys = clickDataKeys.concat(fullCellIds);
-
-  task_scores.push(0)
-}
-clickDataKeys.forEach(el => clickData[el] = 0);
-
+const [ NROW, NCOL ] = [10, 15];
 
 /* Collect prolific id */
 function handle_prolific() {
@@ -53,159 +19,242 @@ function handle_prolific() {
 
 
 
-
-
+/* Create task */
 let tabDiv = getEl('demo-tab');
 // Draw grid
-for (let i = 0; i < 200; i++) {
+for (let i = 0; i < NROW; i++) {
   let wtrows = tabDiv.insertRow();
-  for (let j = 0; j < 400; j++) {
+  for (let j = 0; j < NCOL; j++) {
     let tcell = wtrows.insertCell();
 
-    let tcellId = `demo` + (j+1).toString() + '-' + (NROW-i).toString();
-    tcell.id = tcellId;
-    tcell.style.height = '45px';
-    tcell.style.width = '45px';
+    let cellId = (j+1).toString() + '-' + (i+1).toString();
+    tcell.id = 'cell-' + cellId;
+    // tcell.style.height = '45px';
+    // tcell.style.width = '45px';
     tcell.style.textAlign = 'center';
     tcell.style.verticalAlign = 'middle';
-    // tcell.style.border = 'red solid 1px';
+    //tcell.style.border = 'red solid 1px';
 
-    if (Math.random() > 0.7) {
-      let letter = sampleFromList(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'], 1, 1);
-      let color = sampleFromList(['red', 'green', 'purple', 'blue', 'black', 'gray', 'pink'], 1, 1);
-      tcell.append(drawBlock(letter, color));
+    if (Math.random() > 0.8) {
+      let letter = sampleFromList(baseObj, 1, 1);
+      let color = objFeats[letter];
+      let posId = `pos-${cellId}-${letter}`
+
+      let item = drawBlock(letter, color, posId);
+      item.onclick = () => handleItemClick(item.id);
+      tcell.append(item);
+
+      states[posId] = 0;
     }
   }
 }
 
 
+function handleItemClick (id) {
 
-// /* Create task div */
-// for (let tid = 1; tid <= N_TASK; tid++) {
-
-//   let taskDiv = createCustomElement('div', '', `task-${tid}`);
-
-//   // Main task box
-//   let mainBoxDiv = createCustomElement('div', 'main-box', `main-box-${tid}`);
-
-//   let itemsBox= createCustomElement('div', 'items-box', `items-box-${tid}`);
-//   let itemsTab = createCustomElement('table', 'worktop-table', id=`items-tab-${tid}`);
-
-//   // Draw grid
-//   for (let i = 0; i < NROW; i++) {
-//     let wtrows = itemsTab.insertRow();
-//     for (let j = 0; j < NCOL; j++) {
-//       let tcell = wtrows.insertCell();
-
-//       let tcellId = `task${tid}-grid-` + (j+1).toString() + '-' + (NROW-i).toString();
-//       tcell.id = tcellId;
-
-//       //tcell.style.border = 'red solid 1px';
-//       tcell.style.height = '60px';
-//       tcell.style.width = '60px';
-//       tcell.style.textAlign = 'center';
-//       tcell.style.verticalAlign = 'middle';
-
-//       if (Object.keys(task_cell_item).indexOf(tcellId) > -1 ) {
-//         //tcell.innerHTML = drawItem(task_cell_item[tcellId]);
-//         if (task_cell_item[tcellId] == 'circ') {
-//           tcell.append(drawCircle('brown'));
-//         } else if (task_cell_item[tcellId] == 'tria') {
-//           tcell.append(drawTriangle());
-//         } else if (task_cell_item[tcellId] == 'star') {
-//           tcell.append(drawStar('yellow'));
-//         }
-//         tcell.onclick = () => cellClick(tcellId, tid);
-//       }
-
-//     }
-//   }
-//   itemsBox.append(itemsTab);
-//   mainBoxDiv.append(itemsBox);
-
-//   // Task button
-//   let buttonDiv = createCustomElement('div', 'button-group-vc', '');
-//   let taskBtn = createBtn(`task-confirm-${tid}`, 'Combine!', false, 'big-button');
-//   let taskNextBtn = createBtn(`task-next-${tid}`, 'Next', true, 'big-button');
-//   let taskFillerBtn = createBtn(`task-noshow-${tid}`, '', true, 'big-button');
-//   taskFillerBtn.style.opacity = 0;
-//   buttonDiv.append(taskFillerBtn);
-//   buttonDiv.append(taskBtn);
-//   buttonDiv.append(taskNextBtn);
-//   taskBtn.onclick = () => {
-//     let selectedItems = readTaskData(clickData, 'task'+tid, task_cell_item );
-//     let feedback = getTaskFeedbackChunk(selectedItems[0], CONFIGS);
-
-//     feedbackBox.innerHTML = showFeedback(feedback);
-//     (tid <= TASK_COUNT[0]) ? task_scores[0] += feedback : task_scores[1] += feedback;
-//     scoreBox.innerHTML = (tid <= TASK_COUNT[0]) ? showScoreText(task_scores[0]) : showScoreText(task_scores[1]);
-//     (tid < N_TASK) ? getEl(`score-box-${tid+1}`).innerHTML = scoreBox.innerHTML: null;
-//     (tid == TASK_COUNT[0]) ? getEl(`score-box-${tid+1}`).innerHTML = showScoreText(task_scores[1]): null;
-
-//     if (feedback > 0) {
-//       showNewItem(readTaskData(clickData, 'task'+tid, task_cell_item, 'id'), selectedItems[0])
-//     }
-
-//     taskBtn.disabled = true;
-//     taskNextBtn.disabled = false;
-//     disableCellSelection(tid);
-//   }
-//   taskNextBtn.onclick = () => task_next(tid);
-
-//   // Assemble
-//   taskDiv.append(mainBoxDiv);
-//   taskDiv.append(buttonDiv);
-
-//   if (tid <= TASK_COUNT[0]) {
-//     getEl('task-phase1').append(taskDiv);
-//   } else {
-//     getEl('task-phase2').append(taskDiv);
-//   }
-
-//   taskDiv.style.display = (tid==1)? 'block': 'none';
-
-// }
-function task_next(id) {
-  if (id == TASK_COUNT[0]) {
-    hideAndShowNext(`task-${id}`, `instruction-mid`, "block");
-  } else if (id == N_TASK) {
-    hideAndShowNext("task-phase2", "debrief", "block");
+  // record click data
+  if (currentDisplays.length == 2 && currentDisplays.indexOf(id) < 0) {
+    null;
   } else {
-    hideAndShowNext(`task-${id}`, `task-${id+1}`, "block");
+    states[id] += 1;
+    [_ , row, col, label] = id.split('-');
   }
-}
-function cellClick (cell_id, taskId) {
-  clickData[cell_id] += 1;
-  checkSelection(taskId);
 
-  if (clickData[cell_id] % 2 == 1) {
-    getEl(cell_id).style.border = 'solid red 2px';
-  } else {
-    getEl(cell_id).style.border = '0px';
-  }
-}
-function checkSelection (taskId) {
-  let selected = readTaskData(clickData, 'task'+taskId, task_cell_item)
-  if (selected.length == 2) {
-    if (selected[0] == selected[1]) {
-      getEl(`task-confirm-${taskId}`).disabled = false
+
+  // Update display box
+  if (currentDisplays.length < 1) {
+
+    if (states[id] % 2 == 1) {
+
+      getEl(id).style.border = `solid gold 7px`;
+      currentDisplays.push(id)
+      getEl(`selection-1`).append(drawBlock(label, objFeats[label], `display-item-1`, getItemSize(label)));
+
     }
-  }
-}
-function disableCellSelection(tid) {
-  for (let i = 0; i < NROW; i++) {
-    for (let j = 0; j < NCOL; j++) {
-      getEl(`task${tid}-grid-` + (j+1).toString() + '-' + (NROW-i).toString()).onclick = () => {};
+  } else if (currentDisplays.length == 1) {
+
+    if (states[id] % 2 == 1) {
+
+      getEl(id).style.border = `solid gold 7px`;
+      currentDisplays.push(id)
+      getEl(`selection-2`).append(drawBlock(label, objFeats[label], `display-item-2`, getItemSize(label)));
+      getEl('combine-btn').disabled = false;
+
+
+    } else {
+
+      getEl(id).style.border = `solid black 1px`;
+      let posId = currentDisplays.indexOf(id);
+      currentDisplays.splice(posId, 1);
+      getEl(`selection-1`).innerHTML = ''
+
     }
+  } else if (currentDisplays.length == 2) {
+
+    if (states[id] % 2 == 0) {
+
+      let posId = currentDisplays.indexOf(id);
+      if (posId > -1) {
+        getEl(id).style.border = `solid black 1px`;
+
+        currentDisplays.splice(posId, 1);
+        let leftItem = currentDisplays[0];
+        let leftItemLabel = leftItem.split('-')[3];
+
+        getEl(`selection-1`).innerHTML = '';
+        getEl(`selection-1`).append(drawBlock(leftItemLabel, objFeats[leftItemLabel], `display-item-1`, getItemSize(leftItemLabel)));
+        getEl(`selection-2`).innerHTML = '';
+        getEl('combine-btn').disabled = true;
+
+      }
+    }
+
+  }
+
+  //console.log(currentDisplays)
+
+}
+
+function getItemSize(label) {
+  let n = removeBrackets(label).split('').length;
+  return (n < 2)? 'base' : n;
+}
+function handleCombine() {
+
+  if (currentDisplays.length == 2) {
+    let clickData = {
+      'currentChance': chanceLeft,
+      'currentScore': scoreOnDisplay,
+      'combo': '',
+      'preexisit': 0,
+      'success': 0,
+      'reward': 0,
+
+    }
+
+    let items = [ currentDisplays[0].split('-')[3], currentDisplays[1].split('-')[3] ].sort();
+    clickData['combo'] = items.join(',');
+
+    let newItem = '[' + items[0] + items[1] + ']';
+    let [ prefix , i, j, label] =  currentDisplays[0].split('-');
+    let [ _ , i2, j2, __ ] =  currentDisplays[1].split('-');
+    let newItemId = [ prefix , i, j, newItem].join('-');
+
+    // Check conditions
+    let isDisFound = 0;
+    let willCombine = 0;
+    if (Object.keys(disData).length > 0) {
+      let findCombo = Object.keys(disData).indexOf(newItem);
+      if (findCombo > -1) {
+        isDisFound = 1
+      }
+    }
+    if (isDisFound){
+      willCombine = disData[newItem];
+    }
+    let getNew = Math.random() < baseRate;
+
+
+    // Do things
+    if ((isDisFound && willCombine) || (!isDisFound && getNew)) {
+
+      // Create new object
+      let newItemColor = (isDisFound && willCombine)? objFeats[newItem] : objFeats[label];
+      let newCellObj = drawBlock(newItem, newItemColor, newItemId, getItemSize(newItem));
+      newCellObj.onclick = () => handleItemClick(newItemId);
+      objFeats[newItem] = newItemColor;
+      states[newItemId] = 0;
+
+      // Show result
+      getEl('result-holder').innerHTML = (!isDisFound && getNew)? 'New item found!' : 'Replication success';
+
+      getEl(['cell', i, j].join('-')).innerHTML = '';
+      // getEl(['cell', i, j].join('-')).style.width = (45+(getItemSize(newItem)-2)*15).toString() + 'px';
+      getEl(['cell', i, j].join('-')).append(newCellObj);
+
+      getEl(['cell', i2, j2].join('-')).innerHTML = '';
+      getEl(`selection-1`).innerHTML = '';
+      getEl(`selection-2`).innerHTML = ''
+
+    } else {
+
+      getEl(currentDisplays[0]).style.border = 'solid black 1px';
+      getEl(currentDisplays[1]).style.border = 'solid black 1px';
+      getEl('result-holder').innerHTML = 'Nothing happens';
+
+    }
+
+    // Update selection states
+    states[currentDisplays[0]] -= 1;
+    states[currentDisplays[1]] -= 1;
+
+
+    // Update transition tree and data
+    if (!isDisFound) {
+      clickData['preexisit'] = 0;
+
+      if (getNew) {
+        disData[newItem] = 1;
+        clickData['success'] = 1;
+
+      } else {
+        disData[newItem] = 0;
+        clickData['success'] = 0;
+
+      }
+    } else {
+
+      if (willCombine) {
+        clickData['success'] = 1;
+
+      } else {
+        clickData['success'] = 0;
+      }
+
+    }
+
+    // Compute rewards
+    if (clickData['success'] == 1) {
+      if (clickData['preexisit']) {
+        reward = objRewards[newItem];
+
+      } else {
+        let [sub_r1, sub_r2] = [objRewards[items[0]], objRewards[items[1]]];
+        reward = Math.round(Math.max(sub_r1, sub_r2) * rewardInc);
+        objRewards[newItem] = reward;
+      }
+
+      scoreOnDisplay += reward;
+      clickData['reward'] = reward;
+
+    }
+
+    // Update displaying values
+    chanceLeft = chanceLeft * discount;
+    getEl('chance-bar-val').style.height = chanceTobar(chanceLeft);
+    getEl('score-int').innerHTML = scoreOnDisplay;
+
+    getEl('combine-btn').disabled = true;
+    getEl('combine-next-btn').disabled = false;
+
+    // Store data
+    scoreHistory.push(scoreOnDisplay);
+    testData.push(clickData);
+    console.log(testData)
+
   }
 }
-function startPhase2 () {
-  hide('task-phase1');
-  hide('instruction-mid');
-  showNext(`task-${TASK_COUNT[0]+1}`, 'block')
+
+
+function handleNextSelection() {
+  getEl('result-holder').innerHTML = '';
+  getEl('selection-1').innerHTML = '';
+  getEl('selection-2').innerHTML = '';
+
+  currentDisplays = [];
+  getEl('combine-next-btn').disabled = true;
+
 }
-
-
 
 
 

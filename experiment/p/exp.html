@@ -118,29 +118,33 @@
 
     <div id="task-phase1" class="base" >
       <div class="main-box">
-        <div class="items-box">
+        <div class="items-box" id="demo-tab-holder">
           <table class="items-tab" id="demo-tab"></table>
         </div>
 
         <div class="work-box">
 
           <div>
-            <div style="border:solid 1px black" class="selection-box"></div>
-            <div class="combine-btn-wrapper"><button class='big-button'>Combine</button></div>
+            <div style="border:solid 1px black" class="selection-box" id="selection-box-demo">
+              <div id="selection-1"></div>
+              <div id="selection-2"></div>
+            </div>
+            <div class="combine-btn-wrapper"><button class='big-button' onclick="handleCombine()" id="combine-btn" disabled>Combine</button></div>
           </div>
 
           <div>
-            <div class="result-box"></div>
+            <div class="result-box" id="result-holder"></div>
+            <div class="combine-btn-wrapper"><button class='big-button' onclick="handleNextSelection()" id="combine-next-btn" disabled>Next</button></div>
           </div>
 
           <div>
-            <div class="score-box">100</div>
+            <div class="score-box" id="score-int" style="width:160px;"></div>
             <h3 >Energy earned</h3>
           </div>
 
           <div>
             <div class="chance-box">
-              <div class="chance-bar-containter"><div class="chance-bar" style="height:30%"></div></div>
+              <div class="chance-bar-containter"><div class="chance-bar" style="height:0%;" id="chance-bar-val"></div></div>
             </div>
             Chance left
           </div>
@@ -221,6 +225,7 @@
 
   </body>
   <script type="text/javascript" src="../js/utilities.js"></script>
+  <script type="text/javascript" src="../js/settings.js"></script>
   <script type='text/javascript'>
     // Consent info
     const checkScrollHeight = (text, btn) => ((text.scrollTop + text.offsetHeight) >= text.scrollHeight) ? btn.disabled = false : null;

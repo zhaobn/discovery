@@ -56,8 +56,8 @@ h1 {
   padding: 4px;
 }
 .items-tab {
-  height: 10000px;
-  width: 20000px;
+  /* height: 1000px;
+  width: 1000px; */
 }
 .work-box {
   display: flex;
@@ -72,22 +72,30 @@ h1 {
   width: 200px;
   padding: 10px;
   margin: 15px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 .result-box {
   height: 100px;
   width: 100px;
   display: flex;
-  background-color: lightgray;
-  margin-top: 15px;
-}
-.score-wrapper {
+  /* background-color: lightgray; */
+  margin: 15px 0 20px 0;
   display: flex;
+  justify-content: center;
+  align-items: center;
+
+
 }
+
 .score-box {
+  width: 100%;
   font-size: 90px;
   margin-top: 10px;
   margin-top: 20px;
-  color: red
+  color: red;
+  width: 20px;
 }
 .chance-box {
   height: 150px;
