@@ -29,12 +29,9 @@ for (let i = 0; i < 5; i++) {
     tcell.id = 'cell-' + cellId;
     tcell.style.height = '45px';
     tcell.style.width = '45px';
-    tcell.style.textAlign = 'center';
-    tcell.style.verticalAlign = 'middle';
-    //tcell.style.border = 'red solid 1px';
+    // tcell.style.border = 'red solid 1px';
 
-
-    if (i==0 && j < 5) {
+    if (i==0 && j < baseObj.length) {
       let letter = baseObj[j];
       let color = objFeats[letter];
 
@@ -44,19 +41,6 @@ for (let i = 0; i < 5; i++) {
 
       states[letter] = 0;
     }
-
-
-    // if (Math.random() < envDensity) {
-    //   let letter = sampleFromList(baseObj, 1, 1);
-    //   let color = objFeats[letter];
-    //   let posId = `pos-${cellId}-${letter}`
-
-    //   let item = drawBlock(letter, color, posId);
-    //   item.onclick = () => handleItemClick(item.id);
-    //   tcell.append(item);
-
-    //   states[posId] = 0;
-    // }
   }
 }
 function handleItemClick(id) {
@@ -66,13 +50,13 @@ function handleItemClick(id) {
 
 /* History box */
 let histTab = getEl('hist-box-tab');
-for (let i = 0; i < 6; i++) {
+for (let i = 0; i < 10; i++) {
   let whrows = histTab.insertRow();
   for (let j = 0; j < 1; j++) {
     let hcell = whrows.insertCell();
     hcell.style.height = '40px';
     hcell.style.width = '200px';
-    hcell.style.border = '#C0C0C0 solid 1px';
+    // hcell.style.border = '#C0C0C0 solid 1px';
   }
 }
 

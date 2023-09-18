@@ -164,17 +164,23 @@ function showFeedback(x) {
 function drawBlock(letter, color, id, size='base') {
   let block = createCustomElement('div', '', '');
   block.id = id;
-  if (size == 'base') {
-    block.style.height = '20px';
-    block.style.width = '20px';
+  if (letter == '*') {
+    block.append(drawStar(color));
   } else {
-    block.style.height = '20px';
-    block.style.width = (20*(size)-2).toString() + 'px';
+    if (size == 'base') {
+      block.style.height = '20px';
+      block.style.width = '20px';
+    } else {
+      block.style.height = '20px';
+      block.style.width = (20*(size)-2).toString() + 'px';
+    }
+    block.style.border = 'solid 1px black';
+    block.style.backgroundColor = color;
+    block.style.color='white';
+    block.innerHTML = letter;
+    block.style.margin = 'auto';
+    block.style.textAlign = 'center';
   }
-  block.style.border = 'solid 1px black';
-  block.style.backgroundColor = color;
-  block.style.color='white';
-  block.innerHTML = letter;
   return block
 }
 function chanceTobar(x) {
@@ -201,17 +207,30 @@ function getTaskFeedbackChunk (item, config) {
     return -1*Math.abs(config[item]['cost'])
   }
 }
-function showNewItem (ids, item) {
-  getEl(ids[0]).removeChild(getEl(ids[0]).firstChild);
-  getEl(ids[1]).removeChild(getEl(ids[1]).firstChild);
-  getEl(ids[1]).style.borderColor = 'white';
 
-  if (item == 'star') {
-    getEl(ids[0]).append(drawStar('limegreen'));
-    getEl(ids[0]).style.borderColor = 'limegreen';
-  } else if (item == 'circ') {
-    getEl(ids[0]).append(drawCircle('lightblue'));
-    getEl(ids[0]).style.borderColor = 'lightblue';
+function drawStar(fillColor, spikes=5, outerRadius=15,innerRadius=8,borderColor='black', borderSize=2) {
+  let retCanvas = createCustomElement('canvas', 'drawings', '');
+  retCanvas.height = 45;
+  retCanvas.width = 45;
+
+  let context = retCanvas.getContext('2d');
+  context.save();
+  context.beginPath();
+  context.translate(retCanvas.width/2, retCanvas.height/2);
+  context.moveTo(0, 0-outerRadius);
+  for (var i = 0; i < spikes; i++) {
+    context.rotate(Math.PI / spikes);
+    context.lineTo(0, 0 - innerRadius);
+    context.rotate(Math.PI / spikes);
+    context.lineTo(0, 0 - outerRadius);
   }
+  context.closePath();
+  context.lineWidth=borderSize;
+  context.strokeStyle=borderColor;
+  context.stroke();
 
+  context.fillStyle=fillColor;
+  context.fill();
+  context.restore();
+  return retCanvas;
 }

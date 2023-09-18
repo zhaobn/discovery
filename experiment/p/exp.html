@@ -119,24 +119,23 @@
     <div id="task" class="base" >
       <div class="main-box">
 
-        <div class="main-left" id="main-left-div">
+        <div class="main-left" id="main-left-div" >
 
-          <div class="mleft-top" id="score-display-box"> <div> <span id="score-text">0</span> px</div> </div>
+          <div class="score-display" id="score-display-box"> <div> <span id="score-text">0</span> px</div> </div>
 
-          <div class="mleft-mid" id="display-box" >
+          <div class="main-display" id="display-box" >
 
-            <div class="mlm-left" >
               <div class="machine-box" >
-                <div class="machine-box-status" ></div>
-                <div class="machine-box-display" ></div>
+
+                <div class="machine-box-status">Chance of breaking:</div>
+
+                <div class="machine-box-display">
+                  <!-- <div class="result-display" id="result-display-box" style="background-color: #F5F5F5;"></div> -->
+                </div>
+
+                <div class="button-group-vc" ><button class="big-button" id="combine-btn" style="margin-bottom: 10px;">Combine</button></div>
+
               </div>
-            </div>
-
-            <div class="mlm-right">
-              <div class="result-display" id="result-display-box" style="background-color: #F5F5F5;"></div>
-              <div class="machine-btn" ><button class="big-button" id="combine-btn">Combine</button></div>
-            </div>
-
           </div>
 
           <div class="mleft-bot" id="item-display-box"><div class="item-box"><table id="item-box-tab"></table></div></div>
@@ -145,8 +144,9 @@
 
         <div class="main-right" id="main-right-div">
 
-          <div class="mright-mid" id="hist-display-box" style="background-color: #DCDCDC;">
-            <div id="hist-box" style="text-align: center; padding-top: 8px;">Previous attempts<table id="hist-box-tab"></table></div>
+          <div class="mright-mid" id="hist-display-box" >
+            <div class="hist-panel" id="hist-panel-box">Previous attempts
+              <div class="hist-tab-wrapper"> <table id="hist-box-tab"></table></div></div>
           </div>
 
         </div>

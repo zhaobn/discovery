@@ -8,6 +8,7 @@ let scoreOnDisplay = 0;
 let chanceLeft = discount;
 
 let objFeats = {
+  '*': 'gold',
   'a': 'rgb(0 0 0)',
   'b': 'rgb(0 114 178)',
   'c': 'rgb(86 180 233)',

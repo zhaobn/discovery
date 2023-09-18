@@ -12,7 +12,6 @@ h1 {
   margin: auto;
   /* border: solid 1px goldenrod; */
 }
-
 .button-group-vc {
   display: flex;
   flex-direction: row;
@@ -28,7 +27,7 @@ h1 {
   font-size: 18px;
 }
 .big-button:hover:enabled {
-  background-color: #116466;
+  background-color: darkgoldenrod;
   color: #e0e0e0;
 }
 .big-button:disabled,
@@ -42,60 +41,54 @@ h1 {
   width: 780px;
   margin-top: 50px;
   display: flex;
+  justify-content: center;
 }
 .main-left {
   height: 100%;
-  width: 75%;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .main-right {
   height: 100%;
   width: 25%;
 }
-.mleft-top {
+.score-display {
   width: 100%;
-  height: 18%;
+  height: 12%;
   font-size: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+  /* border: black solid 1px; */
 
 }
-.mleft-mid {
+.main-display {
   width: 100%;
-  height: 50%;
   display: flex;
-  justify-content: space-around;
-}
-.mlm-left {
-  height: 100%;
-  width: 70%;
-  display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 .machine-box {
-  height: 100%;
-  width: 100%;
-  border: solid 2px #DCDCDC;
+  width: 90%;
+  border: solid 2px darkgoldenrod;
+  margin: 20px 10px 5px 10px;
 }
 .machine-box-status {
   width: 100%;
   height: 40px;
-  background-color: #DCDCDC;
+  background-color: darkgoldenrod;
+  color: white;
 }
-.mlm-right {
-  height: 100%;
-  width: 25%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
+.machine-box-display {
+  height: 180px;
 }
-.result-display {
+/* .result-display {
   width: 100px;
   height: 100px;
   margin-bottom: 40px;
-}
+} */
 .mleft-bot {
   width: 100%;
 }
@@ -105,7 +98,17 @@ h1 {
 }
 .mright-mid {
   width: 100%;
-  margin-top: 40px;
+  margin-top: 10px;
+}
+.hist-panel {
+  text-align: center;
+  padding-top: 8px;
+  background-color: #DCDCDC;
+}
+.hist-tab-wrapper {
+  height: 400px;
+  overflow: scroll;
+  padding: 2px;
 }
 #consent-info {
   height: 400px;
