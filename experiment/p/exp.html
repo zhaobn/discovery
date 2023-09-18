@@ -116,40 +116,41 @@
     </div>
 
 
-    <div id="task-phase1" class="base" >
+    <div id="task" class="base" >
       <div class="main-box">
-        <div class="items-box" id="demo-tab-holder">
-          <table class="items-tab" id="demo-tab"></table>
+
+        <div class="main-left" id="main-left-div">
+
+          <div class="mleft-top" id="score-display-box"> <div> <span id="score-text">0</span> px</div> </div>
+
+          <div class="mleft-mid" id="display-box" >
+
+            <div class="mlm-left" >
+              <div class="machine-box" >
+                <div class="machine-box-status" ></div>
+                <div class="machine-box-display" ></div>
+              </div>
+            </div>
+
+            <div class="mlm-right">
+              <div class="result-display" id="result-display-box" style="background-color: #F5F5F5;"></div>
+              <div class="machine-btn" ><button class="big-button" id="combine-btn">Combine</button></div>
+            </div>
+
+          </div>
+
+          <div class="mleft-bot" id="item-display-box"><div class="item-box"><table id="item-box-tab"></table></div></div>
+
         </div>
 
-        <div class="work-box">
+        <div class="main-right" id="main-right-div">
 
-          <div>
-            <div style="border:solid 1px black" class="selection-box" id="selection-box-demo">
-              <div id="selection-1"></div>
-              <div id="selection-2"></div>
-            </div>
-            <div class="combine-btn-wrapper"><button class='big-button' onclick="handleCombine()" id="combine-btn" disabled>Combine</button></div>
-          </div>
-
-          <div>
-            <div class="result-box" id="result-holder"></div>
-            <div class="combine-btn-wrapper"><button class='big-button' onclick="handleNextSelection()" id="combine-next-btn" disabled>Next</button></div>
-          </div>
-
-          <div>
-            <div class="score-box" id="score-int" style="width:160px;"></div>
-            <h3 >Energy earned</h3>
-          </div>
-
-          <div>
-            <div class="chance-box">
-              <div class="chance-bar-containter"><div class="chance-bar" style="height:0%;" id="chance-bar-val"></div></div>
-            </div>
-            Chance left
+          <div class="mright-mid" id="hist-display-box" style="background-color: #DCDCDC;">
+            <div id="hist-box" style="text-align: center; padding-top: 8px;">Previous attempts<table id="hist-box-tab"></table></div>
           </div>
 
         </div>
+
       </div>
     </div>
 

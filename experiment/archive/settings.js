@@ -1,4 +1,7 @@
 
+const [ NROW, NCOL ] = [100, 150];
+const envDensity = 0.1;
+
 const baseReward = 10;
 const baseRate = 0.5;
 const rewardInc = 1.2;
@@ -21,5 +24,6 @@ let objRewards = {};
 baseObj.forEach(b => objRewards[b] = baseReward);
 
 
-getEl('score-text').innerHTML = scoreOnDisplay;
-// getEl('chance-bar-val').style.height = chanceTobar(discount);
+
+getEl('score-int').innerHTML = scoreOnDisplay;
+getEl('chance-bar-val').style.height = chanceTobar(discount);
