@@ -3,11 +3,10 @@
 let start_task_time = 0;
 let subjectData = {};
 
-let states = {};
-let testData = [];
 let currentDisplays = [];
 let scoreHistory = [];
-let disData = {};
+let combos = {};
+
 
 /* Collect prolific id */
 function handle_prolific() {
@@ -39,14 +38,95 @@ for (let i = 0; i < 5; i++) {
       item.onclick = () => handleItemClick(item.id);
       tcell.append(item);
 
-      states[letter] = 0;
     }
   }
 }
 function handleItemClick(id) {
-  console.log(id)
-}
+  let itemA = getEl('item-1');
+  let itemB = getEl('item-2');
 
+  if (currentDisplays.length == 0) {
+    itemA.append(drawBlock(id, objFeats[id], 'item-1-'+id));
+    currentDisplays.push(id);
+
+  } else if (currentDisplays.length == 1) {
+
+    if (currentDisplays[0]!='*' || id!='*') {
+      itemB.append(drawBlock(id, objFeats[id], 'item-1-'+id));
+      currentDisplays.push(id);
+      getEl('combine-btn').disabled = false;
+    }
+
+  } else {
+
+    let itemIndex = currentDisplays.indexOf(id)
+
+    if ( itemIndex == 0) {
+      let itemToKeep = currentDisplays[1];
+      itemA.innerHTML = '';
+      itemB.innerHTML = '';
+      itemA.append(drawBlock(itemToKeep, objFeats[itemToKeep], 'item-1-'+itemToKeep));
+      currentDisplays = [itemToKeep];
+      getEl('combine-btn').disabled = true;
+
+    } else if (itemIndex == 1) {
+      itemB.innerHTML = '';
+      currentDisplays = [ currentDisplays[0] ];
+      getEl('combine-btn').disabled = true;
+    }
+
+  }
+  // console.log(currentDisplays);
+
+}
+function handleCombine() {
+
+  currentItems = currentDisplays.sort();
+
+  // Update display box
+  getEl('combine-btn').disabled = true;
+  getEl('item-1').innerHTML = '';
+  getEl('item-2').innerHTML = '';
+
+  // Check machine mode
+  let is_cashing = (currentItems.indexOf('*') > -1);
+
+  // Check combo existence
+  let thisCombo = is_cashing? currentItems[1] : '[' + currentItems.join('') + ']';
+  let isNovel = false;
+  let willCombine = 0;
+
+  if (Object.keys(combos) > 0) {
+    isNovel = (Object.keys(combos).indexOf(thisCombo) > -1)? 0: 1;
+  } else {
+    isNovel = true;
+  }
+
+  if (!isNovel) {
+    willCombine = combos[thisCombo];
+
+  } else {
+    // Row a dice
+    willCombine = (Math.random() < baseRate)? 1 : 0;
+    // Update tech tree
+    combos[thisCombo] = willCombine;
+
+  }
+  if (willCombine) {
+    getEl('item-result').append(drawBlock(thisCombo, '', thisCombo, thisCombo.length))
+  }
+
+  // Update history panel
+
+  // Update item inventory
+
+  // Update score
+
+  // Update chance
+
+  console.log(thisCombo + ' is ' + (isNovel? '' : 'not ') + 'novel');
+
+}
 
 /* History box */
 let histTab = getEl('hist-box-tab');

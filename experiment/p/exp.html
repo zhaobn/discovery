@@ -127,13 +127,17 @@
 
               <div class="machine-box" >
 
-                <div class="machine-box-status">Chance of breaking:</div>
+                <div class="machine-box-status">Chance of breaking: <span id="chance-text">1</span> out of 10</div>
 
                 <div class="machine-box-display">
-                  <!-- <div class="result-display" id="result-display-box" style="background-color: #F5F5F5;"></div> -->
+
+                  <div id="item-1"></div>
+                  <div id="item-result"></div>
+                  <div id="item-2"></div>
+
                 </div>
 
-                <div class="button-group-vc" ><button class="big-button" id="combine-btn" style="margin-bottom: 10px;">Combine</button></div>
+                <div class="button-group-vc" ><button class="big-button" id="combine-btn" style="margin-bottom: 10px;" onclick="handleCombine()" disabled>Combine</button></div>
 
               </div>
           </div>
