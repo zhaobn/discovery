@@ -1,7 +1,10 @@
 
+const [ NROW, NCOL ] = [100, 150];
+const envDensity = 0.1;
+
 const baseReward = 10;
-const baseRate = 0.9;
-const rewardInc = 1.5;
+const baseRate = 0.5;
+const rewardInc = 1.2;
 const discount = 0.8;
 
 let scoreOnDisplay = 0;

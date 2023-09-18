@@ -9,8 +9,6 @@ let currentDisplays = [];
 let scoreHistory = [];
 let disData = {};
 
-const [ NROW, NCOL ] = [10, 15];
-
 /* Collect prolific id */
 function handle_prolific() {
   subjectData['prolific_id'] = getEl('prolific_id_text').value;
@@ -35,7 +33,7 @@ for (let i = 0; i < NROW; i++) {
     tcell.style.verticalAlign = 'middle';
     //tcell.style.border = 'red solid 1px';
 
-    if (Math.random() > 0.8) {
+    if (Math.random() < envDensity) {
       let letter = sampleFromList(baseObj, 1, 1);
       let color = objFeats[letter];
       let posId = `pos-${cellId}-${letter}`
