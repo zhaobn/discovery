@@ -167,19 +167,14 @@ function drawBlock(letter, color, id, size='base') {
   if (letter == '*') {
     block.append(drawStar(color));
   } else {
+    block.className = 'item-element'
     if (size == 'base') {
-      block.style.height = '20px';
       block.style.width = '20px';
     } else {
-      block.style.height = '20px';
       block.style.width = (20*(size)-2).toString() + 'px';
     }
-    block.style.border = 'solid 1px black';
     block.style.backgroundColor = color;
-    block.style.color='white';
     block.innerHTML = letter;
-    block.style.margin = 'auto';
-    block.style.textAlign = 'center';
   }
   return block
 }

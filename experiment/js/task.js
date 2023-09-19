@@ -5,7 +5,6 @@ let subjectData = {};
 
 let currentDisplays = [];
 let scoreHistory = [];
-let combos = {};
 
 
 /* Collect prolific id */
@@ -17,44 +16,34 @@ function handle_prolific() {
 
 
 /* Create task */
-let tabDiv = getEl('item-box-tab');
-// Draw initial grid
-for (let i = 0; i < 5; i++) {
-  let wtrows = tabDiv.insertRow();
-  for (let j = 0; j < 10; j++) {
-    let tcell = wtrows.insertCell();
+baseObj.forEach(obj => {
+  let item = drawBlock(obj, objFeats[obj], obj);
+  item.onclick = () => handleItemClick(obj);
+  getEl('item-box-holder').append(item);
+});
 
-    let cellId = (j+1).toString() + '-' + (i+1).toString();
-    tcell.id = 'cell-' + cellId;
-    tcell.style.height = '45px';
-    tcell.style.width = '45px';
-    // tcell.style.border = 'red solid 1px';
 
-    if (i==0 && j < baseObj.length) {
-      let letter = baseObj[j];
-      let color = objFeats[letter];
-
-      let item = drawBlock(letter, color, letter);
-      item.onclick = () => handleItemClick(item.id);
-      tcell.append(item);
-
-    }
-  }
-}
+/** Interactivities */
 function handleItemClick(id) {
+  (currentDisplays.length < 1 ) ? getEl('item-result').innerHTML = '' : null;
+
   let itemA = getEl('item-1');
   let itemB = getEl('item-2');
 
   if (currentDisplays.length == 0) {
-    itemA.append(drawBlock(id, objFeats[id], 'item-1-'+id));
+    itemA.append(drawBlock(id, objFeats[id], 'item-1-'+id, getItemSize(id)));
     currentDisplays.push(id);
 
   } else if (currentDisplays.length == 1) {
 
     if (currentDisplays[0]!='*' || id!='*') {
-      itemB.append(drawBlock(id, objFeats[id], 'item-1-'+id));
+      itemB.append(drawBlock(id, objFeats[id], 'item-1-'+id, getItemSize(id)));
       currentDisplays.push(id);
       getEl('combine-btn').disabled = false;
+    }
+    if (currentDisplays[0] == '*' && id == '*') {
+      itemA.innerHTML = '';
+      currentDisplays = [];
     }
 
   } else {
@@ -65,7 +54,7 @@ function handleItemClick(id) {
       let itemToKeep = currentDisplays[1];
       itemA.innerHTML = '';
       itemB.innerHTML = '';
-      itemA.append(drawBlock(itemToKeep, objFeats[itemToKeep], 'item-1-'+itemToKeep));
+      itemA.append(drawBlock(itemToKeep, objFeats[itemToKeep], 'item-1-'+itemToKeep, getItemSize(itemToKeep)));
       currentDisplays = [itemToKeep];
       getEl('combine-btn').disabled = true;
 
@@ -94,51 +83,85 @@ function handleCombine() {
   // Check combo existence
   let thisCombo = is_cashing? currentItems[1] : '[' + currentItems.join('') + ']';
   let isNovel = false;
-  let willCombine = 0;
-
-  if (Object.keys(combos) > 0) {
-    isNovel = (Object.keys(combos).indexOf(thisCombo) > -1)? 0: 1;
+  if (Object.keys(combos).indexOf(thisCombo) > -1) {
+    isNovel = (Object.keys(combos).indexOf(thisCombo) > -1)? false: true;
   } else {
     isNovel = true;
   }
 
+  // Check if a novel combo should happen
+  let willCombine = 0;
   if (!isNovel) {
-    willCombine = combos[thisCombo];
-
+    willCombine = combos[thisCombo] > 0 ? 1 : 0;
   } else {
     // Row a dice
     willCombine = (Math.random() < baseRate)? 1 : 0;
-    // Update tech tree
-    combos[thisCombo] = willCombine;
+  }
 
+  // Decide feedback
+  let rewardGained = 0;
+  if (is_cashing) {
+    rewardGained = combos[thisCombo];
+  } else {
+    // no immediate reward
+
+    if (willCombine) {
+      // Prep new combo object
+      objFeats[thisCombo] = objFeats[currentItems[0]];
+      combos[thisCombo] = Math.round(Math.max(combos[currentItems[0]], combos[currentItems[1]]) * rewardInc);
+
+    } else {
+      combos[thisCombo] = 0;
+    }
   }
-  if (willCombine) {
-    getEl('item-result').append(drawBlock(thisCombo, '', thisCombo, thisCombo.length))
+
+  // Show results
+  if (is_cashing) {
+    getEl('item-result').innerHTML = `+ ${rewardGained} xp!`;
+    scoreOnDisplay += rewardGained;
+  } else {
+    if (willCombine) {
+      getEl('item-result').append(drawBlock(thisCombo, objFeats[thisCombo], '', getItemSize(thisCombo)));
+    } else {
+      getEl('item-result').innerHTML = 'Nothing happens';
+    }
   }
+  getEl('item-result').onclick = () => getEl('item-result').innerHTML = '';
 
   // Update history panel
+  (isNovel && ! willCombine)? addToHistoryPanel(currentItems[0], currentItems[1]) : null;
 
   // Update item inventory
+  (isNovel && willCombine) ? addToInventory(thisCombo) : null;
 
   // Update score
+  getEl('score-text').innerHTML = scoreOnDisplay;
+  scoreHistory.push(scoreOnDisplay);
 
   // Update chance
 
-  console.log(thisCombo + ' is ' + (isNovel? '' : 'not ') + 'novel');
+  // Reset
+  currentDisplays = [];
+}
+function getItemSize(label) {
+  let n = removeBrackets(label).split('').length;
+  return (n < 2)? 'base' : n;
+}
+function addToInventory(item) {
+  let itemToShow = drawBlock(item, objFeats[item], item, getItemSize(item));
+  itemToShow.onclick = () => handleItemClick(item);
+  getEl('item-box-holder').append(itemToShow);
+}
+function addToHistoryPanel(itemA, itemB) {
+  let hInfo = createCustomElement('div', 'hist-cell', '');
+  hInfo.append(drawBlock(itemA, objFeats[itemA], '', getItemSize(itemA)));
+  hInfo.append('+');
+  hInfo.append(drawBlock(itemB, objFeats[itemB], '', getItemSize(itemB)));
 
+  getEl('hist-box').append(hInfo);
 }
 
-/* History box */
-let histTab = getEl('hist-box-tab');
-for (let i = 0; i < 10; i++) {
-  let whrows = histTab.insertRow();
-  for (let j = 0; j < 1; j++) {
-    let hcell = whrows.insertCell();
-    hcell.style.height = '40px';
-    hcell.style.width = '200px';
-    // hcell.style.border = '#C0C0C0 solid 1px';
-  }
-}
+
 
 
 /* Comprehension quiz */

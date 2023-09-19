@@ -90,10 +90,23 @@ h1 {
 }
 .mleft-bot {
   width: 100%;
-}
-.item-box {
   display: flex;
   justify-content: center;
+}
+.item-box {
+  width: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  cursor: default;
+  gap: 10px 20px;
+}
+.item-element {
+  color: white;
+  height: 20px;
+  margin: auto;
+  text-align: center;
+  border: solid black 1px;
 }
 .mright-mid {
   width: 100%;
@@ -106,8 +119,16 @@ h1 {
 }
 .hist-tab-wrapper {
   height: 400px;
+  width: 200px;
   overflow: scroll;
   padding: 2px;
+}
+.hist-cell {
+  height: 40px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
 }
 #consent-info {
   height: 400px;
@@ -117,10 +138,4 @@ h1 {
 #score-text {
   color: red;
   font-weight: bold;
-}
-#item-box-tab td {
-  cursor: default;
-}
-#hist-box-tab {
-  padding: 8px;
 }

@@ -18,9 +18,8 @@ let objFeats = {
 }
 const baseObj = Object.keys(objFeats);
 
-let objRewards = {};
-baseObj.forEach(b => objRewards[b] = baseReward);
-
+let combos = {};
+baseObj.forEach(el => (el != '*')? combos[el] = baseReward : null);
 
 getEl('score-text').innerHTML = scoreOnDisplay;
 // getEl('chance-bar-val').style.height = chanceTobar(discount);
