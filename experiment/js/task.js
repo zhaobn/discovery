@@ -143,10 +143,6 @@ function handleCombine() {
   // Reset
   currentDisplays = [];
 }
-function getItemSize(label) {
-  let n = removeBrackets(label).split('').length;
-  return (n < 2)? 'base' : n;
-}
 function addToInventory(item) {
   let itemToShow = drawBlock(item, objFeats[item], item, getItemSize(item));
   itemToShow.onclick = () => handleItemClick(item);
@@ -154,9 +150,9 @@ function addToInventory(item) {
 }
 function addToHistoryPanel(itemA, itemB) {
   let hInfo = createCustomElement('div', 'hist-cell', '');
-  hInfo.append(drawBlock(itemA, objFeats[itemA], '', getItemSize(itemA)));
+  hInfo.append(drawBlock(itemA, objFeats[itemA], '', getItemSize(itemA), 'small'));
   hInfo.append('+');
-  hInfo.append(drawBlock(itemB, objFeats[itemB], '', getItemSize(itemB)));
+  hInfo.append(drawBlock(itemB, objFeats[itemB], '', getItemSize(itemB), 'small'));
 
   getEl('hist-box').append(hInfo);
 }

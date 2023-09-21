@@ -2,13 +2,13 @@
 const baseReward = 10;
 const baseRate = 0.5;
 const rewardInc = 1.2;
-const discount = 0.8;
+const steps = 1;
+
+const feedbacRemain = '1000'; // mileseconds
 
 let scoreOnDisplay = 0;
-let chanceLeft = discount;
 
 let objFeats = {
-  '*': 'gold',
   'a': 'rgb(0 0 0)',
   'b': 'rgb(0 114 178)',
   'c': 'rgb(86 180 233)',
@@ -17,9 +17,3 @@ let objFeats = {
   'f': 'rgb(204 121 167)',
 }
 const baseObj = Object.keys(objFeats);
-
-let combos = {};
-baseObj.forEach(el => (el != '*')? combos[el] = baseReward : null);
-
-getEl('score-text').innerHTML = scoreOnDisplay;
-// getEl('chance-bar-val').style.height = chanceTobar(discount);

@@ -13,7 +13,7 @@ function createText(h = "h1", text = 'hello') {
   element.append(tx);
   return(element)
 }
-function createBtn (btnId, text = "Button", on = true, className = "task-button") {
+function createBtn (btnId, text = "Button", className = "task-button", on = true) {
   let btn = createCustomElement("button", className, btnId);
   btn.disabled = !on;
   (text.length > 0) ? btn.append(document.createTextNode(text)): null;
@@ -160,22 +160,43 @@ function showFeedback(x) {
     return ''
   }
 }
-
-function drawBlock(letter, color, id, size='base') {
-  let block = createCustomElement('div', '', '');
-  block.id = id;
-  if (letter == '*') {
-    block.append(drawStar(color));
-  } else {
-    block.className = 'item-element'
-    if (size == 'base') {
-      block.style.width = '20px';
-    } else {
-      block.style.width = (20*(size)-2).toString() + 'px';
-    }
-    block.style.backgroundColor = color;
-    block.innerHTML = letter;
+function getItemSize(label) {
+  let n = removeBrackets(label).split('').length;
+  return (n < 2)? 'base' : n;
+}
+function getItemHeight(size, type) {
+  let length = (type == 'small')? 20 : 40;
+  if (size != 'base' && type !='small') {
+    let nrows = Math.ceil(size / 5);
+    length = length + (nrows-1) * (length)/5;
   }
+  return length
+
+}
+function getItemWidth(size, type) {
+  let length = (type == 'small')? 20 : 40;
+  if (type == 'small') {
+    length = (size == 'base')? length : length * size - 2;
+  } else {
+    if (size != 'base') {
+      length = Math.min(1.1**size * length, 100);
+    }
+  }
+  return length
+}
+
+function drawBlock(letter, id='', type='') {
+  let block = createCustomElement('div', '', '');
+  let color = objFeats[letter];
+  let size = getItemSize(letter);
+
+  block.id = id;
+  block.className = 'item-element'
+  block.style.height = getItemHeight(size, type).toString() + 'px';
+  block.style.width = getItemWidth(size, type).toString() + 'px';
+  block.style.backgroundColor = color;
+  block.innerHTML = letter;
+
   return block
 }
 function chanceTobar(x) {
@@ -203,7 +224,7 @@ function getTaskFeedbackChunk (item, config) {
   }
 }
 
-function drawStar(fillColor, spikes=5, outerRadius=15,innerRadius=8,borderColor='black', borderSize=2) {
+function drawStar(fillColor, spikes=5, outerRadius=15,innerRadius=8, borderSize=2, borderColor='black') {
   let retCanvas = createCustomElement('canvas', 'drawings', '');
   retCanvas.height = 45;
   retCanvas.width = 45;
