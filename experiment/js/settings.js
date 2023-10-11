@@ -1,7 +1,7 @@
 
 const baseReward = 10;
-const baseRate = 0.5;
-const rewardInc = 1.2;
+const baseRate = 0.4;
+const rewardInc = 2;
 const steps = 1;
 
 const feedbacRemain = '1000'; // mileseconds

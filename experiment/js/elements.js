@@ -57,7 +57,7 @@ function drawTask(id, color, itemList = baseObj, histObj = {'showup': 1}, ) {
 
   let mainLeft = createCustomElement('div', 'main-left', '');
   let itemDiv = createCustomElement('div', 'item-box', `item-box-${id}`);
-  itemList.forEach(el => { itemDiv.append(drawBlock(el, el)) });
+  itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el)) });
 
   mainLeft.append(drawMachine(id, color));
   mainLeft.append(itemDiv);
