@@ -4,8 +4,8 @@
 
 
   <head>
-    <link rel="stylesheet" type="text/css" href="../css/style-3.css">
-    <title>Design 3</title>
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <title>Psychology Experiment</title>
   </head>
 
 
@@ -116,7 +116,47 @@
     </div>
 
 
-    <div id="task" class="base" > </div>
+    <div id="task" class="base" >
+      <div class="main-box">
+
+        <div class="main-left" id="main-left-div" >
+
+          <div class="score-display" id="score-display-box"> <div> <span id="score-text">0</span> xp</div> </div>
+
+          <div class="main-display" id="display-box" >
+
+              <div class="machine-box" >
+
+                <div class="machine-box-status">Chance of breaking: <span id="chance-text">1</span> out of 10</div>
+
+                <div class="machine-box-display">
+
+                  <div id="item-1"></div>
+                  <div id="item-result"></div>
+                  <div id="item-2"></div>
+
+                </div>
+
+                <div class="button-group-vc" ><button class="big-button" id="combine-btn" style="margin-bottom: 10px;" onclick="handleCombine()" disabled>Combine</button></div>
+
+              </div>
+          </div>
+
+          <div class="mleft-bot" id="item-display-box"><div class="item-box" id="item-box-holder"></div></div>
+
+        </div>
+
+        <div class="main-right" id="main-right-div">
+
+          <div class="mright-mid" id="hist-display-box" >
+            <div class="hist-panel" id="hist-panel-box">Failed attempts
+              <div class="hist-tab-wrapper"> <div id="hist-box"></div></div></div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
 
 
     <div id="debrief" class="base" style="display:none;">
@@ -191,13 +231,12 @@
   </body>
   <script type="text/javascript" src="../js/utilities.js"></script>
   <script type="text/javascript" src="../js/settings.js"></script>
-  <script type="text/javascript" src="../js/elements.js"></script>
   <script type='text/javascript'>
     // Consent info
     const checkScrollHeight = (text, btn) => ((text.scrollTop + text.offsetHeight) >= text.scrollHeight) ? btn.disabled = false : null;
     getEl('consent-info').addEventListener("scroll", () => checkScrollHeight(getEl('consent-info'), getEl('consent-btn')), false);
 
   </script>
-  <script type="text/javascript" src="../js/task-3.js"></script>
+  <script type="text/javascript" src="../js/task.js"></script>
 
 </html>
