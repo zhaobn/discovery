@@ -1,12 +1,12 @@
 
 /** Create page elements */
 
-function drawMachine (id, color) {
+function drawMachine (id, color, steps) {
 
   let retDiv = createCustomElement('div', '', '');
 
   let scoreDiv = createCustomElement('div', 'machine-top', '');
-  scoreDiv.innerHTML = `Total score: <span id="total-score-${id}" style="font-weight: bold;">0</span>`;
+  scoreDiv.innerHTML = `<strong>Total energy: <span id="total-score-${id}" style="color:red">0</span></strong>`;
 
   let ele1 = createCustomElement('div', '', `dis-item-left-${id}`);
   let ele2 = createCustomElement('div', '', `dis-item-mid-${id}`);
@@ -18,7 +18,13 @@ function drawMachine (id, color) {
   display.append(ele3);
 
   let mbar = createCustomElement('div', 'machine-bar', '');
-  mbar.style.backgroundColor = color;
+  // mbar.style.backgroundColor = color;
+  for (let i = 0; i < steps; i++) {
+    let mbarUnit = createCustomElement('div', 'machine-bar-unit', id + '-unit-' + (i+1).toString());
+    mbarUnit.style.backgroundColor = color;
+    mbar.append(mbarUnit)
+  }
+
   let mholder = createCustomElement('div', 'machine-holder', '');
   mholder.append(mbar);
   mholder.append(display);
@@ -51,7 +57,7 @@ function drawMachine (id, color) {
 }
 
 
-function drawTask(id, color, itemList = baseObj, histObj = {'showup': 1}, ) {
+function drawTask(id, color, steps, itemList = baseObj, histObj = {'showup': 1}, ) {
 
   let retDiv = createCustomElement('div', '', '');
 
@@ -59,7 +65,7 @@ function drawTask(id, color, itemList = baseObj, histObj = {'showup': 1}, ) {
   let itemDiv = createCustomElement('div', 'item-box', `item-box-${id}`);
   itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el)) });
 
-  mainLeft.append(drawMachine(id, color));
+  mainLeft.append(drawMachine(id, color, steps));
   mainLeft.append(itemDiv);
 
   let mainRight = createCustomElement('div', 'main-right', '');
@@ -67,10 +73,32 @@ function drawTask(id, color, itemList = baseObj, histObj = {'showup': 1}, ) {
   histPanel.innerHTML = (Object.keys(histObj).length < 0)? '' : 'History' + `<div class="hist-box" id="hist-box-${id}"></div>`
   mainRight.append(histPanel);
 
+
   retDiv.append(mainLeft);
   retDiv.append(mainRight);
   retDiv.className = 'main-box';
 
   return retDiv
+
+}
+
+
+function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1}) {
+
+  let retDiv = createCustomElement('div', '', 'task-'+id);
+
+  let infoBar = createCustomElement('div', 'main-info', '');
+  infoBar.innerHTML = `<strong>Task ${id[1]}</strong>/${taksIds.length} (Fusion works out ${Math.round(config['p']*10)} out of 10 times)<br><hr>`
+
+  let taskDiv = drawTask(id, config['color'], config['step'], itemList, histObj);
+  let btnDiv = createCustomElement('div', 'button-group-vc', 'intro-btn-group-'+id);
+  btnDiv.append(createBtn('task-next-btn-' + id, 'Next', 'intro-button', true));
+
+  retDiv.append(infoBar);
+  retDiv.append(taskDiv);
+  retDiv.append(btnDiv);
+
+  btnDiv.style.display = 'none';
+  return retDiv;
 
 }

@@ -2,20 +2,12 @@
 /* Dev setting */
 let introBtnDelay = 0; // 40000
 
+const feedbacRemain = '1000'; // mileseconds
+let nullFeedback = 'Nothing came out';
 
 /* Data */
 let start_task_time = 0;
 let subjectData = {};
-
-let allDisplays = {};
-let allScoreOnDisplay = {};
-let allScoreHistory = {};
-
-let allCombo = {};
-let allObjFeats = {};
-let allObjRewards = {};
-
-let nullFeedback = 'Nothing came out';
 
 
 /* Collect prolific id */
@@ -26,28 +18,31 @@ function handle_prolific() {
 
 
 
-
 /* Create task */
 
-let demoId = 'demo';
-function initData(id) {
-  allDisplays[id] = [];
-  allScoreOnDisplay[id] = 0;
-  allScoreHistory[id] = [];
-  allCombo[id] = {};
-  allObjFeats[id] = objFeats;
-  allObjRewards[id] = {};
-  baseObj.forEach(obj => allObjRewards[id][obj] = baseReward);
-}
+taksIds.forEach(tid => {
+  let config = taskConfigsWithId[tid];
+  getEl('task').append(drawTaskWithInfo(tid, config, baseObj))
+  baseObj.forEach(el => {
+    let item =tid + '-' + el;
+    getEl(item).onclick = () => handleItemClick(item, tid)});
+  getEl(`extract-btn-${tid}`).onclick = () => handleExtract(tid);
+  getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
 
+  if (parseInt(tid[1]) > 1) {
+    getEl('task-'+tid).style.display = 'none';
+  }
 
-initData(demoId);
-getEl('task').append(drawTask(demoId, 'royalblue'));
-baseObj.forEach(el => {
-  let item =demoId + '-' + el;
-  getEl(item).onclick = () => handleItemClick(item, demoId)});
-getEl(`extract-btn-${demoId}`).onclick = () => handleExtract(demoId);
-getEl(`fuse-btn-${demoId}`).onclick = () => handleFuse(demoId);
+  // Next btns
+  if (parseInt(tid[1]) < taksIds.length) {
+    let nextTid = 't' + (parseInt(tid[1])+1).toString();
+    getEl('task-next-btn-' + tid).onclick = () => hideAndShowNext('task-'+tid, 'task-'+nextTid, 'block');
+  } else {
+    getEl('task-next-btn-' + tid).onclick = () => hideAndShowNext('task', 'debrief', 'block');
+  }
+
+})
+
 
 
 /** Interactivities */
@@ -111,8 +106,17 @@ function handleMachineItemClick(pos, id, isIntro=false) {
 
 }
 
+function recordData(id, action, result, r, total_r) {
+  let datId = id + "-s" + (taskConfigsWithId[id]['step']-allStepsLeft[id]+1);
 
-function handleExtract(id) {
+  trialData[datId]['item_selection'] = allDisplays[id];
+  trialData[datId]['action'] = action;
+  trialData[datId]['feedback'] = result;
+  trialData[datId]['immediate_score'] = r;
+  trialData[datId]['total_score'] = total_r;
+}
+
+function handleExtract(id, isDemo=false) {
 
   let reward = allObjRewards[id][allDisplays[id][0]];
   allScoreOnDisplay[id] +=  reward;
@@ -126,16 +130,25 @@ function handleExtract(id) {
   getEl(`feedback-box-${id}`).append(feedBackText);
   setTimeout(() => { getEl(`feedback-box-${id}`).innerHTML = '';}, feedbacRemain);
 
+  // Record data
+  isDemo? null : recordData(id, 'E', 'NA', reward, allScoreOnDisplay[id])
+
   // Reset machine
   allDisplays[id] = [];
   getEl(`extract-btn-${id}`).disabled = true;
 
+  // Update step left
+  updateStep(id)
+
 }
 
-function handleFuse(id, isFuseDemo = false) {
+function handleFuse(id, isFuseDemo = false, isDemo=false) {
 
+  updateStep(id)
+
+  // Update step
   let currentItems =  allDisplays[id].sort();
-  console.log('Fuse ' + currentItems[0] + ' and ' + currentItems[1]);
+  // console.log('Fuse ' + currentItems[0] + ' and ' + currentItems[1]);
 
   let thisCombo = '[' + currentItems.join('') + ']';
   if (Object.keys(allCombo[id]).indexOf(thisCombo) > -1) {
@@ -150,14 +163,17 @@ function handleFuse(id, isFuseDemo = false) {
       getEl(`feedback-box-${id}`).innerHTML = nullFeedback;
     }
 
+    // Record data
+    isDemo? null : recordData(id, 'F', '1', 0, allScoreOnDisplay[id])
+
     setTimeout(() => { getEl(`feedback-box-${id}`).innerHTML = ''; }, feedbacRemain);
 
   } else {
 
-    if (Math.random() < baseRate) {
+    if (Math.random() < allBaseRates[id]) {
 
       // Make new combo
-      let reward = Math.round(Math.max(allObjRewards[id][currentItems[0]], allObjRewards[id][currentItems[1]]) * rewardInc);
+      let reward = Math.round(Math.max(allObjRewards[id][currentItems[0]], allObjRewards[id][currentItems[1]]) * allRewardInc[id]);
       allCombo[id][thisCombo] = 1;
       allObjRewards[id][thisCombo] = reward;
       allObjFeats[id][thisCombo] = allObjFeats[id][currentItems[0]];
@@ -172,6 +188,10 @@ function handleFuse(id, isFuseDemo = false) {
       // Update inventory
       addToInventory(id, thisCombo);
 
+      // Record data
+      isDemo? null : recordData(id, 'F', '1', 0, allScoreOnDisplay[id]);
+
+
     } else {
 
       // Record failure
@@ -182,7 +202,10 @@ function handleFuse(id, isFuseDemo = false) {
       setTimeout(() => { getEl(`feedback-box-${id}`).innerHTML = ''; }, feedbacRemain);
 
       // Update history panel
-      addToHistoryPanel(id, currentItems[0], currentItems[1])
+      addToHistoryPanel(id, currentItems[0], currentItems[1]);
+
+      // Record data
+      isDemo? null : ecordData(id, 'F', '0', 0, allScoreOnDisplay[id]);
 
     }
   }
@@ -209,26 +232,55 @@ function addToHistoryPanel (id, itemA, itemB) {
 
 }
 function addToInventory (id, item) {
-  let newItem = drawBlock(item, item);
-  newItem.onclick = () => handleItemClick(item, id);
+  let itemId = id + '-' + item
+  let newItem = drawBlock(item, itemId);
+  newItem.onclick = () => handleItemClick(itemId, id);
   getEl(`item-box-${id}`).append(newItem);
 
 }
 
+function updateStep(id, isDemo=false) {
+  allStepsLeft[id] -= 1
+  if (allStepsLeft[id] > 0) {
+    let unitId = id + '-unit-' + (taskConfigsWithId[id]['step'] - allStepsLeft[id]).toString();
+    getEl(unitId).style.backgroundColor = 'white';
+  } else if (allStepsLeft[id] == 0) {
+    let unitId = id + '-unit-' + (taskConfigsWithId[id]['step'] - allStepsLeft[id]).toString();
+    getEl(unitId).style.backgroundColor = 'white';
+    isDemo? null : showNext('intro-btn-group-'+id);
+    disableMachine(id)
+  } else {
+    disableMachine(id)
+  }
+}
 
+function disableMachine(id) {
+  baseObj.forEach(el => {
+    let item =id + '-' + el;
+    getEl(item).onclick = () => null;
+  })
 
+  let currentObjs = Object.entries(allCombo[id]).filter(([_, v]) => v > 0);
+  if (currentObjs.length > 0) {
+    currentObjs.forEach(el => {
+      let item = id + '-' + el[0];
+      getEl(item).onclick = () => null;
+    })
+  }
 
+  getEl(`extract-btn-${id}`).disabled = true;
+  getEl(`fuse-btn-${id}`).disabled = true;
+
+}
 
 
 
 /* Prepare instruction */
 let introId = 'intro-1';
 let played = 0;
-initData(introId);
 setTimeout(() => { getEl(`instruction-btn-0`).style.opacity = 1;}, introBtnDelay);
 
-
-getEl('intro-demo-1').append(drawTask('intro-1', 'orange'));
+getEl('intro-demo-1').append(drawTask(introId, taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step']));
 getEl('hist-box-intro-1').style.height = '300px';
 baseObj.forEach(el => {
   let item = introId + '-' + el;
@@ -246,11 +298,6 @@ baseObj.forEach(el => {
       played += 1;
   }
   }});
-// getEl(`extract-btn-${introId}`).onclick = () => handleExtract(introId);
-// getEl(`fuse-btn-${introId}`).onclick = () => handleFuse(introId);
-
-// getEl(`extract-btn-${introId}`).onclick = () => handleExtract(introId);
-// getEl(`fuse-btn-${introId}`).onclick = () => handleFuse(introId);
 
 function introBtn01() {
   hideAndShowNext('intro-sub-1-0', 'intro-sub-1-1', 'block');
@@ -262,7 +309,7 @@ function introBtn02() {
   showNext('intro-sub-1-3', 'block');
   getEl(`extract-btn-${introId}`).disabled = false;
   getEl(`extract-btn-${introId}`).onclick = () => {
-    handleExtract(introId);
+    handleExtract(introId, true);
     getEl('instruction-btn-2').style.opacity = 1;
   }
 
@@ -275,13 +322,12 @@ function introBtn03() {
 
 
 let introIdFuse = 'intro-2';
-initData(introIdFuse);
-getEl('intro-demo-2').append(drawTask(introIdFuse, 'orange'));
+getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step']));
 getEl('hist-box-intro-2').style.height = '300px';
 baseObj.forEach(el => {
   let item =introIdFuse + '-' + el;
   getEl(item).onclick = () => handleItemClick(item, introIdFuse, true)});
-getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, true);
+getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, true, true);
 
 function introBtn06() {
   hide('intro-sub-2-1');
@@ -291,9 +337,9 @@ function introBtn06() {
   baseObj.forEach(el => {
     let item =introIdFuse + '-' + el;
     getEl(item).onclick = () => handleItemClick(item, introIdFuse)});
-  getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse);
+  getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
   getEl(`extract-btn-${introIdFuse}`).onclick = () => {
-    handleExtract(introIdFuse);
+    handleExtract(introIdFuse, true);
     getEl('instruction-btn-6').style.opacity = 1;
   }
 }
@@ -304,7 +350,10 @@ function introBtn07() {
   setTimeout(() => { getEl(`instruction-btn-7`).style.opacity = 1;}, introBtnDelay);
 }
 
-
+function introBtn08() {
+  hideAndShowNext('intro-sub-2-3', 'intro-sub-2-4', 'block');
+  setTimeout(() => { getEl(`instruction-btn-8`).style.opacity = 1;}, introBtnDelay);
+}
 
 
 
@@ -355,6 +404,7 @@ function is_done(complete_code) {
   Object.keys(inputs).forEach(id => subjectData[inputs[id].name] = inputs[id].value);
 
   // Clean up free responses
+  subjectData['strategy'] = removeSpecial(subjectData['strategy']);
   subjectData['feedback'] = removeSpecial(subjectData['feedback']);
 
   const end_time = new Date();
@@ -367,6 +417,8 @@ function is_done(complete_code) {
   clientData.subject.time = formatDates(end_time, 'time');
   clientData.subject.task_duration = end_time - start_task_time;
   clientData.subject.token = token;
+
+  clientData.trial = trialData;
 
   // Transit
   hideAndShowNext("debrief", "completed", 'block');

@@ -166,9 +166,11 @@ function getItemSize(label) {
 }
 function getItemHeight(size, type) {
   let length = (type == 'small')? 20 : 40;
-  if (size != 'base' && type !='small') {
-    let nrows = Math.ceil(size / 5);
+  let nrows = Math.ceil(size / 5);
+  if (size != 'base' && type != 'small') {
     length = length + (nrows-1) * (length)/5;
+  } else if (type == 'small') {
+    length = length * nrows;
   }
   return length
 
@@ -179,7 +181,7 @@ function getItemWidth(size, type) {
     length = (size == 'base')? length : length * size - 2;
   } else {
     if (size != 'base') {
-      length = Math.min(1.1**size * length, 100);
+      length = Math.min(1.4**size * length, 100);
     }
   }
   return length

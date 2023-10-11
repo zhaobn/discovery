@@ -43,17 +43,25 @@ li {
 
 .intro-button {
   border: 0;
-  font-size: 18px;
+  font-size: 24px;
   padding: 10px 30px;
 }
 .intro-button:hover:enabled {
   background-color: gainsboro;
 }
 
+
+
+.main-info {
+  height: 50px;
+  width: 780px;
+  margin-top: 50px;
+  font-size: 30px;
+}
 .main-box {
   /* height: 500px; */
   width: 780px;
-  margin-top: 50px;
+  margin-top: 5px;
   display: flex;
   justify-content: center;
 }
@@ -82,8 +90,12 @@ li {
 
 
 .machine-top {
-  height: 30px;
+  height: 42px;
   width: 100%;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 8px;
+  margin-top: 10px;
 }
 
 
@@ -109,7 +121,12 @@ li {
 .machine-bar {
   width: 290px;
   height: 30px;
-  background-color: royalblue;
+  display: flex;
+}
+.machine-bar-unit {
+  height: 30px;
+  width: 30px;
+  border: solid 1px white;
 }
 .machine-display {
   width: 280px;
