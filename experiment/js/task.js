@@ -28,17 +28,10 @@ taksIds.forEach(tid => {
     getEl(item).onclick = () => handleItemClick(item, tid)});
   getEl(`extract-btn-${tid}`).onclick = () => handleExtract(tid);
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
+  getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  if (parseInt(tid[1]) > 1) {
+  if (tid != 'p1') {
     getEl('task-'+tid).style.display = 'none';
-  }
-
-  // Next btns
-  if (parseInt(tid[1]) < taksIds.length) {
-    let nextTid = 't' + (parseInt(tid[1])+1).toString();
-    getEl('task-next-btn-' + tid).onclick = () => hideAndShowNext('task-'+tid, 'task-'+nextTid, 'block');
-  } else {
-    getEl('task-next-btn-' + tid).onclick = () => hideAndShowNext('task', 'debrief', 'block');
   }
 
 })
@@ -51,7 +44,7 @@ function handleItemClick(item, id, isFuseDemo = false) {
   let label = item.split('-').splice(-1)[0]
 
   if (allDisplays[id].length == 0) {
-    let toAdd = drawBlock(label);
+    let toAdd = drawBlock(label, '', '', allObjLevels[id][label]);
     toAdd.onclick = () => handleMachineItemClick('mid', id);
     getEl(`dis-item-mid-${id}`).append(toAdd);
 
@@ -61,11 +54,11 @@ function handleItemClick(item, id, isFuseDemo = false) {
   } else if (allDisplays[id].length == 1) {
     getEl(`dis-item-mid-${id}`).innerHTML = '';
 
-    let toAddLeft = drawBlock(allDisplays[id][0]);
+    let toAddLeft = drawBlock(allDisplays[id][0], '', '', allObjLevels[id][allDisplays[id][0]]);
     toAddLeft.onclick = () => handleMachineItemClick('left', id);
     getEl(`dis-item-left-${id}`).append(toAddLeft);
 
-    let toAddRight = drawBlock(label);
+    let toAddRight = drawBlock(label, '', '', allObjLevels[id][label]);
     toAddRight.onclick = () => handleMachineItemClick('right', id);
     getEl(`dis-item-right-${id}`).append(toAddRight);
 
@@ -83,7 +76,7 @@ function handleMachineItemClick(pos, id, isIntro=false) {
 
     let leftItem = (pos == 'left')? allDisplays[id][1]: ( (pos == 'right')? allDisplays[id][0]: null );
 
-    let toAdd = drawBlock(leftItem);
+    let toAdd = drawBlock(leftItem, '', '', allObjLevels[id][leftItem]);
     toAdd.onclick = () => handleMachineItemClick('mid', id);
     getEl(`dis-item-mid-${id}`).append(toAdd);
 
@@ -144,9 +137,6 @@ function handleExtract(id, isDemo=false) {
 
 function handleFuse(id, isFuseDemo = false, isDemo=false) {
 
-  updateStep(id)
-
-  // Update step
   let currentItems =  allDisplays[id].sort();
   // console.log('Fuse ' + currentItems[0] + ' and ' + currentItems[1]);
 
@@ -158,7 +148,7 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
     getEl(`dis-item-mid-${id}`).innerHTML = '';
 
     if (allCombo[id][thisCombo] == 1) {
-      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo));
+      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', '', allObjLevels[id][thisCombo]));
     } else {
       getEl(`feedback-box-${id}`).innerHTML = nullFeedback;
     }
@@ -178,11 +168,14 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
       allObjRewards[id][thisCombo] = reward;
       allObjFeats[id][thisCombo] = allObjFeats[id][currentItems[0]];
 
+      // Get new obj level
+      allObjLevels[id][thisCombo] = Math.max(allObjLevels[id][currentItems[0]], allObjLevels[id][currentItems[1]]) + 1;
+
       // Show results
       getEl(`dis-item-right-${id}`).innerHTML = '';
       getEl(`dis-item-left-${id}`).innerHTML = '';
       getEl(`dis-item-mid-${id}`).innerHTML = '';
-      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo));
+      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', '', allObjLevels[id][thisCombo]));
       setTimeout(() => { getEl(`feedback-box-${id}`).innerHTML = '';}, feedbacRemain)
 
       // Update inventory
@@ -205,7 +198,7 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
       addToHistoryPanel(id, currentItems[0], currentItems[1]);
 
       // Record data
-      isDemo? null : ecordData(id, 'F', '0', 0, allScoreOnDisplay[id]);
+      isDemo? null : recordData(id, 'F', '0', 0, allScoreOnDisplay[id]);
 
     }
   }
@@ -219,13 +212,16 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
       }
     }
 
+  // Update step
+  updateStep(id)
+
 }
 function addToHistoryPanel (id, itemA, itemB) {
 
   let histInfo = createCustomElement('div', 'hist-cell', '');
-  histInfo.append(drawBlock(itemA, '', 'small'));
+  histInfo.append(drawBlock(itemA, '', 'small', allObjLevels[id][itemA]));
   histInfo.append('+');
-  histInfo.append(drawBlock(itemB, '', 'small'));
+  histInfo.append(drawBlock(itemB, '', 'small', allObjLevels[id][itemB]));
 
   getEl(`hist-box-${id}`).append(histInfo);
   getEl(`hist-box-${id}`).scrollTop = getEl(`hist-box-${id}`).scrollHeight;
@@ -233,7 +229,7 @@ function addToHistoryPanel (id, itemA, itemB) {
 }
 function addToInventory (id, item) {
   let itemId = id + '-' + item
-  let newItem = drawBlock(item, itemId);
+  let newItem = drawBlock(item, itemId, '', allObjLevels[id][item]);
   newItem.onclick = () => handleItemClick(itemId, id);
   getEl(`item-box-${id}`).append(newItem);
 
@@ -270,6 +266,47 @@ function disableMachine(id) {
 
   getEl(`extract-btn-${id}`).disabled = true;
   getEl(`fuse-btn-${id}`).disabled = true;
+
+}
+
+
+
+
+/** Give feedback after each task */
+function giveFeedback(id) {
+
+  hide(`main-right-${id}`);
+  hide(`main-left-${id}`);
+  hide(`task-next-btn-${id}`);
+
+  let feedbackTest = createCustomElement('div', 'feedback-text', '');
+  feedbackTest.innerHTML = `You gathered <span style="color:red;font-weight:bold;">${allScoreOnDisplay[id]}</span> energy points in this round!`
+  getEl(`main-box-${id}`).append(feedbackTest);
+
+  let feedbackNextBtn = createBtn(`feedback-next-btn-${id}`, 'Next', 'intro-button')
+  let nextTaskId = '';
+  let thisTaskId = 'task-' + id;
+
+  if (id[0] == 'p') {
+    if (parseInt(id.substring(1)) < practiceIds.length) {
+      nextTaskId = 'task-p' + (parseInt(id.substring(1))+1).toString();
+    } else {
+      nextTaskId = 'task-t1'
+    }
+  } else {
+    if (parseInt(id.substring(1)) < testIds.length) {
+      nextTaskId = 'task-t' + (parseInt(id.substring(1))+1).toString();
+    } else {
+      nextTaskId = 'debrief';
+      thisTaskId = 'task';
+    }
+  }
+  console.log(thisTaskId);
+  console.log(nextTaskId)
+
+  feedbackNextBtn.onclick = () => hideAndShowNext(thisTaskId, nextTaskId, 'block');
+  getEl(`intro-btn-group-${id}`).append(feedbackNextBtn);
+
 
 }
 

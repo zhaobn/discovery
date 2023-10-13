@@ -187,9 +187,22 @@ function getItemWidth(size, type) {
   return length
 }
 
-function drawBlock(letter, id='', type='') {
+function drawBlock(letter, id='', type='', level=1) {
   let block = createCustomElement('div', '', '');
-  let color = objFeats[letter];
+  let blockColor = 'white';
+  let labelColor = 'black';
+  if (level == 1) {
+    blockColor = levelColors[level];
+  } else if (level < levelColors.length) {
+    blockColor = levelColors[level];
+    labelColor = 'white';
+
+  } else {
+    blockColor = 'black';
+    labelColor = 'white';
+  }
+
+  let color = blockColor; // objFeats[letter];
   let size = getItemSize(letter);
 
   block.id = id;
@@ -198,6 +211,9 @@ function drawBlock(letter, id='', type='') {
   block.style.width = getItemWidth(size, type).toString() + 'px';
   block.style.backgroundColor = color;
   block.innerHTML = letter;
+  if (level == 1) {
+    block.style.color = labelColor;
+  }
 
   return block
 }

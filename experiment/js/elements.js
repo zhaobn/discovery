@@ -5,7 +5,7 @@ function drawMachine (id, color, steps) {
 
   let retDiv = createCustomElement('div', '', '');
 
-  let scoreDiv = createCustomElement('div', 'machine-top', '');
+  let scoreDiv = createCustomElement('div', 'machine-top', `machine-top-${id}`);
   scoreDiv.innerHTML = `<strong>Total energy: <span id="total-score-${id}" style="color:red">0</span></strong>`;
 
   let ele1 = createCustomElement('div', '', `dis-item-left-${id}`);
@@ -36,13 +36,13 @@ function drawMachine (id, color, steps) {
   mbox.append(mholder);
   mbox.append(fbox);
 
-  let mUpper = createCustomElement('div', 'machine-upper', '');
+  let mUpper = createCustomElement('div', 'machine-upper', `machine-upper-${id}`);
   mUpper.append(mbox);
 
   let extractBtn = createBtn(`extract-btn-${id}`, 'Extract', 'machine-btn', false);
   let fuseBtn = createBtn(`fuse-btn-${id}`, 'Fuse', 'machine-btn', false);
   let holder = createCustomElement('div', 'machine-space-holder', '');
-  let mLower = createCustomElement('div', 'machine-lower', '');
+  let mLower = createCustomElement('div', 'machine-lower', `machine-lower-${id}`);
   mLower.style.backgroundColor = color;
   mLower.append(extractBtn);
   mLower.append(fuseBtn);
@@ -59,16 +59,16 @@ function drawMachine (id, color, steps) {
 
 function drawTask(id, color, steps, itemList = baseObj, histObj = {'showup': 1}, ) {
 
-  let retDiv = createCustomElement('div', '', '');
+  let retDiv = createCustomElement('div', 'main-box', `main-box-${id}`);
 
-  let mainLeft = createCustomElement('div', 'main-left', '');
+  let mainLeft = createCustomElement('div', 'main-left', `main-left-${id}`);
   let itemDiv = createCustomElement('div', 'item-box', `item-box-${id}`);
   itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el)) });
 
   mainLeft.append(drawMachine(id, color, steps));
   mainLeft.append(itemDiv);
 
-  let mainRight = createCustomElement('div', 'main-right', '');
+  let mainRight = createCustomElement('div', 'main-right', `main-right-${id}`);
   let histPanel = createCustomElement('div', 'hist-panel', '');
   histPanel.innerHTML = (Object.keys(histObj).length < 0)? '' : 'History' + `<div class="hist-box" id="hist-box-${id}"></div>`
   mainRight.append(histPanel);
@@ -76,7 +76,6 @@ function drawTask(id, color, steps, itemList = baseObj, histObj = {'showup': 1},
 
   retDiv.append(mainLeft);
   retDiv.append(mainRight);
-  retDiv.className = 'main-box';
 
   return retDiv
 
@@ -88,7 +87,10 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
   let retDiv = createCustomElement('div', '', 'task-'+id);
 
   let infoBar = createCustomElement('div', 'main-info', '');
-  infoBar.innerHTML = `<strong>Task ${id[1]}</strong>/${taksIds.length} (Fusion works out ${Math.round(config['p']*10)} out of 10 times)<br><hr>`
+
+  let bannerText = 'This is a practice trial.'
+  infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length} (Fusion works out ${Math.round(config['p']*10)} out of 10 times)`
+  infoBar.innerHTML += `<br><hr>`
 
   let taskDiv = drawTask(id, config['color'], config['step'], itemList, histObj);
   let btnDiv = createCustomElement('div', 'button-group-vc', 'intro-btn-group-'+id);

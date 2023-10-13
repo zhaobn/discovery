@@ -49,7 +49,10 @@ li {
 .intro-button:hover:enabled {
   background-color: gainsboro;
 }
-
+.feedback-text {
+  font-size: 40px;
+  margin: 80px;
+}
 
 
 .main-info {

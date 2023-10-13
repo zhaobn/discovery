@@ -1,8 +1,21 @@
 
 const baseReward = 10;
-const baseRateArr = [ 0.2, 0.5, 0.8 ];
-const rewardIncArr = [ 2, 1.5 ];
+const baseRateArr = [ 'p', 0.2, 0.5, 0.8 ];
+const rewardIncArr = [ 2, 2, 2 ];
 const steps = 10;
+
+
+
+const levelColors = [
+  '#F0E442',
+  '#E69F00',
+  '#D55E00',
+  '#CC79A7',
+  '#56B4E9',
+  '#009E73',
+  '#0072B2',
+  '#4B0092',
+];
 
 
 let objFeats = {
@@ -24,16 +37,23 @@ baseRateArr.forEach(baseRate => {
     taskConfigs.push({'p': baseRate, 'w': rewardInc})
   })
 })
-let machineColors = sampleFromList(colorList, taskConfigs.length, 0)
+let machineColors = sampleFromList(colorList, 3, 0);
+
 
 let taskConfigsWithId = {};
 taskConfigs.forEach((tc, id) => {
-  let taskId = 't' + (id + 1).toString();
+  let taskId = 'demo';
+  if (tc['p'] == 'p') {
+    taskId = 'p' + (id+1).toString();
+    tc['color'] = 'gray';
+    tc['p'] = 0.4;
+  } else {
+    taskId = 't' + (id-2).toString();
+    tc['color'] = machineColors[baseRateArr.indexOf(tc['p'])-1];
+  }
   taskConfigsWithId[taskId] = tc;
-  taskConfigsWithId[taskId]['color'] = machineColors[id];
   taskConfigsWithId[taskId]['step'] = steps;
 })
-
 
 // Pad info for instruction demos
 let demoConfig = { 'p': 0.4, 'w': 2, 'color': 'silver', 'step': steps }
@@ -44,7 +64,9 @@ taskConfigsWithId['intro-2'] = demoConfig;
 /** Initialize task data */
 
 const allMachineIds = Object.keys(taskConfigsWithId);
-const taksIds = allMachineIds.filter(id => id[0] != 'i')
+const taksIds = allMachineIds.filter(id => id[0] != 'i');
+const testIds = taksIds.filter(id => id[0] == 't');
+const practiceIds = taksIds.filter(id => id[0] == 'p');
 
 let allDisplays = {};
 let allScoreOnDisplay = {};
@@ -53,6 +75,7 @@ let allScoreHistory = {};
 let allCombo = {};
 let allObjFeats = {};
 let allObjRewards = {};
+let allObjLevels = {};
 
 let allBaseRates = {};
 let allRewardInc = {};
@@ -65,8 +88,12 @@ function initData(id) {
   allScoreHistory[id] = [];
   allCombo[id] = {};
   allObjFeats[id] = objFeats;
+
   allObjRewards[id] = {};
   baseObj.forEach(obj => allObjRewards[id][obj] = baseReward);
+
+  allObjLevels[id] = {};
+  baseObj.forEach(obj => allObjLevels[id][obj] = '1');
 
   allBaseRates[id] = taskConfigsWithId[id]['p'];
   allRewardInc[id] = taskConfigsWithId[id]['w'];
