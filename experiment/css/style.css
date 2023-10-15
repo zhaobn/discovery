@@ -55,6 +55,15 @@ li {
 }
 
 
+.preview-box {
+  /* height: 500px;
+  width: 780px; */
+  padding: 200px 100px;
+  margin: 20px;
+  font-size: 32px;
+
+}
+
 .main-info {
   height: 50px;
   width: 780px;

@@ -20,8 +20,22 @@ function handle_prolific() {
 
 /* Create task */
 
+getEl('task').append(makeTransitionDiv('practice', 0));
+getEl('preview-next-btn-practice').onclick = () => hideAndShowNext('preview-practice', 'task-p1', 'block');
+
 taksIds.forEach(tid => {
   let config = taskConfigsWithId[tid];
+
+  let idNum = parseInt(tid.substring(1));
+  if (tid[0] == 't' && idNum % taskBlockSize == 1) {
+    let blockId = Math.floor(idNum/taskBlockSize)+1
+    getEl('task').append(makeTransitionDiv(blockId, config['p']));
+    getEl('preview-'+blockId).style.display = 'none';
+
+    let nextTaskId = (blockId-1)*taskBlockSize+1;
+    getEl('preview-next-btn-'+blockId).onclick = () => hideAndShowNext('preview-'+blockId, 'task-t'+nextTaskId, 'block')
+  }
+
   getEl('task').append(drawTaskWithInfo(tid, config, baseObj))
   baseObj.forEach(el => {
     let item =tid + '-' + el;
@@ -30,9 +44,7 @@ taksIds.forEach(tid => {
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  if (tid != 'p1') {
-    getEl('task-'+tid).style.display = 'none';
-  }
+  getEl('task-'+tid).style.display = 'none';
 
 })
 
@@ -287,22 +299,27 @@ function giveFeedback(id) {
   let nextTaskId = '';
   let thisTaskId = 'task-' + id;
 
+  let idNum = parseInt(id.substring(1))
   if (id[0] == 'p') {
-    if (parseInt(id.substring(1)) < practiceIds.length) {
-      nextTaskId = 'task-p' + (parseInt(id.substring(1))+1).toString();
+    if (idNum < practiceIds.length) {
+      nextTaskId = 'task-p' + (idNum+1).toString();
+    } else if (idNum==practiceIds.length) {
+      nextTaskId = 'preview-1';
     } else {
-      nextTaskId = 'task-t1'
+      nextTaskId = 'task-t1';
     }
   } else {
-    if (parseInt(id.substring(1)) < testIds.length) {
-      nextTaskId = 'task-t' + (parseInt(id.substring(1))+1).toString();
+    if (idNum < testIds.length) {
+      if (idNum % taskBlockSize == 0) {
+        nextTaskId = 'preview-' + (Math.floor(idNum/taskBlockSize)+1);
+      } else {
+        nextTaskId = 'task-t' + (idNum+1).toString();
+      }
     } else {
       nextTaskId = 'debrief';
       thisTaskId = 'task';
     }
   }
-  console.log(thisTaskId);
-  console.log(nextTaskId)
 
   feedbackNextBtn.onclick = () => hideAndShowNext(thisTaskId, nextTaskId, 'block');
   getEl(`intro-btn-group-${id}`).append(feedbackNextBtn);
@@ -337,11 +354,8 @@ baseObj.forEach(el => {
   }});
 
 function introBtn01() {
-  hideAndShowNext('intro-sub-1-0', 'intro-sub-1-1', 'block');
-  hide('intro-btn-group-0');
-}
-function introBtn02() {
-  // hide('intro-p-2');
+  hide('intro-p-1');
+  hide('intro-p-2');
   hide('intro-p-3');
   showNext('intro-sub-1-3', 'block');
   getEl(`extract-btn-${introId}`).disabled = false;
@@ -351,7 +365,7 @@ function introBtn02() {
   }
 
 }
-function introBtn03() {
+function introBtn02() {
   hideAndShowNext('intro-sub-1-3', 'intro-sub-1-4', 'block');
   setTimeout(() => { getEl(`instruction-btn-3`).style.opacity = 1;}, introBtnDelay);
 }
@@ -366,7 +380,7 @@ baseObj.forEach(el => {
   getEl(item).onclick = () => handleItemClick(item, introIdFuse, true)});
 getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, true, true);
 
-function introBtn06() {
+function introBtn05() {
   hide('intro-sub-2-1');
   hide('intro-btn-group-5');
   showNext('intro-sub-2-2', 'block');
@@ -382,14 +396,17 @@ function introBtn06() {
 }
 
 
-function introBtn07() {
+function introBtn06() {
   hideAndShowNext('intro-sub-2-2', 'intro-sub-2-3', 'block');
   setTimeout(() => { getEl(`instruction-btn-7`).style.opacity = 1;}, introBtnDelay);
 }
-
-function introBtn08() {
+function introBtn07() {
   hideAndShowNext('intro-sub-2-3', 'intro-sub-2-4', 'block');
   setTimeout(() => { getEl(`instruction-btn-8`).style.opacity = 1;}, introBtnDelay);
+}
+function introBtn08() {
+  hideAndShowNext('intro-sub-2-4', 'intro-sub-2-5', 'block');
+  setTimeout(() => { getEl(`instruction-btn-9`).style.opacity = 1;}, introBtnDelay);
 }
 
 

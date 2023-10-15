@@ -88,7 +88,7 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
 
   let infoBar = createCustomElement('div', 'main-info', '');
 
-  let bannerText = 'This is a practice trial.'
+  let bannerText = `Practice trial ${id.substring(1)}/${practiceIds.length}`
   infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length} (Fusion works out ${Math.round(config['p']*10)} out of 10 times)`
   infoBar.innerHTML += `<br><hr>`
 
@@ -103,4 +103,24 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
   btnDiv.style.display = 'none';
   return retDiv;
 
+}
+
+
+
+function makeTransitionDiv(blockId, p) {
+  let retDiv = createCustomElement('div', 'preview-box', 'preview-'+blockId);
+  if (blockId[0] == 'p') {
+    retDiv.innerHTML = `Warm up with ${practiceIds.length} practice trials.`
+  } else {
+    retDiv.innerHTML = `<h1>Block ${blockId}/${baseRateArr.length}</h1>
+    This block has ${taskBlockSize} trials (Tasks ${(blockId-1)*taskBlockSize+1}-${(blockId-1)*taskBlockSize+taskBlockSize}).<br><br>
+    Fusion works out ${Math.round(p*10)} out of 10 times on average.`
+  }
+
+  let btnDiv = createCustomElement('div', 'button-group-vc', 'preview-btn-group-'+blockId);
+  btnDiv.append(createBtn('preview-next-btn-' + blockId, 'Start', 'intro-button', true));
+  btnDiv.style.marginTop = '150px';
+  retDiv.append(btnDiv);
+
+  return retDiv;
 }

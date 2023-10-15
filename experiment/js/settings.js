@@ -1,7 +1,11 @@
 
 const baseReward = 10;
-const baseRateArr = [ 'p', 0.2, 0.5, 0.8 ];
-const rewardIncArr = [ 2, 2, 2 ];
+let baseRateArr = [ 0.2, 0.5, 0.8 ];
+baseRateArr = sampleFromList(baseRateArr, baseRateArr.length, false)
+const rewardInc = 2;
+
+const nPractice = 3;
+const taskBlockSize = 4;
 const steps = 10;
 
 
@@ -32,28 +36,36 @@ const colorList = [ 'royalblue', 'darkgreen', 'darkred', 'darkslategray', 'light
 
 
 let taskConfigs = [];
+
+
 baseRateArr.forEach(baseRate => {
-  rewardIncArr.forEach(rewardInc => {
+  for (let i = 0; i < taskBlockSize; i++) {
     taskConfigs.push({'p': baseRate, 'w': rewardInc})
-  })
+  }
 })
-let machineColors = sampleFromList(colorList, 3, 0);
+let machineColors = sampleFromList(colorList, baseRateArr.length, 0);
 
 
 let taskConfigsWithId = {};
+// Add practice trial config
+for (let i = 0; i < nPractice; i++) {
+  let taskId = 'p' + (i+1).toString();
+  taskConfigsWithId[taskId] = {};
+  taskConfigsWithId[taskId]['color'] = 'gray';
+  taskConfigsWithId[taskId]['p'] = 0.4;
+  taskConfigsWithId[taskId]['w'] = rewardInc;
+  taskConfigsWithId[taskId]['step'] = steps;
+}
+
+// Task trial config
 taskConfigs.forEach((tc, id) => {
-  let taskId = 'demo';
-  if (tc['p'] == 'p') {
-    taskId = 'p' + (id+1).toString();
-    tc['color'] = 'gray';
-    tc['p'] = 0.4;
-  } else {
-    taskId = 't' + (id-2).toString();
-    tc['color'] = machineColors[baseRateArr.indexOf(tc['p'])-1];
-  }
+  let taskId = 't' + (id+1).toString();
+  tc['color'] = machineColors[baseRateArr.indexOf(tc['p'])];
   taskConfigsWithId[taskId] = tc;
   taskConfigsWithId[taskId]['step'] = steps;
 })
+
+
 
 // Pad info for instruction demos
 let demoConfig = { 'p': 0.4, 'w': 2, 'color': 'silver', 'step': steps }
