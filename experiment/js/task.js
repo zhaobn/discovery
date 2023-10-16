@@ -1,6 +1,6 @@
 
 /* Dev setting */
-let introBtnDelay = 0; // 40000
+let introBtnDelay = 5000;
 
 const feedbacRemain = '1000'; // mileseconds
 let nullFeedback = 'Nothing came out';
@@ -114,7 +114,7 @@ function handleMachineItemClick(pos, id, isIntro=false) {
 function recordData(id, action, result, r, total_r) {
   let datId = id + "-s" + (taskConfigsWithId[id]['step']-allStepsLeft[id]+1);
 
-  trialData[datId]['item_selection'] = allDisplays[id];
+  trialData[datId]['item_selection'] = allDisplays[id].join('-');
   trialData[datId]['action'] = action;
   trialData[datId]['feedback'] = result;
   trialData[datId]['immediate_score'] = r;
@@ -316,7 +316,8 @@ function giveFeedback(id) {
         nextTaskId = 'task-t' + (idNum+1).toString();
       }
     } else {
-      nextTaskId = 'debrief';
+      getEl('score-sum').innerHTML = Math.round(Object.values(allScoreOnDisplay).reduce((a,b)=>a+b,0))
+      nextTaskId = 'score-feedback';
       thisTaskId = 'task';
     }
   }
@@ -332,7 +333,7 @@ function giveFeedback(id) {
 /* Prepare instruction */
 let introId = 'intro-1';
 let played = 0;
-setTimeout(() => { getEl(`instruction-btn-0`).style.opacity = 1;}, introBtnDelay);
+setTimeout(() => { getEl(`instruction-btn-0`).style.opacity = 1;}, 0);
 
 getEl('intro-demo-1').append(drawTask(introId, taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step']));
 getEl('hist-box-intro-1').style.height = '300px';
@@ -442,7 +443,7 @@ function handle_retry() {
   hide("retry");
   hide("quiz");
   showNext("instruction", "block");
-  hideAndShowNext('instruction-4', 'instruction-1', 'block');
+  hideAndShowNext('instruction-3', 'instruction-1', 'block');
   hideAndShowNext('intro-sub-1-5', 'intro-p-3', 'block');
   getEl('check-btn').style.display = 'flex';
 }
@@ -479,5 +480,33 @@ function is_done(complete_code) {
   getEl('completion-code').append(document.createTextNode(complete_code));
 
   // download(JSON.stringify(clientData), 'data.txt', '"text/csv"');
-  console.log(clientData);
+  // console.log(clientData);
+  save_data(prep_data_for_server(clientData));
+
+}
+
+function prep_data_for_server(data) {
+  retObj = {};
+  retObj['worker'] = data.subject.prolific_id;
+  retObj['assignment'] = baseRateArr.join('>');
+  retObj['hit'] = 'discovery';
+  retObj['version'] = '0.0';
+  retObj['subject'] = JSON.stringify(data.subject);
+  retObj['trial'] = JSON.stringify(data.trial);
+
+  return retObj;
+}
+
+function save_data(data) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '../php/save_data.php');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+    if(xhr.status == 200){
+      console.log(xhr.responseText);
+      // var response = JSON.parse(xhr.responseText);
+      // console.log(response.success);
+    }
+  };
+  xhr.send('['+JSON.stringify(data)+']');
 }

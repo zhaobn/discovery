@@ -31,7 +31,7 @@ li {
   font-size: 18px;
 }
 .big-button:hover:enabled {
-  background-color: midnightblue;
+  background-color: #116466;
   color: white;
 }
 .big-button:disabled,
@@ -254,4 +254,9 @@ li {
 #score-text {
   color: red;
   font-weight: bold;
+}
+#score-feedback {
+  margin-top: 150px;
+  font-size: 24px;
+  line-height: 50px;
 }

@@ -5,13 +5,13 @@
 
   <head>
     <link rel="stylesheet" type="text/css" href="../css/style.css">
-    <title>Design 3</title>
+    <title>Alien crystals</title>
   </head>
 
 
   <body>
 
-    <div id="welcome" class="base"  >
+    <div id="welcome" class="base" >
       <h1>Information for participants</h1>
       <div id="consent-info">
 
@@ -156,7 +156,7 @@
 
         <b>Compensation:</b>
 
-        For your participation, you will receive <b>$5.00 plus a bonus that will depend on your performance during a series of games</b>
+        For your participation, you will receive <b>$4.00 plus a bonus that will depend on your performance during a series of games</b>
 
         <br>
 
@@ -223,7 +223,7 @@
 
       </div>
       <div class="button-group-vc">
-        <button class="big-button" id="consent-btn" disabled onclick="hideAndShowNext('welcome','prolific_id','block')">SUBMIT</button>
+        <button class="big-button" id="consent-btn" disabled onclick="hideAndShowNext('welcome','prolific_id','block')">I consent</button>
       </div>
     </div>
 
@@ -351,8 +351,9 @@
         </div>
 
         <div id="intro-sub-2-5" style="display: none;">
-          <p>There is a limited amount of button presses you can make, for each machine.</p>
+          <p>Finally, there is a <b>limited amount of button presses</b> you can make, for each machine.</p>
           <p>The amount of button presses left is indicated at the top rim of the machine.</p>
+          <p>After the experiment, we will give <b>extra $4.00 bonus</b> to the top 3 players with highest total energy points.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">&gt;&gt;</button>
           </div>
@@ -362,8 +363,7 @@
 
 
       <div id="instruction-3" style="display:none;">
-        <p>You are now all set.</p>
-        <p>A quick summary:</p>
+        <p>You are now all set. A quick summary:</p>
         <ul>
           <!-- <li>Your goal is to maximize the total energy you gather from using the machine.</li> -->
           <li>You can gather energy from a single crystal by placing it in the machine and clicking the <q>Extract</q> button.</li>
@@ -372,9 +372,10 @@
           <li>New crystals have twice as much energy as the most valuable crystal that was used in the fusion.</li>
           <li>Sometimes fusion works out, and sometimes it does not.</li>
           <!-- <li>Any failed, or successful, discovery, will not change furthermore.</li> -->
-          <li>Different machines have different rates of success for fusion.</li>
+          <li>Different machines could have different rates of success for fusion.</li>
           <li>There is a limited number of button presses you can make for each machine.</li>
           <li>Your goal is to maximize the <b>total energy</b> you gather from using the machine.</li>
+          <li>Top 3 players with the highest total energy points get extra $4.00 bonus.</li>
         </ul>
 
         <div class='button-group-vc'>
@@ -445,6 +446,21 @@
 
     <div id="task" class="base" style="display:none;">
     </div>
+
+
+
+
+
+
+    <div id="score-feedback" class="base" style="display:none;">
+      You have won <span id="score-sum" style="color: red;font-weight: bold;">0</span> energy points in total!<br>
+      If you rank top 3 among all the participants, you will get extra $4.00 bonus.<br>
+      We aim to get this sorted in three working days.
+      <div class='button-group-vc' style="margin-top: 100px;">
+        <button class='intro-button' onclick="hideAndShowNext('score-feedback', 'debrief', 'block')">&gt;&gt;</button>
+      </div>
+    </div>
+
 
 
 
