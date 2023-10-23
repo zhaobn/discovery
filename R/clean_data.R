@@ -4,7 +4,7 @@ library(dplyr)
 
 dat = read.csv('./data/crystal.csv')
 
-start_index = 1
+start_index = 3
 end_index = nrow(dat)
 
 
@@ -29,6 +29,12 @@ df.sw = df.sw.aux %>%
   left_join(trial_info, by='prolific_id') %>%
   select(prolific_id, date, time, assignment, age, sex, task_duration, engagement, difficulty, strategy, feedback, token)
 
+# Save raw subject data
+write.csv(df.sw, file='raw_pilot_sw.csv')
+
+
+
+
 # Collect trial data
 d = inv_fromJSON(dat$trial[start_index])[[1]]
 d[['prolific_id']] = dat$worker[start_index]
@@ -49,10 +55,27 @@ for (i in start_index:end_index) {
     
   }
 }
+# Save raw trial data
+write.csv(df.tw.aux, file='raw_pilot_tw.csv')
 
 
+# Use id to replace prolific_id and save
+ids = dat %>%
+  select(id, prolific_id=worker) %>%
+  filter(id>3)
 
+sw_names = colnames(df.sw)
+sw_names[1] <- 'id'
+df.sw = df.sw %>%
+  left_join(ids, by='prolific_id') %>%
+  select(sw_names)
 
+tw_names = colnames(df.tw.aux)
+df.tw = df.tw.aux %>%
+  left_join(ids, by='prolific_id') %>%
+  select(id, tw_names[1:length(tw_names)-1])
+
+save(df.tw, df.sw, file='data/pilot/pulled.Rdata')
 
 
 
