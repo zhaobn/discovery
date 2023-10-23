@@ -242,7 +242,7 @@
     <div id="instruction" class="base" >
       <h1>Instruction</h1>
 
-      <div id="instruction-1" >
+      <div id="instruction-1">
         <div style="padding-left:5px;">
           <div id="intro-sub-1-0">
             <p>Thank you for playing my game!</p>
@@ -294,7 +294,7 @@
           <p>What if you mistakenly placed a crystal? You can remove a crystal from the machine by clicking the crystal in the machine.</p>
           <p>Try putting a crystal into the machine and then remove it.</p>
           <div class='button-group-vc'>
-            <button class='intro-button' id='instruction-btn-4' style="opacity:0" onclick="hideAndShowNext('instruction-1', 'instruction-2', 'block')">&gt;&gt;</button>
+            <button class='intro-button' id='instruction-btn-4' style="opacity:0" onclick="hideAndShowNext('instruction-1', 'instruction-2', 'block');">&gt;&gt;</button>
           </div>
           </div>
 
@@ -302,9 +302,9 @@
         </div>
       </div>
 
-      <div id="instruction-2"  style="display: none;">
+      <div id="instruction-2" style="display:none;">
 
-        <div id="intro-sub-2-1" >
+        <div id="intro-sub-2-1">
           <p>Besides extracting energy, the machine also has a <q>Fuse</q> button.</p>
           <p>If you put two crystals into the machine, and click the <q>Fuse</q> button, the machine will try to fuse the two crystals together.</p>
           <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. The label on the crystal tells you which crystals went into making it (remember, the letters don't tell you anything other than the location of the crystals for this machine).</p>
@@ -342,10 +342,10 @@
         </div>
 
 
-        <div id="intro-sub-2-4" style="display: none;">
-          <p>Note that <strong>different machines have different chances of detecting a fruitful fusion.</strong></p>
-          <p>You will be playing this game using several different machines. Note this difference, and make your decisions wisely.</p>
-          <p>Each new machine has a new set of crystals and a different chance of detecting a fusion. Which crystals fuse together will also be different for each machine. Remember the letters only refer to the locations of the crystals for that particular machine.</p>
+        <div id="intro-sub-2-4" style="display:none;">
+          <p>You will be playing this game using several different machines. <b>Each new machine has a new set of crystals and a different chance of detecting a fusion.</b> Which crystals fuse together will also be different for each machine. Remember that <b>letters only refer to the locations</b> of the crystals for that particular machine.</p>
+          <p>Note this difference, and make your decisions wisely.</p>
+          <p>After the game, you can win up to an <b>extra $3.00 bonus</b>.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-8' style="opacity:0" onclick="introBtn08()">&gt;&gt;</button>
           </div>
@@ -353,10 +353,10 @@
 
         <div id="intro-sub-2-5" style="display: none;">
           <p>Finally, there is a <b>limited amount of button presses</b> you can make, for each machine.</p>
-          <p>The amount of button presses left is indicated on the top rim of the machine.</p>
-          <p>After the experiment, we will give an <b>extra $3.00 bonus</b> to the top 3 players with highest total energy points.</p>
+          <p>The amount of button presses left is indicated by the bars on the top rim of the machine.</p>
+          <p>There are now two bars left &ndash; take two more action with this machine to end the instructions.</p>
           <div class='button-group-vc'>
-            <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">&gt;&gt;</button>
+            <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">End instruction</button>
           </div>
         </div>
 
@@ -374,7 +374,8 @@
           <li>Sometimes fusion works out, and sometimes it does not.</li>
           <!-- <li>Any failed, or successful, discovery, will not change furthermore.</li> -->
           <li>Different machines could have different rates of success for fusion.</li>
-          <li>There is a limited number of button presses you can make for each machine.</li>
+          <li>A new set of crystals is used for each new machine &ndash; the letters on the crystals only refer to their locations.</li>
+          <li>There is a limited number of button presses you can make for each machine, displayed on the upper rim of the machine.</li>
           <li>Your goal is to maximize the <b>total energy</b> you gather from using the machine. Top 3 players with the highest total energy points get an extra $3.00 bonus.</li>
         </ul>
 
@@ -387,7 +388,7 @@
 
     </div>
 
-    <div id="quiz" class="base" style="display:none;">
+    <div id="quiz" class="base" style="display:none;height:auto;">
       <h1>Check your understanding</h1>
       <div>
         <form id='prequiz'>
@@ -397,30 +398,35 @@
               <input type="radio" name="check1">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check1">False
             </p>
-            <li>The <q>Fuse</q> button has the same rate of success for different machines.</li>
+            <li>Crystals with the same labels are the same crystals.</li>
             <p>
               <input type="radio" name="check2">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check2">False
             </p>
-            <li>When there is one crystal in the machine, the <q>Extract</q> button always works.</li>
+            <li>The <q>Fuse</q> button has the same rate of success for different machines.</li>
             <p>
               <input type="radio" name="check3">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check3">False
             </p>
-            <li>When you discover a new crystal, you get rewarded immediately.</li>
+            <li>When there is one crystal in the machine, the <q>Extract</q> button always works.</li>
             <p>
               <input type="radio" name="check4">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check4">False
             </p>
-            <li>You may gather higher energy from new crystals.</li>
+            <li>When you discover a new crystal, you get rewarded immediately.</li>
             <p>
               <input type="radio" name="check5">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check5">False
             </p>
-            <li>You can play with a machine as many times as you wish.</li>
+            <li>You may gather higher energy from new crystals.</li>
             <p>
               <input type="radio" name="check6">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check6">False
+            </p>
+            <li>You can play with a machine as many times as you wish.</li>
+            <p>
+              <input type="radio" name="check7">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="radio" name="check7">False
             </p>
           </ol>
         </form>

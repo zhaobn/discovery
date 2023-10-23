@@ -46,7 +46,6 @@ function hideAndShowNext(hid, sid, display, center = true) {
 }
 
 
-
 /* Form-related functions */
 function compIsFilled () {
   let radios = document.getElementsByTagName('input');

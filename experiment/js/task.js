@@ -1,6 +1,6 @@
 
 /* Dev setting */
-let introBtnDelay = 5000;
+let introBtnDelay = 0;// 5000;
 
 const feedbacRemain = '1000'; // mileseconds
 let nullFeedback = 'Nothing came out';
@@ -143,7 +143,7 @@ function handleExtract(id, isDemo=false) {
   getEl(`extract-btn-${id}`).disabled = true;
 
   // Update step left
-  updateStep(id)
+  updateStep(id, isDemo)
 
 }
 
@@ -220,12 +220,13 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
     getEl(`fuse-btn-${id}`).disabled = true;
     if (isFuseDemo) {
       if (allCombo[id][thisCombo] == 1) {
+        showNext('intro-btn-group-5');
         getEl('instruction-btn-5').style.opacity = 1;
       }
     }
 
   // Update step
-  updateStep(id)
+  updateStep(id, isDemo)
 
 }
 function addToHistoryPanel (id, itemA, itemB) {
@@ -255,7 +256,11 @@ function updateStep(id, isDemo=false) {
   } else if (allStepsLeft[id] == 0) {
     let unitId = id + '-unit-' + (taskConfigsWithId[id]['step'] - allStepsLeft[id]).toString();
     getEl(unitId).style.backgroundColor = 'white';
-    isDemo? null : showNext('intro-btn-group-'+id);
+    if (isDemo) {
+      getEl('instruction-btn-9').style.opacity = 1;
+    } else {
+      showNext('intro-btn-group-'+id);
+    }
     disableMachine(id)
   } else {
     disableMachine(id)
@@ -407,15 +412,28 @@ function introBtn07() {
 }
 function introBtn08() {
   hideAndShowNext('intro-sub-2-4', 'intro-sub-2-5', 'block');
-  setTimeout(() => { getEl(`instruction-btn-9`).style.opacity = 1;}, introBtnDelay);
+  for (let i = 1; i < 11; i++) {
+    let unitColor = (i < 9)? 'white' : taskConfigsWithId[introIdFuse]['color'];
+    getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
+  }
+
+  allStepsLeft[introIdFuse] = 2;
+
+  getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
+  getEl(`extract-btn-${introIdFuse}`).onclick = () => handleExtract(introIdFuse, true);
+  baseObj.forEach(el => {
+    let item =introIdFuse + '-' + el;
+    getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
+
+  // setTimeout(() => { getEl(`instruction-btn-9`).style.opacity = 1;}, introBtnDelay);
 }
 
 
 
 
 /* Comprehension quiz */
-const checks = [ 'check1', 'check2', 'check3', 'check4', 'check5', 'check6' ];
-const answers = [ false, false, true, false, true, false ];
+const checks = [ 'check1', 'check2', 'check3', 'check4', 'check5', 'check6', 'check7' ];
+const answers = [ false, false, false, true, false, true, false ];
 
 function check_quiz() {
   getEl('check-btn').style.display = 'none';
@@ -445,8 +463,25 @@ function handle_retry() {
   showNext("instruction", "block");
   hideAndShowNext('instruction-3', 'instruction-1', 'block');
   hideAndShowNext('intro-sub-1-5', 'intro-p-3', 'block');
+  hideAndShowNext('intro-sub-2-5', 'intro-sub-2-1', 'block');
   getEl('check-btn').style.display = 'flex';
+
+  // hide buttons
+  for (let i = 0; i < 10; i++) {
+    getEl(`instruction-btn-`+i.toString()).style.opacity = 0;
+  }
+
+  // draw new demo machine
+  getEl('intro-demo-2').innerHTML = '';
+  getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step']));
+  getEl('hist-box-intro-2').style.height = '300px';
+  baseObj.forEach(el => {
+    let item =introIdFuse + '-' + el;
+    getEl(item).onclick = () => handleItemClick(item, introIdFuse, true)});
+  getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, true, true);
+  initData(introIdFuse);
 }
+
 getEl('prequiz').onchange = () => compIsFilled() ? getEl('check-btn').disabled = false : null;
 
 
