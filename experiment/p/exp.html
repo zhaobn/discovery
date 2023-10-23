@@ -11,7 +11,7 @@
 
   <body>
 
-    <div id="welcome" class="base" >
+    <div id="welcome" class="base" style="display:none;">
       <h1>Information for participants</h1>
       <div id="consent-info">
 
@@ -239,14 +239,14 @@
 
 
 
-    <div id="instruction" class="base" style="display:none;">
+    <div id="instruction" class="base" >
       <h1>Instruction</h1>
 
       <div id="instruction-1" >
         <div style="padding-left:5px;">
           <div id="intro-sub-1-0">
             <p>Thank you for playing my game!</p>
-            <p><strong>This instruction may take about 5 minutes to finish. Please follow it carefully</strong>.</p>
+            <p><strong>These instructions may take about 5 minutes to read. Please follow them carefully. <span style="color:red;">There will be a quiz!</span></strong></p>
             <div class='button-group-vc' id="intro-btn-group-0">
               <button class='intro-button' id='instruction-btn-0' style="opacity:0" onclick="hideAndShowNext('intro-sub-1-0', 'intro-sub-1-1', 'block');hide('intro-btn-group-0');">&gt;&gt;</button>
             </div>
@@ -254,11 +254,11 @@
 
           <div id="intro-sub-1-1" style="display:none;">
             <p id="intro-p-1">In this game you will be gathering energy points from alien crystals, using alien crystal machines.</p>
-            <p id="intro-p-2">Here is one example machine:</p>
+            <p id="intro-p-2">Here is one example of a machine:</p>
             <div id="intro-demo-1"></div>
 
             <div id="intro-p-3">
-              <p>A production team supplies alien crystals to you, as many as you need. These supplies are labeled below the machine.</p>
+              <p>A production team supplies alien crystals to you, as many as you need. These supplies are labeled below the machine. The letters on the crystals just refer to their location for this particular machine, not the properties of the crystals themselves.</p>
               <p>You can put a crystal into the machine by clicking its label.</p>
               <p>Try it.</p>
               <div class='button-group-vc' id="intro-sub-1-">
@@ -307,7 +307,7 @@
         <div id="intro-sub-2-1" >
           <p>Besides extracting energy, the machine also has a <q>Fuse</q> button.</p>
           <p>If you put two crystals into the machine, and click the <q>Fuse</q> button, the machine will try to fuse the two crystals together.</p>
-          <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box.</p>
+          <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. The label on the crystal tells you which crystals went into making it (remember, the letters don't tell you anything other than the location of the crystals for this machine).</p>
           <p>The production team can deliver you this newly discovered crystal for future tests. Again, as many as you need.</p>
           <p><strong>Sometimes the fusion leads to nothing, </strong>and you just lose a chance of extracting energy points from known crystals.</p>
           <p>Try playing with the <q>Fuse</q> process until you discover new crystals.</p>
@@ -335,7 +335,7 @@
           <p>Good job!</p>
           <p>Your failed <q>Fuse</q> attempts are shown on the left. So that you know what to avoid.</p>
           <p>Repeating a successful fusion makes no further changes. To gather energy points from your fused crystal, use the <q>Extract</q> button.</p>
-          <p>Also, you can use fused crystal to fuse more advanced crystals that have even higher enegry points.</p>
+          <p>Also, you can use fused crystals to fuse more advanced crystals that have even higher energy points.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-7' style="opacity:0" onclick="introBtn07()">&gt;&gt;</button>
           </div>
@@ -345,6 +345,7 @@
         <div id="intro-sub-2-4" style="display: none;">
           <p>Note that <strong>different machines have different chances of detecting a fruitful fusion.</strong></p>
           <p>You will be playing this game using several different machines. Note this difference, and make your decisions wisely.</p>
+          <p>Each new machine has a new set of crystals and a different chance of detecting a fusion. Which crystals fuse together will also be different for each machine. Remember the letters only refer to the locations of the crystals for that particular machine.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-8' style="opacity:0" onclick="introBtn08()">&gt;&gt;</button>
           </div>
@@ -352,8 +353,8 @@
 
         <div id="intro-sub-2-5" style="display: none;">
           <p>Finally, there is a <b>limited amount of button presses</b> you can make, for each machine.</p>
-          <p>The amount of button presses left is indicated at the top rim of the machine.</p>
-          <p>After the experiment, we will give <b>extra $3.00 bonus</b> to the top 3 players with highest total energy points.</p>
+          <p>The amount of button presses left is indicated on the top rim of the machine.</p>
+          <p>After the experiment, we will give an <b>extra $3.00 bonus</b> to the top 3 players with highest total energy points.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">&gt;&gt;</button>
           </div>
@@ -374,7 +375,7 @@
           <!-- <li>Any failed, or successful, discovery, will not change furthermore.</li> -->
           <li>Different machines could have different rates of success for fusion.</li>
           <li>There is a limited number of button presses you can make for each machine.</li>
-          <li>Your goal is to maximize the <b>total energy</b> you gather from using the machine. Top 3 players with the highest total energy points get extra $3.00 bonus.</li>
+          <li>Your goal is to maximize the <b>total energy</b> you gather from using the machine. Top 3 players with the highest total energy points get an extra $3.00 bonus.</li>
         </ul>
 
         <div class='button-group-vc'>
