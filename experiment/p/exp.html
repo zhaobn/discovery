@@ -11,7 +11,7 @@
 
   <body>
 
-    <div id="welcome" class="base" style="display:none;">
+    <div id="welcome" class="base" >
       <h1>Information for participants</h1>
       <div id="consent-info">
 
@@ -89,7 +89,7 @@
 
         <br>
 
-        Your total expected time commitment for this study is: <b>10 minutes</b>
+        Your total expected time commitment for this study is: <b>8 minutes</b>.
 
 
         <br>
@@ -156,7 +156,7 @@
 
         <b>Compensation:</b>
 
-        For your participation, you will receive <b>$3.00 plus a bonus that will depend on your performance during a series of games</b>
+        For your participation, you will receive <b>$2.00 plus a bonus that will depend on your performance during a series of games</b>
 
         <br>
 
@@ -239,7 +239,7 @@
 
 
 
-    <div id="instruction" class="base" >
+    <div id="instruction" class="base" style="display:none;">
       <h1>Instruction</h1>
 
       <div id="instruction-1">
@@ -253,12 +253,13 @@
           </div>
 
           <div id="intro-sub-1-1" style="display:none;">
-            <p id="intro-p-1">In this game you will be gathering energy points from alien crystals, using alien crystal machines.</p>
-            <p id="intro-p-2">Here is one example of a machine:</p>
+            <p id="intro-p-1">In this game you will be gathering energy points from alien crystals, using an alien crystal machine.</p>
+            <p id="intro-p-2">Here is the machine:</p>
             <div id="intro-demo-1"></div>
 
             <div id="intro-p-3">
-              <p>A production team supplies alien crystals to you, as many as you need. These supplies are labeled below the machine. The letters on the crystals just refer to their location for this particular machine, not the properties of the crystals themselves.</p>
+              <p>A production team will supply alien crystals to you, as many as you need. These supplies are labeled below the machine.</p>
+              <p>These labels <b>just refer to the locations</b> of the crystals in this particular batch, not the properties of the crystals themselves.</p>
               <p>You can put a crystal into the machine by clicking its label.</p>
               <p>Try it.</p>
               <div class='button-group-vc' id="intro-sub-1-">
@@ -307,7 +308,7 @@
         <div id="intro-sub-2-1">
           <p>Besides extracting energy, the machine also has a <q>Fuse</q> button.</p>
           <p>If you put two crystals into the machine, and click the <q>Fuse</q> button, the machine will try to fuse the two crystals together.</p>
-          <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. The label on the crystal tells you which crystals went into making it (remember, the letters don't tell you anything other than the location of the crystals for this machine).</p>
+          <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. The label on the crystal tells you which crystals went into making it (remember, the letters don't tell you anything other than the location of the crystals for this batch).</p>
           <p>The production team can deliver you this newly discovered crystal for future tests. Again, as many as you need.</p>
           <p><strong>Sometimes the fusion leads to nothing, </strong>and you just lose a chance of extracting energy points from known crystals.</p>
           <p>Try playing with the <q>Fuse</q> process until you discover new crystals.</p>
@@ -343,9 +344,9 @@
 
 
         <div id="intro-sub-2-4" style="display:none;">
-          <p>You will be playing this game using several different machines. <b>Each new machine has a new set of crystals and a different chance of detecting a fusion.</b> Which crystals fuse together will also be different for each machine. Remember that <b>letters only refer to the locations</b> of the crystals for that particular machine.</p>
-          <p>Note this difference, and make your decisions wisely.</p>
-          <p>After the game, you can win up to an <b>extra $3.00 bonus</b>.</p>
+          <p>You will be playing this game with serveral batches of alien crystals. <b>Each new batch has a new set of crystals, indicated by different colors.</b>
+          <p>Again, letters are just markers of locations for the crystals in each particular batch, not their properties.</p>
+          <p>You will also win an extra bonus, proportional to how many energy points you gathered in total.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-8' style="opacity:0" onclick="introBtn08()">&gt;&gt;</button>
           </div>
@@ -369,14 +370,13 @@
           <!-- <li>Your goal is to maximize the total energy you gather from using the machine.</li> -->
           <li>You can gather energy from a single crystal by placing it in the machine and clicking the <q>Extract</q> button.</li>
           <li>You may discover new crystals by placing two known crystals in the machine and clicking the <q>Fuse</q> button.</li>
-          <li>All of the initial simple crystals have the same amount of energy points.</li>
+          <li>All of the initial simple crystals in each batch have the same amount of energy points.</li>
           <li>New crystals have twice as much energy as the most valuable crystal that was used in the fusion.</li>
           <li>Sometimes fusion works out, and sometimes it does not.</li>
           <!-- <li>Any failed, or successful, discovery, will not change furthermore.</li> -->
-          <li>Different machines could have different rates of success for fusion.</li>
-          <li>A new set of crystals is used for each new machine &ndash; the letters on the crystals only refer to their locations.</li>
+          <li>A new set of crystals is used for each task, and the letters on the crystals only refer to their locations in a batch.</li>
           <li>There is a limited number of button presses you can make for each machine, displayed on the upper rim of the machine.</li>
-          <li>Your goal is to maximize the <b>total energy</b> you gather from using the machine. Top 3 players with the highest total energy points get an extra $3.00 bonus.</li>
+          <li>Your goal is to maximize the <b>total energy</b> you gather from using the machine. Your bonus is proportional to this total.</li>
         </ul>
 
         <div class='button-group-vc'>
@@ -403,30 +403,25 @@
               <input type="radio" name="check2">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check2">False
             </p>
-            <li>The <q>Fuse</q> button has the same rate of success for different machines.</li>
+            <li>When there is one crystal in the machine, the <q>Extract</q> button always works.</li>
             <p>
               <input type="radio" name="check3">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check3">False
             </p>
-            <li>When there is one crystal in the machine, the <q>Extract</q> button always works.</li>
+            <li>When fusion discovers a new crystal, you get rewarded immediately.</li>
             <p>
               <input type="radio" name="check4">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check4">False
             </p>
-            <li>When you discover a new crystal, you get rewarded immediately.</li>
+            <li>You may gather higher energy from new crystals.</li>
             <p>
               <input type="radio" name="check5">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check5">False
             </p>
-            <li>You may gather higher energy from new crystals.</li>
+            <li>You can play with a machine as many times as you wish.</li>
             <p>
               <input type="radio" name="check6">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input type="radio" name="check6">False
-            </p>
-            <li>You can play with a machine as many times as you wish.</li>
-            <p>
-              <input type="radio" name="check7">Correct&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <input type="radio" name="check7">False
             </p>
           </ol>
         </form>
@@ -450,8 +445,9 @@
 
 
 
-    <div id="task" class="base" style="display:none;">
-    </div>
+
+
+    <div id="task" class="base" style="display:none;"></div>
 
 
 
@@ -460,8 +456,8 @@
 
     <div id="score-feedback" class="base" style="display:none;">
       You have won <span id="score-sum" style="color: red;font-weight: bold;">0</span> energy points in total!<br>
-      If you rank top 3 among all the participants, you will get extra $4.00 bonus.<br>
-      We aim to get this sorted in three working days.
+      These correspond to $<span id="bonus-sum">0.00</span> extra bonus.<br>
+      We will pay you the bonus within three working days.
       <div class='button-group-vc' style="margin-top: 100px;">
         <button class='intro-button' onclick="hideAndShowNext('score-feedback', 'debrief', 'block')">&gt;&gt;</button>
       </div>

@@ -1,10 +1,12 @@
 
 library(rjson)
 library(dplyr)
+options(scipen=999)
 
-dat = read.csv('./data/crystal.csv')
 
-start_index = 3
+dat = read.csv('./data/pilot/crystalPilot2.csv')
+
+start_index = 2
 end_index = nrow(dat)
 
 
@@ -34,9 +36,11 @@ write.csv(df.sw, file='raw_pilot_sw.csv')
 
 
 
+(d$timestamp - as.numeric(inv_fromJSON(dat$subject[1])['start_time']))/1000
+
 
 # Collect trial data
-d = inv_fromJSON(dat$trial[start_index])[[1]]
+d = inv_fromJSON(dat$trial[1])[[1]]
 d[['prolific_id']] = dat$worker[start_index]
 df.tw.aux = data.frame(d)
 
