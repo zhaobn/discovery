@@ -2,7 +2,166 @@
 library(tidyr)
 library(dplyr)
 library(ggplot2)
-load('data/pilot/pulled.Rdata')
+load('data/pilot/pilot2.Rdata')
+
+
+#### Label confusion #### 
+lbd = df.tw %>%
+  filter(action=='F') %>%
+  select(id, task, step, item_selection, action, feedback, immediate_score, condition, total_score, task_sec)
+
+# Keep fusing the same
+lbd %>%
+  group_by(id, task, condition) %>%
+  count(item_selection) %>%
+  mutate(is_unique=n==1) %>%
+  group_by(id, task, condition) %>%
+  summarise(is_unique=sum(is_unique)/sum(n)) %>%
+  group_by(condition) %>%
+  summarise(is_unique=sum(is_unique)/n()) 
+
+# Same first fuse selection
+lbd %>%
+  group_by(id, task, condition) %>%
+  mutate(first_step = min(step)) %>%
+  filter(step==first_step) %>%
+  group_by(id, condition) %>%
+  count(item_selection) %>%
+  mutate(is_unique=n==1) %>%
+  group_by(condition) %>%
+  summarise(is_unique=sum(is_unique)/n()) 
+  
+# First fuse repeats previous successes
+successes = lbd %>% 
+  filter(feedback==1, task<6) %>%
+  select(id, task_joiner=task, step, prev_item_selection=item_selection)
+first_selections = lbd %>%
+  group_by(id, task, condition) %>%
+  mutate(first_step = min(step)) %>%
+  filter(step==first_step, task > 1) %>%
+  mutate(task_joiner=task-1) %>%
+  select(id, task, task_joiner, condition, item_selection) 
+first_selections %>%
+  full_join(successes, by=c('id', 'task_joiner')) %>%
+  filter(!is.na(prev_item_selection)) %>%
+  group_by(condition) %>%
+  summarise(is_repeat=sum(item_selection==prev_item_selection),
+            is_repeat_perc=sum(item_selection==prev_item_selection)/(5*10))
+
+# [ab]-[cd] vs. [ab]-c
+nested_combos_base = lbd %>% filter(nchar(item_selection)== 6)
+nested_combos_comp = lbd %>% 
+  filter(nchar(item_selection)== 9) %>%
+  filter(substr(item_selection,2,2) %in% c('a','b','c','d','e','f'))
+nested_combos_base_count = nested_combos_base %>%
+  group_by(id, condition) %>%
+  summarise(combo_base=n())
+nested_combos_comp_count = nested_combos_comp %>%
+  group_by(id, condition) %>%
+  summarise(combo_comp=n())
+nested_combos_base_count %>%
+  full_join(nested_combos_comp_count, by=c('id', 'condition')) %>%
+  mutate(combo_base=ifelse(is.na(combo_base), 0, combo_base),
+         combo_comp=ifelse(is.na(combo_comp), 0, combo_comp)) %>%
+  mutate(total=combo_base+combo_comp) %>%
+  group_by(condition, id) %>%
+  summarise(sum(combo_comp), sum(combo_comp)/sum(total))
+
+
+#### Demographics #### 
+
+mean(df.sw$age)
+sd(df.sw$age)
+
+df.sw %>%
+  mutate(is_female=sex=='female') %>%
+  summarise(is_female=sum(is_female), perc=sum(is_female)/n())
+
+df.sw %>%
+  mutate(task_time=task_duration/60000) %>%
+  summarise(mean(task_time), sd(task_time))
+
+
+
+#### Per condition #### 
+df.sw %>% count(assignment)
+
+
+# Total score
+scores = df.tw %>%
+  group_by(id, task, condition) %>%
+  summarise(total_score=max(total_score)) %>%
+  group_by(condition) %>%
+  summarise(score=mean(total_score), se=sd(total_score)/sqrt(n()))
+ggplot(scores, aes(x=condition, y=score)) +
+  geom_bar(stat='identity', fill='cornflowerblue') +
+  geom_errorbar(aes(ymin=score-se, ymax=score+se), width=.2) +
+  theme_bw()
+  
+
+# Extraction rates
+exploration = df.tw %>%
+  mutate(explore=as.numeric(action=='F')) %>%
+  group_by(id, task, condition) %>%
+  summarise(explore_rate=sum(explore)/n())
+
+ggplot(exploration, aes(x=condition, y=explore_rate, fill=condition)) +
+  geom_violin(alpha=0.5) +
+  geom_boxplot(width=0.2) +
+  geom_jitter(position = position_jitter(seed = 1, width = 0.2)) +
+  theme_bw() +
+  theme(legend.position = 'bottom')
+
+
+
+# Rank by score
+ranking = df.tw %>%
+  group_by(id, condition) %>%
+  summarise(total_score=max(total_score)) %>%
+  arrange(-total_score)
+ranking$score_rank=seq(nrow(ranking))
+
+# Plot raw data
+dd = df.tw %>%
+  select(id, task, step, condition, action) %>%
+  mutate(action=as.numeric(action=='F')) %>%
+  left_join(ranking, by=c('id', 'condition')) %>%
+  select(id=score_rank, task, step, condition, action) %>%
+  mutate(id=as.factor(id))
+
+ggplot(dd, aes(x=step, y=task, fill=action)) +
+  geom_tile() +
+  facet_wrap(condition~id) +
+  scale_x_continuous(breaks=seq(10))+
+  scale_y_continuous(breaks=seq(6))+
+  theme(panel.background = element_blank())
+
+
+# Plot average
+dd_avg = df.tw %>%
+  select(id, task, step, condition, action) %>%
+  mutate(action=as.numeric(action=='F')) %>%
+  group_by(task, step, condition) %>%
+  summarise(action=mean(action))
+ggplot(dd_avg, aes(x=step, y=task, fill=action)) +
+  geom_tile() +
+  facet_wrap(~condition, nrow = 2) +
+  scale_x_continuous(breaks=seq(10))+
+  scale_y_continuous(breaks=seq(6))+
+  theme(panel.background = element_blank())
+
+
+
+# Overview - completion time, total score, engagement, difficulty
+df.sw %>%
+  mutate(task_time=task_duration/60000) %>%
+  group_by(assignment) %>%
+  summarise(mean(task_time), sd(task_time),
+            mean(total_score), sd(total_score),
+            mean(engagement),
+            mean(difficulty),
+            n=n())
+
 
 
 #### Completion time #### 

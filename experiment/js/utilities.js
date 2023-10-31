@@ -186,7 +186,7 @@ function getItemWidth(size, type) {
   return length
 }
 
-function drawBlock(letter, id='', color, type='') {
+function drawBlock(letter, id='', color, score=0, type='') {
   let block = createCustomElement('div', '', '');
   let size = getItemSize(letter);
 

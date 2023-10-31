@@ -3,9 +3,9 @@ let isDev = true;
 /** Set up conditions */
 
 const conditions = [ 'k2', 'k8', 'u2', 'u8'];
-const cond = isDev? 'k8': sampleFromList(conditions, 1);
+const cond = isDev? 'u8': sampleFromList(conditions, 1);
 const showProb = cond[0] == 'k';
-const baseRate = parseInt(cond[1])/10;
+const baseRate =  parseInt(cond[1])/10;
 const rewardInc = 2;
 const baseReward = (baseRate==0.2)? 50: 5;
 isDev? console.log(cond, showProb, baseRate, baseReward) : null;
