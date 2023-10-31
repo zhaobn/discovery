@@ -6,7 +6,7 @@ function drawMachine (id, steps) {
   let retDiv = createCustomElement('div', '', '');
 
   let scoreDiv = createCustomElement('div', 'machine-top', `machine-top-${id}`);
-  scoreDiv.innerHTML = `<strong>Total energy: <span id="total-score-${id}" style="color:red">0</span></strong>`;
+  scoreDiv.innerHTML = `<strong>Total XP: <span id="total-score-${id}" style="color:red">0</span></strong>`;
 
   let ele1 = createCustomElement('div', '', `dis-item-left-${id}`);
   let ele2 = createCustomElement('div', '', `dis-item-mid-${id}`);
@@ -63,7 +63,7 @@ function drawTask(id, color, steps, itemList = baseObj, histObj = {'showup': 1},
 
   let mainLeft = createCustomElement('div', 'main-left', `main-left-${id}`);
   let itemDiv = createCustomElement('div', 'item-box', `item-box-${id}`);
-  itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el, color)) });
+  itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el, color, baseReward)) });
 
   mainLeft.append(drawMachine(id, steps));
   mainLeft.append(itemDiv);

@@ -221,7 +221,12 @@ li {
   vertical-align: bottom;
   border: solid black 1px;
 }
-
+.item-holder {}
+.item-score {
+  text-align: center;
+  margin-top: -8px;
+  color: silver;
+}
 
 .hist-panel {
   height: 100%;

@@ -65,7 +65,7 @@ function handleItemClick(item, id, isFuseDemo = false) {
   let color = taskConfigsWithId[task]['color'];
 
   if (allDisplays[id].length == 0) {
-    let toAdd = drawBlock(label, '', color, '');
+    let toAdd = drawBlock(label, '', color, 0, '');
     toAdd.onclick = () => handleMachineItemClick('mid', id);
     getEl(`dis-item-mid-${id}`).append(toAdd);
 
@@ -75,11 +75,11 @@ function handleItemClick(item, id, isFuseDemo = false) {
   } else if (allDisplays[id].length == 1) {
     getEl(`dis-item-mid-${id}`).innerHTML = '';
 
-    let toAddLeft = drawBlock(allDisplays[id][0], '', color, '');
+    let toAddLeft = drawBlock(allDisplays[id][0], '', color, 0, '');
     toAddLeft.onclick = () => handleMachineItemClick('left', id);
     getEl(`dis-item-left-${id}`).append(toAddLeft);
 
-    let toAddRight = drawBlock(label, '', color, '');
+    let toAddRight = drawBlock(label, '', color, 0, '');
     toAddRight.onclick = () => handleMachineItemClick('right', id);
     getEl(`dis-item-right-${id}`).append(toAddRight);
 
@@ -97,7 +97,7 @@ function handleMachineItemClick(pos, id, isIntro=false) {
 
     let leftItem = (pos == 'left')? allDisplays[id][1]: ( (pos == 'right')? allDisplays[id][0]: null );
 
-    let toAdd = drawBlock(leftItem, '', taskConfigsWithId[id]['color'], '');
+    let toAdd = drawBlock(leftItem, '', taskConfigsWithId[id]['color'], 0, '');
     toAdd.onclick = () => handleMachineItemClick('mid', id);
     getEl(`dis-item-mid-${id}`).append(toAdd);
 
@@ -170,7 +170,7 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
     getEl(`dis-item-mid-${id}`).innerHTML = '';
 
     if (allCombo[id][thisCombo] == 1) {
-      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['color'], '',));
+      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['color'], 0, '',));
     } else {
       getEl(`feedback-box-${id}`).innerHTML = nullFeedback;
     }
@@ -196,7 +196,7 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
       getEl(`dis-item-right-${id}`).innerHTML = '';
       getEl(`dis-item-left-${id}`).innerHTML = '';
       getEl(`dis-item-mid-${id}`).innerHTML = '';
-      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['color'], ''));
+      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['color'], 0, ''));
       setTimeout(() => { getEl(`feedback-box-${id}`).innerHTML = '';}, feedbacRemain)
 
       // Update inventory
@@ -241,9 +241,9 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
 function addToHistoryPanel (id, itemA, itemB) {
 
   let histInfo = createCustomElement('div', 'hist-cell', '');
-  histInfo.append(drawBlock(itemA, '', taskConfigsWithId[id]['color'], 'small',));
+  histInfo.append(drawBlock(itemA, '', taskConfigsWithId[id]['color'], 0, 'small',));
   histInfo.append('+');
-  histInfo.append(drawBlock(itemB, '', taskConfigsWithId[id]['color'], 'small'));
+  histInfo.append(drawBlock(itemB, '', taskConfigsWithId[id]['color'], 0, 'small'));
 
   getEl(`hist-box-${id}`).append(histInfo);
   getEl(`hist-box-${id}`).scrollTop = getEl(`hist-box-${id}`).scrollHeight;
@@ -251,7 +251,7 @@ function addToHistoryPanel (id, itemA, itemB) {
 }
 function addToInventory (id, item) {
   let itemId = id + '-' + item
-  let newItem = drawBlock(item, itemId, taskConfigsWithId[id]['color'], '');
+  let newItem = drawBlock(item, itemId, taskConfigsWithId[id]['color'],  allObjRewards[id][item], '');
   newItem.onclick = () => handleItemClick(itemId, id);
   getEl(`item-box-${id}`).append(newItem);
 

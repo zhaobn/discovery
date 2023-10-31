@@ -187,17 +187,24 @@ function getItemWidth(size, type) {
 }
 
 function drawBlock(letter, id='', color, score=0, type='') {
-  let block = createCustomElement('div', '', '');
+
+  let blockBg = createCustomElement('div', 'item-holder', '');
+
+  let block = createCustomElement('div', 'item-element', id);
   let size = getItemSize(letter);
 
-  block.id = id;
-  block.className = 'item-element'
   block.style.height = getItemHeight(size, type).toString() + 'px';
   block.style.width = getItemWidth(size, type).toString() + 'px';
   block.style.backgroundColor = color;
   block.innerHTML = letter;
 
-  return block
+  blockBg.append(block);
+  if (score > 0) {
+    let scoreInfo =  createCustomElement('div', 'item-score', '');
+    scoreInfo.innerHTML = score + ' xp';
+    blockBg.append(scoreInfo);
+  }
+  return blockBg
 }
 function chanceTobar(x) {
   return Math.round((1-x)*100).toString() + '%'
