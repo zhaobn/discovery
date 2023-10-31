@@ -29,7 +29,7 @@ const machineColor = 'darkslategray';
 let taskConfigsWithId = {};
 
 // Add practice trial config
-let pracConfig = { 'p': 0.4, 'w': 2, 'color': demoObjColor, 'step': steps, 'r': baseReward };
+let pracConfig = { 'p': baseRate, 'w': 2, 'color': demoObjColor, 'step': steps, 'r': baseReward };
 for (let i = 0; i < nPractice; i++) {
   let taskId = 'p' + (i+1).toString();
   taskConfigsWithId[taskId] = pracConfig;

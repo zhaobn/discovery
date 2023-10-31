@@ -70,7 +70,7 @@ function drawTask(id, color, steps, itemList = baseObj, histObj = {'showup': 1},
 
   let mainRight = createCustomElement('div', 'main-right', `main-right-${id}`);
   let histPanel = createCustomElement('div', 'hist-panel', '');
-  histPanel.innerHTML = (Object.keys(histObj).length < 0)? '' : 'History' + `<div class="hist-box" id="hist-box-${id}"></div>`
+  histPanel.innerHTML = (Object.keys(histObj).length < 0)? '' : 'Not working' + `<div class="hist-box" id="hist-box-${id}"></div>`
   mainRight.append(histPanel);
 
 
