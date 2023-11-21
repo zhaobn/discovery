@@ -188,10 +188,10 @@ li {
 .machine-btn {
   font-size: 30px;
   padding: 0 10px;
-  background-color: goldenrod;
+  background-color: ghostwhite;
 }
 .machine-btn:hover:enabled {
-  background-color: gold;
+  background-color: ghostwhite;
 }
 .machine-space-holder {
   width: 100px;

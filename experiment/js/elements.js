@@ -1,7 +1,7 @@
 
 /** Create page elements */
 
-function drawMachine (id, steps) {
+function drawMachine (id, steps, color) {
 
   let retDiv = createCustomElement('div', '', '');
 
@@ -12,7 +12,7 @@ function drawMachine (id, steps) {
   let ele2 = createCustomElement('div', '', `dis-item-mid-${id}`);
   let ele3 = createCustomElement('div', '', `dis-item-right-${id}`);
   let display = createCustomElement('div', 'machine-display', '');
-  display.style.borderColor = machineColor;
+  display.style.borderColor = color;
   display.append(ele1);
   display.append(ele2);
   display.append(ele3);
@@ -21,7 +21,7 @@ function drawMachine (id, steps) {
   // mbar.style.backgroundColor = color;
   for (let i = 0; i < steps; i++) {
     let mbarUnit = createCustomElement('div', 'machine-bar-unit', id + '-unit-' + (i+1).toString());
-    mbarUnit.style.backgroundColor = machineColor;
+    mbarUnit.style.backgroundColor = color;
     mbar.append(mbarUnit)
   }
 
@@ -30,7 +30,7 @@ function drawMachine (id, steps) {
   mholder.append(display);
 
   let fbox = createCustomElement('div', 'feedback-box', `feedback-box-${id}`);
-  fbox.style.borderColor = machineColor;
+  fbox.style.borderColor = color;
 
   let mbox = createCustomElement('div', 'machine-box', '');
   mbox.append(mholder);
@@ -43,7 +43,7 @@ function drawMachine (id, steps) {
   let fuseBtn = createBtn(`fuse-btn-${id}`, 'Fuse', 'machine-btn', false);
   let holder = createCustomElement('div', 'machine-space-holder', '');
   let mLower = createCustomElement('div', 'machine-lower', `machine-lower-${id}`);
-  mLower.style.backgroundColor = machineColor;
+  mLower.style.backgroundColor = color;
   mLower.append(extractBtn);
   mLower.append(fuseBtn);
   mLower.append(holder);
@@ -57,20 +57,20 @@ function drawMachine (id, steps) {
 }
 
 
-function drawTask(id, color, steps, itemList = baseObj, histObj = {'showup': 1}, ) {
+function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'showup': 1}, ) {
 
   let retDiv = createCustomElement('div', 'main-box', `main-box-${id}`);
 
   let mainLeft = createCustomElement('div', 'main-left', `main-left-${id}`);
   let itemDiv = createCustomElement('div', 'item-box', `item-box-${id}`);
-  itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el, color, baseReward)) });
+  itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el, itemColor, baseReward)) });
 
-  mainLeft.append(drawMachine(id, steps));
+  mainLeft.append(drawMachine(id, steps, color));
   mainLeft.append(itemDiv);
 
   let mainRight = createCustomElement('div', 'main-right', `main-right-${id}`);
   let histPanel = createCustomElement('div', 'hist-panel', '');
-  histPanel.innerHTML = (Object.keys(histObj).length < 0)? '' : 'Not working' + `<div class="hist-box" id="hist-box-${id}"></div>`
+  histPanel.innerHTML = (Object.keys(histObj).length < 0)? '' : 'Failed attempts' + `<div class="hist-box" id="hist-box-${id}"></div>`
   mainRight.append(histPanel);
 
 
@@ -94,7 +94,7 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
   infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length}` + probInfo;
   infoBar.innerHTML += `<br><hr>`
 
-  let taskDiv = drawTask(id, config['color'], config['step'], itemList, histObj);
+  let taskDiv = drawTask(id, config['color'], config['step'], config['objColor'], itemList, histObj);
   let btnDiv = createCustomElement('div', 'button-group-vc', 'intro-btn-group-'+id);
   btnDiv.append(createBtn('task-next-btn-' + id, 'Next', 'intro-button', true));
 
@@ -114,7 +114,7 @@ function makeTransitionDiv(blockId, p) {
 
   let introText = (blockId[0] == 'p')? `Warm up with ${practiceIds.length} practice trials.` : `There are ${taskBlockSize} trials in total.`;
   if (showProb == true && blockId[0] == 't') {
-    introText += `<br><br>Fusion works out ${Math.round(p*10)} out of 10 times on average.`
+    introText += `<br><br>Make the most out of it! Your bonus depends on the total XPs you gather.`; //`<br><br>Fusion works out ${Math.round(p*10)} out of 10 times on average.`
   }
   retDiv.innerHTML = introText;
 

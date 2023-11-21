@@ -197,6 +197,9 @@ function drawBlock(letter, id='', color, score=0, type='') {
   block.style.width = getItemWidth(size, type).toString() + 'px';
   block.style.backgroundColor = color;
   block.innerHTML = letter;
+  if (color == '#ffeb3b' | color == '#cddc39' | color == '#ffc107') {
+    block.style.color ='black';
+  }
 
   blockBg.append(block);
   if (score > 0) {

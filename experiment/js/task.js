@@ -51,7 +51,7 @@ testIds.forEach(tid => {
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  //getEl('task-'+tid).style.display = 'none';
+  getEl('task-'+tid).style.display = 'none';
 
 })
 
@@ -62,7 +62,7 @@ function handleItemClick(item, id, isFuseDemo = false) {
 
   let label = item.split('-').splice(-1)[0];
   let task = item.split('-')[0];
-  let color = taskConfigsWithId[task]['color'];
+  let color = taskConfigsWithId[task]['objColor'];
 
   if (allDisplays[id].length == 0) {
     let toAdd = drawBlock(label, '', color, 0, '');
@@ -97,7 +97,7 @@ function handleMachineItemClick(pos, id, isIntro=false) {
 
     let leftItem = (pos == 'left')? allDisplays[id][1]: ( (pos == 'right')? allDisplays[id][0]: null );
 
-    let toAdd = drawBlock(leftItem, '', taskConfigsWithId[id]['color'], 0, '');
+    let toAdd = drawBlock(leftItem, '', taskConfigsWithId[id]['objColor'], 0, '');
     toAdd.onclick = () => handleMachineItemClick('mid', id);
     getEl(`dis-item-mid-${id}`).append(toAdd);
 
@@ -169,14 +169,15 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
     getEl(`dis-item-left-${id}`).innerHTML = '';
     getEl(`dis-item-mid-${id}`).innerHTML = '';
 
-    if (allCombo[id][thisCombo] == 1) {
-      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['color'], 0, '',));
-    } else {
-      getEl(`feedback-box-${id}`).innerHTML = nullFeedback;
-    }
+    // if (allCombo[id][thisCombo] == 1) {
+    //   getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['objColor'], 0, '',));
+    // } else {
+    //   getEl(`feedback-box-${id}`).innerHTML = nullFeedback;
+    // }
+    // // Record data
+    // isDemo? null : recordData(id, 'F', '1', 0, allScoreOnDisplay[id])
 
-    // Record data
-    isDemo? null : recordData(id, 'F', '1', 0, allScoreOnDisplay[id])
+    getEl(`feedback-box-${id}`).innerHTML = 'Tried this before!'
 
     setTimeout(() => { getEl(`feedback-box-${id}`).innerHTML = ''; }, feedbacRemain);
 
@@ -196,7 +197,7 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
       getEl(`dis-item-right-${id}`).innerHTML = '';
       getEl(`dis-item-left-${id}`).innerHTML = '';
       getEl(`dis-item-mid-${id}`).innerHTML = '';
-      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['color'], 0, ''));
+      getEl(`feedback-box-${id}`).append(drawBlock(thisCombo, '', taskConfigsWithId[id]['objColor'], 0, ''));
       setTimeout(() => { getEl(`feedback-box-${id}`).innerHTML = '';}, feedbacRemain)
 
       // Update inventory
@@ -222,28 +223,28 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
       isDemo? null : recordData(id, 'F', '0', 0, allScoreOnDisplay[id]);
 
     }
+
+    // Update step
+    updateStep(id, isDemo)
   }
 
-    // Reset machine
-    allDisplays[id] = [];
-    getEl(`fuse-btn-${id}`).disabled = true;
-    if (isFuseDemo) {
-      if (allCombo[id][thisCombo] == 1) {
-        showNext('intro-btn-group-5');
-        getEl('instruction-btn-5').style.opacity = 1;
-      }
+  // Reset machine
+  allDisplays[id] = [];
+  getEl(`fuse-btn-${id}`).disabled = true;
+  if (isFuseDemo) {
+    if (allCombo[id][thisCombo] == 1) {
+      showNext('intro-btn-group-5');
+      getEl('instruction-btn-5').style.opacity = 1;
     }
-
-  // Update step
-  updateStep(id, isDemo)
+  }
 
 }
 function addToHistoryPanel (id, itemA, itemB) {
 
   let histInfo = createCustomElement('div', 'hist-cell', '');
-  histInfo.append(drawBlock(itemA, '', taskConfigsWithId[id]['color'], 0, 'small',));
+  histInfo.append(drawBlock(itemA, '', taskConfigsWithId[id]['objColor'], 0, 'small',));
   histInfo.append('+');
-  histInfo.append(drawBlock(itemB, '', taskConfigsWithId[id]['color'], 0, 'small'));
+  histInfo.append(drawBlock(itemB, '', taskConfigsWithId[id]['objColor'], 0, 'small'));
 
   getEl(`hist-box-${id}`).append(histInfo);
   getEl(`hist-box-${id}`).scrollTop = getEl(`hist-box-${id}`).scrollHeight;
@@ -251,7 +252,7 @@ function addToHistoryPanel (id, itemA, itemB) {
 }
 function addToInventory (id, item) {
   let itemId = id + '-' + item
-  let newItem = drawBlock(item, itemId, taskConfigsWithId[id]['color'],  allObjRewards[id][item], '');
+  let newItem = drawBlock(item, itemId, taskConfigsWithId[id]['objColor'],  allObjRewards[id][item], '');
   newItem.onclick = () => handleItemClick(itemId, id);
   getEl(`item-box-${id}`).append(newItem);
 
@@ -306,7 +307,7 @@ function giveFeedback(id) {
   hide(`task-next-btn-${id}`);
 
   let feedbackTest = createCustomElement('div', 'feedback-text', '');
-  feedbackTest.innerHTML = `You gathered <span style="color:red;font-weight:bold;">${allScoreOnDisplay[id]}</span> energy points in this round!`
+  feedbackTest.innerHTML = `You gathered <span style="color:red;font-weight:bold;">${allScoreOnDisplay[id]}</span> XPs in this round!`
 
   getEl(`main-box-${id}`).append(feedbackTest);
 
@@ -354,7 +355,7 @@ let introId = 'intro1';
 let played = 0;
 setTimeout(() => { getEl(`instruction-btn-0`).style.opacity = 1;}, 0);
 
-getEl('intro-demo-1').append(drawTask(introId, taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step']));
+getEl('intro-demo-1').append(drawTask(introId, taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step'], taskConfigsWithId[introId]['objColor']));
 getEl('hist-box-intro1').style.height = '300px';
 baseObj.forEach(el => {
   let item = introId + '-' + el;
@@ -393,7 +394,7 @@ function introBtn02() {
 
 
 let introIdFuse = 'intro2';
-getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step']));
+getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step'], taskConfigsWithId[introIdFuse]['objColor']));
 getEl('hist-box-intro2').style.height = '300px';
 baseObj.forEach(el => {
   let item =introIdFuse + '-' + el;
@@ -487,7 +488,7 @@ function handle_retry() {
 
   // draw new demo machine
   getEl('intro-demo-2').innerHTML = '';
-  getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step']));
+  getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step'], taskConfigsWithId[introIdFuse]['objColor']));
   getEl('hist-box-intro2').style.height = '300px';
   baseObj.forEach(el => {
     let item =introIdFuse + '-' + el;

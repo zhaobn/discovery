@@ -1,27 +1,59 @@
 let isDev = true;
 
 /** Set up conditions */
+const condSettings = {
+  'll': { 'p': 0.2, 'w': 2, 'r': 20},
+  'lh': { 'p': 0.2, 'w': 4, 'r': 3},
+  'hl': { 'p': 0.8, 'w': 1.2, 'r': 25},
+  'hh': { 'p': 0.8, 'w': 2, 'r': 1},
+}
 
-const conditions = [ 'k2', 'k8', 'u2', 'u8'];
-const cond = isDev? 'u8': sampleFromList(conditions, 1);
-const showProb = cond[0] == 'k';
-const baseRate =  parseInt(cond[1])/10;
-const rewardInc = 2;
-const baseReward = (baseRate==0.2)? 50: 5;
-isDev? console.log(cond, showProb, baseRate, baseReward) : null;
+const conditions = Object.keys(condSettings);
+const cond = isDev? 'll': sampleFromList(conditions, 1);
+const showProb = true;
+
+const baseRate = condSettings[cond]['p'];
+const rewardInc = condSettings[cond]['w'];
+let baseReward = condSettings[cond]['r'];
+isDev? console.log(cond, baseRate, rewardInc, baseReward) : null;
+
 
 
 /** Task-related settings */
 
 const nPractice = 2;
-const taskBlockSize = 6;
+const taskBlockSize = 7;
 const steps = 10;
 
 const baseObj = ['a', 'b', 'c', 'd', 'e', 'f'];
-let objColors = [ 'rgb(0 114 178)', 'rgb(86 180 233)','rgb(230 159 0)','rgb(213 94 0)', 'rgb(204 121 167)', 'rgb(0 0 0)' ];
-objColors = sampleFromList(objColors, taskBlockSize, false);
+
+const allColors = [
+  '#f44336',
+  '#e81e63',
+  '#9c27b0',
+  '#673ab7',
+  '#3f51b5',
+  '#2196f3',
+  '#03a9f4',
+  '#00bcd4',
+  '#009688',
+  '#4caf50',
+  '#8bc34a',
+  '#cddc39',
+  '#ffeb3b',
+  '#ffc107',
+  '#ff9800',
+  '#ff5722'
+]
+let objColors =  sampleFromList(allColors, taskBlockSize, false); //[ 'rgb(0 114 178)', 'rgb(86 180 233)','rgb(230 159 0)','rgb(213 94 0)', 'rgb(204 121 167)', 'rgb(0 0 0)', 'rgb(0 153 76)', 'rgb(102 0 102)' ];
+//objColors = sampleFromList(objColors, taskBlockSize, false);
 const demoObjColor = 'silver';
-const machineColor = 'darkslategray';
+
+const demoMachineColor = 'gray';
+let machineColors = sampleFromList(allColors, taskBlockSize, false); //[ 'royalblue', 'darkgreen', 'darkred', 'darkslategray', 'lightcoral', 'lightseagreen', 'mediumpurple', 'rosybrown' ];
+//machineColors = sampleFromList(machineColors, taskBlockSize, false);
+
+let machineColor = demoMachineColor;
 
 
 /** Prep setting to task configurations */
@@ -29,7 +61,7 @@ const machineColor = 'darkslategray';
 let taskConfigsWithId = {};
 
 // Add practice trial config
-let pracConfig = { 'p': baseRate, 'w': 2, 'color': demoObjColor, 'step': steps, 'r': baseReward };
+let pracConfig = { 'p': baseRate, 'w': rewardInc, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
 for (let i = 0; i < nPractice; i++) {
   let taskId = 'p' + (i+1).toString();
   taskConfigsWithId[taskId] = pracConfig;
@@ -37,10 +69,10 @@ for (let i = 0; i < nPractice; i++) {
 // Task trial config
 objColors.forEach((col, id) => {
   let taskId = 't'+(id+1).toString();
-  taskConfigsWithId[taskId] = { 'p': baseRate, 'w': 2, 'step': steps, 'r': baseReward, 'color': col };
+  taskConfigsWithId[taskId] = { 'p': baseRate, 'w': 2, 'step': steps, 'r': baseReward, 'objColor': col, 'color': machineColors[id] };
 })
 // Pad info for instruction demos
-let demoConfig = { 'p': 0.4, 'w': 2, 'color': demoObjColor, 'step': steps, 'r': baseReward };
+let demoConfig = { 'p': 0.4, 'w': 2, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
 taskConfigsWithId['intro1'] = demoConfig;
 taskConfigsWithId['intro2'] = demoConfig;
 
