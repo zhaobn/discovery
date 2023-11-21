@@ -11,17 +11,19 @@ lbd = df.tw %>%
   select(id, task, step, item_selection, action, feedback, immediate_score, condition, total_score, task_sec)
 
 # Keep fusing the same
-lbd %>%
+unique_fusion = lbd %>%
   group_by(id, task, condition) %>%
   count(item_selection) %>%
   mutate(is_unique=n==1) %>%
   group_by(id, task, condition) %>%
   summarise(is_unique=sum(is_unique)/sum(n)) %>%
   group_by(condition) %>%
-  summarise(is_unique=sum(is_unique)/n()) 
+  summarise(is_unique=sum(is_unique)/n()) %>%
+  mutate(unique_total_fusion=round(is_unique*100,1)) %>%
+  select(condition, unique_total_fusion)
 
 # Same first fuse selection
-lbd %>%
+unique_first_fusion_attemp = lbd %>%
   group_by(id, task, condition) %>%
   mutate(first_step = min(step)) %>%
   filter(step==first_step) %>%
@@ -29,7 +31,10 @@ lbd %>%
   count(item_selection) %>%
   mutate(is_unique=n==1) %>%
   group_by(condition) %>%
-  summarise(is_unique=sum(is_unique)/n()) 
+  summarise(is_unique=sum(is_unique)/n()) %>%
+  mutate(unique_first_fusion=round(is_unique*100,1)) %>%
+  select(condition, unique_first_fusion)
+  
   
 # First fuse repeats previous successes
 successes = lbd %>% 
@@ -41,12 +46,22 @@ first_selections = lbd %>%
   filter(step==first_step, task > 1) %>%
   mutate(task_joiner=task-1) %>%
   select(id, task, task_joiner, condition, item_selection) 
-first_selections %>%
+first_repeat = first_selections %>%
   full_join(successes, by=c('id', 'task_joiner')) %>%
   filter(!is.na(prev_item_selection)) %>%
   group_by(condition) %>%
   summarise(is_repeat=sum(item_selection==prev_item_selection),
-            is_repeat_perc=sum(item_selection==prev_item_selection)/(5*10))
+            is_repeat_perc=sum(item_selection==prev_item_selection)/(5*10)) %>%
+  mutate(first_fusion_repeat=round(is_repeat_perc*100,1)) %>%
+  select(condition, first_fusion_repeat)
+
+
+# Put together
+label_stats = unique_fusion %>%
+  left_join(unique_first_fusion_attemp, by='condition') %>%
+  left_join(first_repeat, by='condition')
+write.csv(label_stats, file='label_stats.csv')
+
 
 # [ab]-[cd] vs. [ab]-c
 nested_combos_base = lbd %>% filter(nchar(item_selection)== 6)
