@@ -239,12 +239,12 @@
 
 
 
-    <div id="instruction" class="base" style="display:none;">
+    <div id="instruction" class="base" >
       <h1>Instruction</h1>
 
-      <div id="instruction-1">
+      <div id="instruction-1" style="display:none;">
         <div style="padding-left:5px;">
-          <div id="intro-sub-1-0">
+          <div id="intro-sub-1-0"  style="display:none;">
             <p>Thank you for playing my game!</p>
             <p><strong>These instructions may take about 5 minutes to read. Please follow them carefully. <span style="color:red;">There will be a quiz!</span></strong></p>
             <div class='button-group-vc' id="intro-btn-group-0">
@@ -252,17 +252,17 @@
             </div>
           </div>
 
-          <div id="intro-sub-1-1" style="display:none;">
-            <p id="intro-p-1">In this game you will be gathering energy points from alien crystals, using an alien crystal machine.</p>
-            <p id="intro-p-2">Here is the machine:</p>
+          <div id="intro-sub-1-1">
+            <p id="intro-p-1">You are on a secret mission. It is about alien crystals.</p>
+            <p id="intro-p-2">Each alien crystal contains some energy XPs. You can use a special machine to extract energy XPs - see an example machine below.</p>
             <div id="intro-demo-1"></div>
 
             <div id="intro-p-3">
-              <p>A production team will supply alien crystals to you, as many as you need. These supplies are labeled below the machine.</p>
-              <p>Alien crystals contain energy XPs. Researchers already measured the XPs of the alien crystals provided to you, indicated by the gray numbers below each label.</p>
-              <p>These labels <b>just refer to the locations</b> of the crystals in this particular batch, not the properties of the crystals themselves.</p>
+              <p>For your mission, a production team will supply alien crystals to you, as many as you need. These supplies are labeled below the machine.</p>
+              <p>Researchers already measured the XPs of some of the alien crystals, indicated by the gray numbers below each label.</p>
+              <p>Note that these labels <b>just refer to the locations</b> of the crystals in this particular batch, not the properties of the crystals themselves.</p>
               <div class='button-group-vc' id="intro-sub-1-">
-                <button class='intro-button' id='instruction-btn-1' style="opacity:0" onclick="introBtn01()">&gt;&gt;</button>
+                <button class='intro-button' id='instruction-btn-1' style="opacity:1" onclick="introBtn01()">&gt;&gt;</button>
               </div>
             </div>
 
@@ -271,7 +271,7 @@
 
 
           <div id="intro-sub-1-3" style="display:none;">
-          <p>You can put a crystal into the machine by clicking its label, and harvest the energy points inside a crystal by clicking the <q>Extract</q> button.</p>
+          <p>Here is how to gather energy XPs: Put a crystal into the machine by clicking its label, and then click the <q>Extract</q> button.</p>
           <p>Try it.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-2' style="opacity:0" onclick="introBtn02()">&gt;&gt;</button>
@@ -281,23 +281,9 @@
 
           <div id="intro-sub-1-4" style="display:none;">
           <p>Well done.</p>
-          <p>Note that the total energy you gathered so far is shown on top of the machine.</p>
-          <p>Your goal is to maximize the total XP you harvest from the alien crytals.</p>
+          <p>The total energy you gathered so far is shown on top of the machine. <b>Your goal is to maximize the total XP you harvest from the alien crytals.</b></p>
           <div class='button-group-vc'>
-            <button class='intro-button' id='instruction-btn-3' style="opacity:0" onclick="hideAndShowNext('intro-sub-1-4', 'intro-sub-1-5', 'block')">&gt;&gt;</button>
-          </div>
-          </div>
-
-
-          <div id="intro-sub-1-5" style="display:none;">
-            <p>Each machine has a <b>limited amount of button presses</b> you can make, today, 10 times.</p>
-            <p>The amount of button presses left is indicated by the bars on the top rim of the machine.</p>
-            <p>Be wise to maximize your total XP using ten button presses for each machine.</p>
-            <!-- <p>There are now two bars left &ndash; take two more action with this machine to end the instructions.</p>   -->
-          <!-- <p>What if you mistakenly placed a crystal? You can remove a crystal from the machine by clicking the crystal in the machine.</p>
-          <p>Try putting a crystal into the machine and then remove it.</p> -->
-          <div class='button-group-vc'>
-            <button class='intro-button' id='instruction-btn-4' style="opacity:0" onclick="hideAndShowNext('instruction-1', 'instruction-2', 'block');">&gt;&gt;</button>
+            <button class='intro-button' id='instruction-btn-3' style="opacity:0" onclick="hideAndShowNext('instruction-1', 'instruction-2', 'block')">&gt;&gt;</button>
           </div>
           </div>
 
@@ -305,14 +291,12 @@
         </div>
       </div>
 
-      <div id="instruction-2" style="display:none;">
+      <div id="instruction-2">
 
-        <div id="intro-sub-2-1">
-          <p>Here comes the interesting part.</p>
+        <div id="intro-sub-2-1" style="display:none;">
           <p>To get more XP, you can make more powerful crystals!</p>
           <p>If you put two crystals into the machine, and click the <q>Fuse</q> button, the machine will try to fuse the two crystals together.</p>
-          <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. The label on the crystal tells you which crystals went into making it (remember, the letters don't tell you anything other than the location of the crystals for this batch).</p>
-          <p>The production team can deliver you this newly discovered crystal for future tests. Again, as many as you need.</p>
+          <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. </p>
           <p><strong>Sometimes the fusion leads to nothing, </strong>and you just lose a chance of extracting energy points from known crystals.</p>
           <p>Try playing with the <q>Fuse</q> process until you discover new crystals.</p>
         </div>
@@ -326,22 +310,25 @@
         </div>
 
 
-        <div id="intro-sub-2-2" style="display: none;">
-          <p>Each new crystal you discover is worth <b>twice as many energy points as the most valuable crystal used to produce it.</b></p>
-          <p>You can use fused crystals to fuse more advanced crystals that have even higher energy points.</p>
+        <div id="intro-sub-2-2">
+          <p>Each new crystal you discover worth <b><span id="instruct-rate"></span> times more XPs than the most valuable crystal used to produce it.</b></p>
           <p>Here are some examples:</p>
-          <ul>
-            <li>Fuse ( [a]1xp, [b]1xp) => [ab]2xp</li>
-            <li>Fuse ( [ab]2xp, [b]1xp) => [[ab]b]4xp</li>
-            <li>Fuse ( [ab]2xp, [ab]2xp) => [[ab]b]4xp</li>
-            <li>Fuse ( [a]1xp, [[ab]c]4xp) => [a[[ab]c]]8xp</li>
-          </ul>
+          <div>
+            <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-a1"></span>, <span class="demo-xp" id="demo-xp-b1"></span> ) => <span class="demo-calc" id="demo-calc-1"></span> => <span class="demo-xp" id="demo-xp-ab1"></span></div>
+            <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-ab3"></span>, <span class="demo-xp" id="demo-xp-ab4"></span> ) => <span class="demo-calc" id="demo-calc-2"></span> =><span class="demo-xp" id="demo-xp-abab1"></span></div>
+            <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-ab2"></span>, <span class="demo-xp" id="demo-xp-b2"></span> ) => <span class="demo-calc" id="demo-calc-3"></span> => <span class="demo-xp" id="demo-xp-abb1"></span></div>
+            <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-a2"></span>, <span class="demo-xp" id="demo-xp-abc1"></span> ) => <span class="demo-calc" id="demo-calc-4"></span> => <span class="demo-xp" id="demo-xp-aabc1"></span></div>
+
+          </div>
+
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-6' style="opacity:0" onclick="introBtn06()">&gt;&gt;</button>
          </div>
         </div>
 
         <div id="intro-sub-2-3" style="display: none;">
+          <p>The production team can deliver you this newly discovered crystal for future tests. Again, as many as you need.</p>
+          <p>The label on the crystal tells you which crystals went into making it (remember, the letters don't tell you anything other than the location of the crystals for this batch).</p>
           <p>Another trick with the <q>Fuse</q> button is that, repeating a combination you have tried before makes no further changes.</p>
           <p>In other words, if you tried to fuse [a] and [b] but nothing happens, we know that trying this combinition will not bring any new crytals.  Your failed <q>Fuse</q> attempts are shown on the left. So that you know what to avoid.</p>
           <p>If you tried to fuse [a] and [c] and it worked, leading to new crystal [ac], the supply team will take this recipe, and provide you with inifite many [ac] crystals for your future tests.</p>
@@ -367,7 +354,7 @@
           </div>
         </div>
 
-        <!-- <div id="intro-sub-2-5" style="display: none;">
+        <div id="intro-sub-2-5" style="display: none;">
           <p>Finally, there is a <b>limited amount of button presses</b> you can make, for each machine.</p>
           <p>The amount of button presses left is indicated by the bars on the top rim of the machine.</p>
           <p>There are now two bars left &ndash; take two more action with this machine to end the instructions.</p>
@@ -375,7 +362,7 @@
             <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">End instruction</button>
           </div>
         </div>
- -->
+
       </div>
 
 
@@ -462,7 +449,7 @@
 
 
 
-    <div id="task" class="base"></div>
+    <div id="task" class="base" style="display:none;"></div>
 
 
 

@@ -125,3 +125,9 @@ function makeTransitionDiv(blockId, p) {
 
   return retDiv;
 }
+
+
+
+function drawInstructionExamples() {
+
+}

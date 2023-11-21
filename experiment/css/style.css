@@ -199,6 +199,18 @@ li {
 }
 
 
+.demo-xp {
+  display: flex;
+  /* background-color: #116466; */
+}
+.demo-calc {
+  color: red;
+}
+.intruct-r {
+  display: flex;
+  align-items: center;
+  margin-left: 25px;
+}
 
 .item-box {
   width: 96%;
@@ -221,7 +233,6 @@ li {
   vertical-align: bottom;
   border: solid black 1px;
 }
-.item-holder {}
 .item-score {
   text-align: center;
   margin-top: -8px;

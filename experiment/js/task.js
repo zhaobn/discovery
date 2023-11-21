@@ -445,6 +445,34 @@ function introBtn08() {
 
 
 
+/* Draw items for demo reward structure */
+getEl('instruct-rate').innerHTML = rewardInc,
+
+getEl('demo-xp-a1').append(drawBlock('a', 'demo-xp-item1', demoObjColor, baseReward))
+getEl('demo-xp-b1').append(drawBlock('b', 'demo-xp-item2', demoObjColor, baseReward))
+getEl('demo-xp-ab1').append(drawBlock('[ab]', 'demo-xp-item3', demoObjColor, Math.round(baseReward*rewardInc), 'demo'))
+getEl('demo-calc-1').innerHTML = `&nbsp; ${baseReward} &#215; ${rewardInc} &nbsp;`
+
+getEl('demo-xp-b2').append(drawBlock('b', 'demo-xp-item4', demoObjColor, baseReward))
+getEl('demo-xp-ab2').append(drawBlock('[ab]', 'demo-xp-item5', demoObjColor, Math.round(baseReward*rewardInc)))
+getEl('demo-xp-abb1').append(drawBlock('[[ab]b]', 'demo-xp-item6', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
+getEl('demo-calc-2').innerHTML = `&nbsp; ${Math.round(baseReward*rewardInc)} &#215; ${rewardInc} &nbsp;`
+
+
+getEl('demo-xp-ab3').append(drawBlock('[ab]', 'demo-xp-item7', demoObjColor, Math.round(rewardInc*baseReward)))
+getEl('demo-xp-ab4').append(drawBlock('[ab]', 'demo-xp-item8', demoObjColor, Math.round(rewardInc*baseReward)))
+getEl('demo-xp-abab1').append(drawBlock('[[ab][ab]]', 'demo-xp-item9', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
+getEl('demo-calc-3').innerHTML = `&nbsp; ${Math.round(baseReward*rewardInc)} &#215; ${rewardInc} &nbsp;`
+
+
+getEl('demo-xp-a2').append(drawBlock('a', 'demo-xp-item10', demoObjColor, baseReward))
+getEl('demo-xp-abc1').append(drawBlock('[[ab]c]', 'demo-xp-item11', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward)))
+getEl('demo-xp-aabc1').append(drawBlock('[a[[ab]c]]', 'demo-xp-item12', demoObjColor, Math.round(baseReward*Math.pow(rewardInc,3)), 'demo'))
+getEl('demo-calc-4').innerHTML = `&nbsp; ${Math.round(baseReward*Math.pow(rewardInc,2))} &#215; ${rewardInc} &nbsp;`
+
+
+
+
 
 /* Comprehension quiz */
 const checks = [ 'check1', 'check2', 'check3', 'check4', 'check5', 'check6' ];

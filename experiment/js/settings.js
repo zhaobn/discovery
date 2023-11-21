@@ -9,7 +9,7 @@ const condSettings = {
 }
 
 const conditions = Object.keys(condSettings);
-const cond = isDev? 'll': sampleFromList(conditions, 1);
+const cond = isDev? 'lh': sampleFromList(conditions, 1);
 const showProb = true;
 
 const baseRate = condSettings[cond]['p'];

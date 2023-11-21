@@ -205,6 +205,9 @@ function drawBlock(letter, id='', color, score=0, type='') {
   if (score > 0) {
     let scoreInfo =  createCustomElement('div', 'item-score', '');
     scoreInfo.innerHTML = score + ' xp';
+    if (type=='demo') {
+      scoreInfo.style.color = 'red';
+    }
     blockBg.append(scoreInfo);
   }
   return blockBg
