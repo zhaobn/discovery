@@ -333,8 +333,9 @@ function giveFeedback(id) {
         nextTaskId = 'task-t' + (idNum+1).toString();
       }
     } else {
-      let totalScore = Math.round(Object.values(allScoreOnDisplay).reduce((a,b)=>a+b,0));
-      let bonus = Math.round(totalScore/15000*100)/100;
+      let bonusScores = Object.fromEntries(Object.entries(allScoreOnDisplay).filter(([key]) => key[0]=='t'));
+      let totalScore = Math.round(Object.values(bonusScores).reduce((a,b)=>a+b,0));
+      let bonus = Math.round(totalScore/1000*100)/100;
       getEl('score-sum').innerHTML = totalScore;
       getEl('bonus-sum').innerHTML = bonus;
       nextTaskId = 'score-feedback';

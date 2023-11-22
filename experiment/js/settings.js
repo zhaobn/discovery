@@ -69,13 +69,12 @@ for (let i = 0; i < nPractice; i++) {
 // Task trial config
 objColors.forEach((col, id) => {
   let taskId = 't'+(id+1).toString();
-  taskConfigsWithId[taskId] = { 'p': baseRate, 'w': 2, 'step': steps, 'r': baseReward, 'objColor': col, 'color': machineColors[id] };
+  taskConfigsWithId[taskId] = { 'p': baseRate, 'w': rewardInc, 'step': steps, 'r': baseReward, 'objColor': col, 'color': machineColors[id] };
 })
 // Pad info for instruction demos
-let demoConfig = { 'p': 0.4, 'w': 2, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
+let demoConfig = { 'p': 0.4, 'w': rewardInc, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
 taskConfigsWithId['intro1'] = demoConfig;
 taskConfigsWithId['intro2'] = demoConfig;
-
 
 
 /** Initialize task data */
