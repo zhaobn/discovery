@@ -262,11 +262,11 @@ li {
 }
 
 
-#consent-info {
+/* #consent-info {
   height: 400px;
   overflow: scroll;
   padding: 0 25px 20px 25px;
-}
+} */
 #score-text {
   color: red;
   font-weight: bold;

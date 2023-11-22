@@ -11,7 +11,7 @@
 
   <body>
 
-    <div id="welcome" class="base" style="display:none;">
+    <div id="welcome" class="base" >
       <h1>Information for participants</h1>
       <div id="consent-info">
 
@@ -223,7 +223,7 @@
 
       </div>
       <div class="button-group-vc">
-        <button class="big-button" id="consent-btn" disabled onclick="hideAndShowNext('welcome','prolific_id','block')">I consent</button>
+        <button class="big-button" id="consent-btn" onclick="hideAndShowNext('welcome','prolific_id','block')">I consent</button>
       </div>
     </div>
 
@@ -239,20 +239,20 @@
 
 
 
-    <div id="instruction" class="base" >
+    <div id="instruction" class="base" style="display:none;">
       <h1>Instruction</h1>
 
-      <div id="instruction-1" style="display:none;">
+      <div id="instruction-1">
         <div style="padding-left:5px;">
-          <div id="intro-sub-1-0"  style="display:none;">
+          <div id="intro-sub-1-0" >
             <p>Thank you for playing my game!</p>
             <p><strong>These instructions may take about 5 minutes to read. Please follow them carefully. <span style="color:red;">There will be a quiz!</span></strong></p>
             <div class='button-group-vc' id="intro-btn-group-0">
-              <button class='intro-button' id='instruction-btn-0' style="opacity:0" onclick="hideAndShowNext('intro-sub-1-0', 'intro-sub-1-1', 'block');hide('intro-btn-group-0');">&gt;&gt;</button>
+              <button class='intro-button' id='instruction-btn-0' style="opacity:0" onclick="introBtn00()">&gt;&gt;</button>
             </div>
           </div>
 
-          <div id="intro-sub-1-1">
+          <div id="intro-sub-1-1" style="display:none;">
             <p id="intro-p-1">You are on a secret mission. It is about alien crystals.</p>
             <p id="intro-p-2">Each alien crystal contains some energy XPs. You can use a special machine to extract energy XPs - see an example machine below.</p>
             <div id="intro-demo-1"></div>
@@ -261,8 +261,8 @@
               <p>For your mission, a production team will supply alien crystals to you, as many as you need. These supplies are labeled below the machine.</p>
               <p>Researchers already measured the XPs of some of the alien crystals, indicated by the gray numbers below each label.</p>
               <p>Note that these labels <b>just refer to the locations</b> of the crystals in this particular batch, not the properties of the crystals themselves.</p>
-              <div class='button-group-vc' id="intro-sub-1-">
-                <button class='intro-button' id='instruction-btn-1' style="opacity:1" onclick="introBtn01()">&gt;&gt;</button>
+              <div class='button-group-vc' id="intro-sub-1">
+                <button class='intro-button' id='instruction-btn-1' style="opacity:0" onclick="introBtn01()">&gt;&gt;</button>
               </div>
             </div>
 
@@ -280,7 +280,7 @@
 
 
           <div id="intro-sub-1-4" style="display:none;">
-          <p>Well done.</p>
+          <p>Great!</p>
           <p>The total energy you gathered so far is shown on top of the machine. <b>Your goal is to maximize the total XP you harvest from the alien crytals.</b></p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-3' style="opacity:0" onclick="hideAndShowNext('instruction-1', 'instruction-2', 'block')">&gt;&gt;</button>
@@ -291,9 +291,9 @@
         </div>
       </div>
 
-      <div id="instruction-2">
+      <div id="instruction-2" style="display:none;">
 
-        <div id="intro-sub-2-1" style="display:none;">
+        <div id="intro-sub-2-1">
           <p>To get more XP, you can make more powerful crystals!</p>
           <p>If you put two crystals into the machine, and click the <q>Fuse</q> button, the machine will try to fuse the two crystals together.</p>
           <p><strong>Sometimes this fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. </p>
@@ -310,7 +310,7 @@
         </div>
 
 
-        <div id="intro-sub-2-2">
+        <div id="intro-sub-2-2" style="display:none;">
           <p>Each new crystal you discover worth <b><span id="instruct-rate"></span> times more XPs than the most valuable crystal used to produce it.</b></p>
           <p>Here are some examples:</p>
           <div>
@@ -329,12 +329,13 @@
         <div id="intro-sub-2-3" style="display: none;">
           <p>There is a <b>limited amount of button presses</b> you can make, for each machine. The amount of button presses left is indicated by the <b>bars on the top rim</b> of the machine.</p>
           <!-- <p>There are now two bars left &ndash; take two more action with this machine to end the instructions.</p> -->
-          <p>Use these button press chances wisely. You can either</p>
+          <p>Use these button press chances wisely. Each time, you can either</p>
           <ul>
-            <li>Harvest XPs from your newly discovered crystals using the <q>Extract</q> button; or</li>
-            <li>Fuse a newly discovered crystal with other known crystals to find even more powerful crystal.</li>
+            <li>Gather XPs from the known crystals using the <q>Extract</q> button; or</li>
+            <li>Try to fuse a more powerful crystal with other known crystals.</li>
           </ul>
           <p>To make it fair, only <q>Fuse</q> <b>new</b> combiniations, and using the <q>Extract</q> button, count as a use of the machine.</p>
+          <p>Repeating previously discovered, or failed, combinitions does not bring anything.</p>
           <p></p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-7' style="opacity:0" onclick="introBtn07()">&gt;&gt;</button>
@@ -342,29 +343,21 @@
         </div>
 
 
-        <div id="intro-sub-2-4" style="display:none;">
+        <!-- <div id="intro-sub-2-4" style="display:none;">
           <p>You will be playing this game with serveral batches of alien crystals and several machines. <b>Each new batch has a new set of crystals, indicated by different colors.</b></p>
           <p>Again, letters are just markers of locations for the crystals in each particular batch, not their properties.</p>
           <p>You will also win an extra bonus, proportional to how many energy points you gathered in total.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-8' style="opacity:0" onclick="introBtn08()">&gt;&gt;</button>
           </div>
-        </div>
+        </div> -->
 
-        <!-- <div id="intro-sub-2-5" style="display: none;">
-          <p>Finally, there is a <b>limited amount of button presses</b> you can make, for each machine.</p>
-          <p>The production team can deliver you this newly discovered crystal for future tests. Again, as many as you need.</p>
-          <p>The label on the crystal tells you which crystals went into making it (remember, the letters don't tell you anything other than the location of the crystals for this batch).</p>
-          <p>Another trick with the <q>Fuse</q> button is that, repeating a combination you have tried before makes no further changes.</p>
-          <p>In other words, if you tried to fuse [a] and [b] but nothing happens, we know that trying this combinition will not bring any new crytals.  Your failed <q>Fuse</q> attempts are shown on the left. So that you know what to avoid.</p>
-          <p>If you tried to fuse [a] and [c] and it worked, leading to new crystal [ac], the supply team will take this recipe, and provide you with inifite many [ac] crystals for your future tests.</p>
-
-          <p>The amount of button presses left is indicated by the bars on the top rim of the machine.</p>
+        <div id="intro-sub-2-4" style="display: none;">
           <p>There are now two bars left &ndash; take two more action with this machine to end the instructions.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">End instruction</button>
           </div>
-        </div> -->
+        </div>
 
       </div>
 
@@ -375,13 +368,12 @@
           <!-- <li>Your goal is to maximize the total energy you gather from using the machine.</li> -->
           <li>You can gather energy from a single crystal by placing it in the machine and clicking the <q>Extract</q> button.</li>
           <li>You may discover new crystals by placing two known crystals in the machine and clicking the <q>Fuse</q> button.</li>
-          <li>All of the initial simple crystals in each batch have the same amount of energy points.</li>
-          <li>New crystals have twice as much energy as the most valuable crystal that was used in the fusion.</li>
+          <li>New crystals have <span id="sum-rec"></span> times more XP as the most valuable crystal that was used in the fusion.</li>
           <li>Sometimes fusion works out, and sometimes it does not.</li>
           <!-- <li>Any failed, or successful, discovery, will not change furthermore.</li> -->
-          <li>A new set of crystals is used for each task, and the letters on the crystals only refer to their locations in a batch.</li>
           <li>There is a limited number of button presses you can make for each machine, displayed on the upper rim of the machine.</li>
           <li>Your goal is to maximize the <b>total energy</b> you gather from using the machine. Your bonus is proportional to this total.</li>
+          <li>A new set of crystals is used for each task, and the letters on the crystals only refer to their locations in a batch.</li>
         </ul>
 
         <div class='button-group-vc'>
@@ -546,12 +538,12 @@
   <script type="text/javascript" src="../js/utilities.js"></script>
   <script type="text/javascript" src="../js/settings.js"></script>
   <script type="text/javascript" src="../js/elements.js"></script>
-  <script type='text/javascript'>
+  <!-- <script type='text/javascript'>
     // Consent info
     const checkScrollHeight = (text, btn) => ((text.scrollTop + text.offsetHeight) >= text.scrollHeight) ? btn.disabled = false : null;
     getEl('consent-info').addEventListener("scroll", () => checkScrollHeight(getEl('consent-info'), getEl('consent-btn')), false);
 
-  </script>
+  </script> -->
   <script type="text/javascript" src="../js/task.js"></script>
 
 </html>

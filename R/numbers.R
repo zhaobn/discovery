@@ -84,7 +84,7 @@ plot_attempt = function(params, N=10) {
     geom_line(size=0.8) +
     geom_point(data=switch_days, aes(x=day, y=v), size=3) +
     theme_bw() +
-    scale_x_continuous(breaks = days) +
+    scale_x_continuous(breaks = seq(0,N)) +
     scale_color_manual(values = wes_palette("Moonrise1", n = 4)) +
     labs(y='expected value', x='switch day') +
     theme(panel.grid.minor=element_blank(),
@@ -102,10 +102,26 @@ params_1 = list(
   list(p=0.2, w=3, r=200),
   list(p=0.8, w=3, r=1)
 )
-dat = try_combos(params)
+params_2 = list(
+  list(p=0.2, w=1.5, r=500),
+  list(p=0.8, w=1.5, r=150),
+  list(p=0.2, w=3, r=150),
+  list(p=0.8, w=3, r=1)
+)
+params_3 = list(
+  list(p=0.2, w=1.5, r=1),
+  list(p=0.8, w=1.5, r=1),
+  list(p=0.2, w=3, r=1),
+  list(p=0.8, w=3, r=1)
+)
+dat = try_combos(params_2)
 dat %>%
   group_by(p, w) %>%
   slice(which.max(v))
+
+
+plot_attempt(params_2)
+
 
 p1a = plot_attempt(list(
   list(p=0.2, w=2, r=1),

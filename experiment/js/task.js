@@ -333,7 +333,7 @@ function giveFeedback(id) {
       }
     } else {
       let totalScore = Math.round(Object.values(allScoreOnDisplay).reduce((a,b)=>a+b,0));
-      let bonus = Math.round(totalScore/2000*100)/100;
+      let bonus = Math.round(totalScore/20000*100)/100;
       getEl('score-sum').innerHTML = totalScore;
       getEl('bonus-sum').innerHTML = bonus;
       nextTaskId = 'score-feedback';
@@ -354,6 +354,12 @@ function giveFeedback(id) {
 let introId = 'intro1';
 let played = 0;
 setTimeout(() => { getEl(`instruction-btn-0`).style.opacity = 1;}, 0);
+
+function introBtn00() {
+  hideAndShowNext('intro-sub-1-0', 'intro-sub-1-1', 'block');
+  hide('intro-btn-group-0');
+  setTimeout(() => { getEl(`instruction-btn-1`).style.opacity = 1;}, introBtnDelay);
+}
 
 getEl('intro-demo-1').append(drawTask(introId, taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step'], taskConfigsWithId[introId]['objColor']));
 getEl('hist-box-intro1').style.height = '300px';
@@ -405,10 +411,12 @@ function introBtn05() {
   hide('intro-sub-2-1');
   hide('intro-btn-group-5');
   showNext('intro-sub-2-2', 'block');
+  setTimeout(() => { getEl(`instruction-btn-6`).style.opacity = 1;}, introBtnDelay);
 
   baseObj.forEach(el => {
     let item =introIdFuse + '-' + el;
     getEl(item).onclick = () => handleItemClick(item, introIdFuse)});
+
   getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
   getEl(`extract-btn-${introIdFuse}`).onclick = () => {
     handleExtract(introIdFuse, true);
@@ -423,10 +431,8 @@ function introBtn06() {
 }
 function introBtn07() {
   hideAndShowNext('intro-sub-2-3', 'intro-sub-2-4', 'block');
-  setTimeout(() => { getEl(`instruction-btn-8`).style.opacity = 1;}, introBtnDelay);
-}
-function introBtn08() {
-  hideAndShowNext('intro-sub-2-4', 'intro-sub-2-5', 'block');
+  // setTimeout(() => { getEl(`instruction-btn-8`).style.opacity = 1;}, introBtnDelay);
+
   for (let i = 1; i < 11; i++) {
     let unitColor = (i < 9)? 'white' : machineColor;
     getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
@@ -440,8 +446,24 @@ function introBtn08() {
     let item =introIdFuse + '-' + el;
     getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
 
-  // setTimeout(() => { getEl(`instruction-btn-9`).style.opacity = 1;}, introBtnDelay);
 }
+// function introBtn08() {
+//   hideAndShowNext('intro-sub-2-4', 'intro-sub-2-5', 'block');
+//   for (let i = 1; i < 11; i++) {
+//     let unitColor = (i < 9)? 'white' : machineColor;
+//     getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
+//   }
+
+//   allStepsLeft[introIdFuse] = 2;
+
+//   getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
+//   getEl(`extract-btn-${introIdFuse}`).onclick = () => handleExtract(introIdFuse, true);
+//   baseObj.forEach(el => {
+//     let item =introIdFuse + '-' + el;
+//     getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
+
+//   // setTimeout(() => { getEl(`instruction-btn-9`).style.opacity = 1;}, introBtnDelay);
+// }
 
 
 
@@ -451,27 +473,30 @@ getEl('instruct-rate').innerHTML = rewardInc,
 getEl('demo-xp-a1').append(drawBlock('a', 'demo-xp-item1', demoObjColor, baseReward))
 getEl('demo-xp-b1').append(drawBlock('b', 'demo-xp-item2', demoObjColor, baseReward))
 getEl('demo-xp-ab1').append(drawBlock('[ab]', 'demo-xp-item3', demoObjColor, Math.round(baseReward*rewardInc), 'demo'))
-getEl('demo-calc-1').innerHTML = `&nbsp; ${baseReward} &#215; ${rewardInc} &nbsp;`
+getEl('demo-calc-1').innerHTML = showCalc(rewardInc, baseReward)
 
 getEl('demo-xp-b2').append(drawBlock('b', 'demo-xp-item4', demoObjColor, baseReward))
 getEl('demo-xp-ab2').append(drawBlock('[ab]', 'demo-xp-item5', demoObjColor, Math.round(baseReward*rewardInc)))
 getEl('demo-xp-abb1').append(drawBlock('[[ab]b]', 'demo-xp-item6', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
-getEl('demo-calc-2').innerHTML = `&nbsp; ${Math.round(baseReward*rewardInc)} &#215; ${rewardInc} &nbsp;`
+getEl('demo-calc-2').innerHTML = showCalc(rewardInc, Math.round(baseReward*rewardInc))
 
 
 getEl('demo-xp-ab3').append(drawBlock('[ab]', 'demo-xp-item7', demoObjColor, Math.round(rewardInc*baseReward)))
 getEl('demo-xp-ab4').append(drawBlock('[ab]', 'demo-xp-item8', demoObjColor, Math.round(rewardInc*baseReward)))
 getEl('demo-xp-abab1').append(drawBlock('[[ab][ab]]', 'demo-xp-item9', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
-getEl('demo-calc-3').innerHTML = `&nbsp; ${Math.round(baseReward*rewardInc)} &#215; ${rewardInc} &nbsp;`
+getEl('demo-calc-3').innerHTML = showCalc(rewardInc, Math.round(baseReward*rewardInc))
 
 
 getEl('demo-xp-a2').append(drawBlock('a', 'demo-xp-item10', demoObjColor, baseReward))
 getEl('demo-xp-abc1').append(drawBlock('[[ab]c]', 'demo-xp-item11', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward)))
 getEl('demo-xp-aabc1').append(drawBlock('[a[[ab]c]]', 'demo-xp-item12', demoObjColor, Math.round(baseReward*Math.pow(rewardInc,3)), 'demo'))
-getEl('demo-calc-4').innerHTML = `&nbsp; ${Math.round(baseReward*Math.pow(rewardInc,2))} &#215; ${rewardInc} &nbsp;`
+getEl('demo-calc-4').innerHTML =  showCalc(rewardInc, Math.round(baseReward*Math.pow(rewardInc,2)))
 
+function showCalc(val1, val2) {
+  return `&nbsp; <span style="color:black"><b>${val1}</b></span> &#215; ${val2}xp &nbsp;`
+}
 
-
+getEl('sum-rec').innerHTML = rewardInc;
 
 
 /* Comprehension quiz */
@@ -505,14 +530,17 @@ function handle_retry() {
   hide("quiz");
   showNext("instruction", "block");
   hideAndShowNext('instruction-3', 'instruction-1', 'block');
-  hideAndShowNext('intro-sub-1-5', 'intro-p-3', 'block');
-  hideAndShowNext('intro-sub-2-5', 'intro-sub-2-1', 'block');
+  hideAndShowNext('intro-sub-1-4', 'intro-p-3', 'block');
+  hideAndShowNext('intro-sub-2-4', 'intro-sub-2-1', 'block');
   getEl('check-btn').style.display = 'flex';
 
   // hide buttons
   for (let i = 0; i < 10; i++) {
-    getEl(`instruction-btn-`+i.toString()).style.opacity = 0;
+    if (i % 4 != 0) {
+      getEl(`instruction-btn-`+i.toString()).style.opacity = 0;
+    }
   }
+
 
   // draw new demo machine
   getEl('intro-demo-2').innerHTML = '';
