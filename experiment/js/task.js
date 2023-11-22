@@ -334,7 +334,7 @@ function giveFeedback(id) {
       }
     } else {
       let totalScore = Math.round(Object.values(allScoreOnDisplay).reduce((a,b)=>a+b,0));
-      let bonus = Math.round(totalScore/20000*100)/100;
+      let bonus = Math.round(totalScore/15000*100)/100;
       getEl('score-sum').innerHTML = totalScore;
       getEl('bonus-sum').innerHTML = bonus;
       nextTaskId = 'score-feedback';
