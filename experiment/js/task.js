@@ -530,7 +530,11 @@ function handle_retry() {
   hide("quiz");
   showNext("instruction", "block");
   hideAndShowNext('instruction-3', 'instruction-1', 'block');
-  hideAndShowNext('intro-sub-1-4', 'intro-p-3', 'block');
+  hideAndShowNext('intro-sub-1-4', 'intro-sub-1-1', 'block');
+  showNext('intro-p-1', 'block');
+  showNext('intro-p-2', 'block');
+  showNext('intro-p-3', 'block');
+  showNext('intro-sub-1');
   hideAndShowNext('intro-sub-2-4', 'intro-sub-2-1', 'block');
   getEl('check-btn').style.display = 'flex';
 
@@ -540,6 +544,7 @@ function handle_retry() {
       getEl(`instruction-btn-`+i.toString()).style.opacity = 0;
     }
   }
+  getEl('instruction-btn-1').style.opacity = 1;
 
 
   // draw new demo machine
