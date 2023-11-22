@@ -253,13 +253,14 @@ function addToHistoryPanel (id, itemA, itemB) {
 function addToInventory (id, item) {
   let itemId = id + '-' + item
   let newItem = drawBlock(item, itemId, taskConfigsWithId[id]['objColor'],  allObjRewards[id][item], '');
-  newItem.onclick = () => handleItemClick(itemId, id);
   getEl(`item-box-${id}`).append(newItem);
+  getEl(itemId).onclick = () => handleItemClick(itemId, id);
 
 }
 
 function updateStep(id, isDemo=false) {
   allStepsLeft[id] -= 1
+
   if (allStepsLeft[id] > 0) {
     let unitId = id + '-unit-' + (taskConfigsWithId[id]['step'] - allStepsLeft[id]).toString();
     getEl(unitId).style.backgroundColor = 'white';
@@ -286,8 +287,8 @@ function disableMachine(id) {
   let currentObjs = Object.entries(allCombo[id]).filter(([_, v]) => v > 0);
   if (currentObjs.length > 0) {
     currentObjs.forEach(el => {
-      let item = id + '-' + el[0];
-      getEl(item).onclick = () => null;
+      let citem = id + '-' + el[0];
+      getEl(citem).onclick = () => null;
     })
   }
 
