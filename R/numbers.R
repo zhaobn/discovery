@@ -108,19 +108,16 @@ params_2 = list(
   list(p=0.2, w=3, r=150),
   list(p=0.8, w=3, r=1)
 )
-params_3 = list(
-  list(p=0.2, w=1.5, r=1),
-  list(p=0.8, w=1.5, r=1),
-  list(p=0.2, w=3, r=1),
-  list(p=0.8, w=3, r=1)
-)
-dat = try_combos(params_2)
+
+dat = try_combos(params_3)
 dat %>%
   group_by(p, w) %>%
   slice(which.max(v))
 
 
 plot_attempt(params_2)
+
+
 
 
 p1a = plot_attempt(list(

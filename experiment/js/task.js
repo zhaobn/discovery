@@ -335,7 +335,7 @@ function giveFeedback(id) {
     } else {
       let bonusScores = Object.fromEntries(Object.entries(allScoreOnDisplay).filter(([key]) => key[0]=='t'));
       let totalScore = Math.round(Object.values(bonusScores).reduce((a,b)=>a+b,0));
-      let bonus = Math.round(totalScore/2000*100)/100;
+      let bonus = (cond[0]=='a') ? Math.round(totalScore/2000*100)/100 : Math.round(totalScore/30000*100)/100;
       getEl('score-sum').innerHTML = totalScore;
       getEl('bonus-sum').innerHTML = bonus;
       nextTaskId = 'score-feedback';
@@ -346,7 +346,6 @@ function giveFeedback(id) {
 
   feedbackNextBtn.onclick = () => hideAndShowNext(thisTaskId, nextTaskId, 'block');
   getEl(`intro-btn-group-${id}`).append(feedbackNextBtn);
-
 
 }
 

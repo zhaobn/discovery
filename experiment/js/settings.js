@@ -2,14 +2,19 @@ let isDev = true;
 
 /** Set up conditions */
 const condSettings = {
-  'll': { 'p': 0.2, 'w': 2, 'r': 20},
-  'lh': { 'p': 0.2, 'w': 4, 'r': 3},
-  'hl': { 'p': 0.8, 'w': 1.2, 'r': 25},
-  'hh': { 'p': 0.8, 'w': 2, 'r': 1},
+  // 'all': { 'p': 0.2, 'w': 3, 'r': 20},
+  // 'alh': { 'p': 0.2, 'w': 4, 'r': 3},
+  // 'ahl': { 'p': 0.8, 'w': 1.2, 'r': 25},
+  // 'ahh': { 'p': 0.8, 'w': 2, 'r': 1},
+
+  'bll': { 'p': 0.2, 'w': 1.5, 'r': 500},
+  'blh': { 'p': 0.2, 'w': 3, 'r': 150},
+  'bhl': { 'p': 0.8, 'w': 1.5, 'r': 150},
+  'bhh': { 'p': 0.8, 'w': 3, 'r': 1},
 }
 
 const conditions = Object.keys(condSettings);
-const cond = sampleFromList(conditions, 1); //isDev? 'lh': sampleFromList(conditions, 1);
+const cond = 'blh'; //sampleFromList(conditions, 1); //isDev? 'lh': sampleFromList(conditions, 1);
 const showProb = true;
 
 const baseRate = condSettings[cond]['p'];
