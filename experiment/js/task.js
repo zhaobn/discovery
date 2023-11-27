@@ -335,7 +335,7 @@ function giveFeedback(id) {
     } else {
       let bonusScores = Object.fromEntries(Object.entries(allScoreOnDisplay).filter(([key]) => key[0]=='t'));
       let totalScore = Math.round(Object.values(bonusScores).reduce((a,b)=>a+b,0));
-      let bonus = Math.round(totalScore/1000*100)/100;
+      let bonus = Math.round(totalScore/2000*100)/100;
       getEl('score-sum').innerHTML = totalScore;
       getEl('bonus-sum').innerHTML = bonus;
       nextTaskId = 'score-feedback';
