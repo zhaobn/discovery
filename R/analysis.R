@@ -2,7 +2,15 @@
 library(tidyr)
 library(dplyr)
 library(ggplot2)
-load('data/pilot/pilot2.Rdata')
+load('data/pilot/pilot3.Rdata')
+
+
+#### Power analysis ####
+df.tw %>%
+  mutate(explore=action=='F') %>%
+  group_by(condition) %>%
+  summarise(explore_rate=sum(explore)/70, n=n()/(10*7))
+
 
 
 #### Label confusion #### 
@@ -100,7 +108,7 @@ df.sw %>%
 
 #### Per condition #### 
 df.sw %>% count(assignment)
-
+df.tw = df.tw %>% mutate(condition=substr(condition, 2, 3))
 
 # Total score
 scores = df.tw %>%
@@ -118,15 +126,30 @@ ggplot(scores, aes(x=condition, y=score)) +
 exploration = df.tw %>%
   mutate(explore=as.numeric(action=='F')) %>%
   group_by(id, task, condition) %>%
-  summarise(explore_rate=sum(explore)/n())
+  summarise(explore_rate=sum(explore)/n(), exploration_count=sum(explore))
 
 ggplot(exploration, aes(x=condition, y=explore_rate, fill=condition)) +
   geom_violin(alpha=0.5) +
   geom_boxplot(width=0.2) +
   geom_jitter(position = position_jitter(seed = 1, width = 0.2)) +
+  stat_summary(fun = "mean", geom = "point", color = "yellow", size=3) +
   theme_bw() +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'right')
 
+
+# Quick check significance
+t.test(
+  exploration %>% filter(condition=='bhh') %>% pull(exploration_count),
+  exploration %>% filter(condition=='bhl') %>% pull(exploration_count),
+)
+t.test(
+  exploration %>% filter(condition=='blh') %>% pull(exploration_count),
+  exploration %>% filter(condition=='bll') %>% pull(exploration_count),
+)
+t.test(
+  exploration %>% filter(condition=='bhl') %>% pull(exploration_count),
+  exploration %>% filter(condition=='blh') %>% pull(exploration_count),
+)
 
 
 # Rank by score
@@ -152,7 +175,7 @@ ggplot(dd, aes(x=step, y=task, fill=action)) +
   theme(panel.background = element_blank())
 
 
-# Plot average
+# Plot average per task
 dd_avg = df.tw %>%
   select(id, task, step, condition, action) %>%
   mutate(action=as.numeric(action=='F')) %>%
@@ -164,6 +187,37 @@ ggplot(dd_avg, aes(x=step, y=task, fill=action)) +
   scale_x_continuous(breaks=seq(10))+
   scale_y_continuous(breaks=seq(6))+
   theme(panel.background = element_blank())
+
+
+
+# Plot average per condition
+exp_avg = df.tw %>%
+  mutate(action=as.numeric(action=='F')) %>%
+  group_by(condition, step) %>%
+  summarise(exploration_rate=sum(action)/n(), se=sd(action)/sqrt(n()))
+ggplot(exp_avg, aes(x=step, y=exploration_rate, group=condition)) +
+  geom_line(aes(color=condition)) +
+  geom_ribbon(aes(y = exploration_rate, ymin = exploration_rate-se, ymax = exploration_rate + se, fill=condition), alpha = .2) +
+  theme_bw()
+
+
+# Most rewarding item
+items = df.tw %>%
+  group_by(id, task, condition) %>%
+  summarise(score=max(immediate_score)) %>%
+  mutate(item_level = ifelse(score < 1, 0,
+    round(case_when(
+      condition=='hl'~ log(score/150, 1.5),
+      condition=='hh'~ log(score, 3),
+      condition=='lh'~ log(score/150, 3),
+      condition=='ll'~ log(score/500, 1.5),
+    ))
+  ))
+
+ggplot(items, aes(x=condition, y=item_level)) +
+  geom_bar( stat = "summary", fun.y = "mean") +
+  geom_jitter(position = position_jitter(seed = 1, width = 0.2)) +
+  theme_bw()
 
 
 

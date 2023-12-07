@@ -4,9 +4,9 @@ library(dplyr)
 options(scipen=999)
 
 
-dat = read.csv('./data/pilot/crystalPilot2.csv')
+dat = read.csv('./data/pilot/crystalPilot3.csv')
 
-start_index = 2
+start_index = 7
 end_index = nrow(dat)
 
 
@@ -15,8 +15,6 @@ inv_fromJSON<-function(js) {
   js <- chartr("\\","\"",js)
   fromJSON(js)
 }
-
-
 
 # Collect subject data
 sw<-sapply(sapply(dat$subject, inv_fromJSON, simplify=F), as.data.frame, simplify=F)
@@ -32,7 +30,7 @@ df.sw = df.sw.aux %>%
   select(prolific_id, date, time, assignment, age, sex, total_score, task_duration, engagement, difficulty, strategy, feedback, token, start_time)
 
 # Save raw subject data
-write.csv(df.sw, file='data/pilot/pilot2_sw.csv')
+write.csv(df.sw, file='data/pilot/pilot3_sw.csv')
 
 
 
@@ -58,7 +56,7 @@ for (i in start_index:end_index) {
   }
 }
 # Save raw trial data
-write.csv(df.tw.aux, file='data/pilot/pilot2_tw.csv')
+write.csv(df.tw.aux, file='data/pilot/pilot3_tw.csv')
 
 
 # Use id to replace prolific_id
@@ -101,7 +99,7 @@ df.tw = df.tw %>%
 # Save data
 df.sw = df.sw %>%
   mutate(age=as.numeric(age), total_score=as.numeric(total_score), task_duration=as.numeric(task_duration), engagement=as.numeric(engagement), difficulty=as.numeric(difficulty))
-save(df.tw, df.sw, file='data/pilot/pilot2.Rdata')
+save(df.tw, df.sw, file='data/pilot/pilot3.Rdata')
 
 
 
