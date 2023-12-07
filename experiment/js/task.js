@@ -432,8 +432,24 @@ function introBtn06() {
 }
 function introBtn07() {
   hideAndShowNext('intro-sub-2-3', 'intro-sub-2-4', 'block');
-  // setTimeout(() => { getEl(`instruction-btn-8`).style.opacity = 1;}, introBtnDelay);
+  setTimeout(() => { getEl(`instruction-btn-8`).style.opacity = 1;}, introBtnDelay);
 
+  // for (let i = 1; i < 11; i++) {
+  //   let unitColor = (i < 9)? 'white' : machineColor;
+  //   getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
+  // }
+
+  // allStepsLeft[introIdFuse] = 2;
+
+  // getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
+  // getEl(`extract-btn-${introIdFuse}`).onclick = () => handleExtract(introIdFuse, true);
+  // baseObj.forEach(el => {
+  //   let item =introIdFuse + '-' + el;
+  //   getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
+
+}
+function introBtn08() {
+  hideAndShowNext('intro-sub-2-4', 'intro-sub-2-5', 'block');
   for (let i = 1; i < 11; i++) {
     let unitColor = (i < 9)? 'white' : machineColor;
     getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
@@ -447,24 +463,8 @@ function introBtn07() {
     let item =introIdFuse + '-' + el;
     getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
 
+  // setTimeout(() => { getEl(`instruction-btn-9`).style.opacity = 1;}, introBtnDelay);
 }
-// function introBtn08() {
-//   hideAndShowNext('intro-sub-2-4', 'intro-sub-2-5', 'block');
-//   for (let i = 1; i < 11; i++) {
-//     let unitColor = (i < 9)? 'white' : machineColor;
-//     getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
-//   }
-
-//   allStepsLeft[introIdFuse] = 2;
-
-//   getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
-//   getEl(`extract-btn-${introIdFuse}`).onclick = () => handleExtract(introIdFuse, true);
-//   baseObj.forEach(el => {
-//     let item =introIdFuse + '-' + el;
-//     getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
-
-//   // setTimeout(() => { getEl(`instruction-btn-9`).style.opacity = 1;}, introBtnDelay);
-// }
 
 
 
