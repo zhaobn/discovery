@@ -1,1 +1,7 @@
-Working repository for a technology discovery experiment inspired by the One-Hour-One-Life game
+# Discoveries in an innovation game
+
+Folder structure
+
+`experiment`: experiment code
+
+`R`: data cleaning and analysis
