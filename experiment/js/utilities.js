@@ -148,7 +148,7 @@ function swapObjectKeyValue(obj){
 
 /* Task-specific functions */
 function showScoreText(x) {
-  return `<h3>Total XP: ${x}</h3>`
+  return `<h3>Total Points: ${x}</h3>`
 }
 function showFeedback(x) {
   if (x>0) {
@@ -204,7 +204,7 @@ function drawBlock(letter, id='', color, score=0, type='') {
   blockBg.append(block);
   if (score > 0) {
     let scoreInfo =  createCustomElement('div', 'item-score', '');
-    scoreInfo.innerHTML = score + 'xp';
+    scoreInfo.innerHTML = score + 'p';
     if (type=='demo') {
       scoreInfo.style.color = 'red';
     }

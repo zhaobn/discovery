@@ -352,6 +352,11 @@ function giveFeedback(id) {
 
 
 /* Prepare instruction */
+// getEl('intro-demo-0').append(drawTask('intro0', taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step'], taskConfigsWithId[introId]['objColor']));
+
+
+
+
 let introId = 'intro1';
 let played = 0;
 setTimeout(() => { getEl(`instruction-btn-0`).style.opacity = 1;}, 0);
@@ -361,6 +366,8 @@ function introBtn00() {
   hide('intro-btn-group-0');
   setTimeout(() => { getEl(`instruction-btn-1`).style.opacity = 1;}, introBtnDelay);
 }
+
+
 
 getEl('intro-demo-1').append(drawTask(introId, taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step'], taskConfigsWithId[introId]['objColor']));
 getEl('hist-box-intro1').style.height = '300px';
@@ -385,17 +392,18 @@ function introBtn01() {
   hide('intro-p-1');
   hide('intro-p-2');
   hide('intro-p-3');
-  showNext('intro-sub-1-3', 'block');
+  hide('intro-sub-1');
+  showNext('intro-sub-1-2', 'block');
   getEl(`extract-btn-${introId}`).disabled = false;
   getEl(`extract-btn-${introId}`).onclick = () => {
     handleExtract(introId, true);
-    getEl('instruction-btn-2').style.opacity = 1;
+    getEl('instruction-btn-3').style.opacity = 1;
   }
 
 }
-function introBtn02() {
+function introBtn03() {
   hideAndShowNext('intro-sub-1-3', 'intro-sub-1-4', 'block');
-  setTimeout(() => { getEl(`instruction-btn-3`).style.opacity = 1;}, introBtnDelay);
+  setTimeout(() => { getEl(`instruction-btn-4`).style.opacity = 1;}, introBtnDelay);
 }
 
 
@@ -427,8 +435,22 @@ function introBtn05() {
 
 
 function introBtn06() {
-  hideAndShowNext('intro-sub-2-2', 'intro-sub-2-3', 'block');
-  setTimeout(() => { getEl(`instruction-btn-7`).style.opacity = 1;}, introBtnDelay);
+  hideAndShowNext('intro-sub-2-2', 'intro-sub-2-5', 'block');
+  setTimeout(() => { getEl(`instruction-btn-10`).style.opacity = 1;}, introBtnDelay);
+
+  for (let i = 1; i < 11; i++) {
+    let unitColor = (i < 9)? 'white' : machineColor;
+    getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
+  }
+
+  allStepsLeft[introIdFuse] = 2;
+
+  getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
+  getEl(`extract-btn-${introIdFuse}`).onclick = () => handleExtract(introIdFuse, true);
+  baseObj.forEach(el => {
+    let item =introIdFuse + '-' + el;
+    getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
+
 }
 function introBtn07() {
   hideAndShowNext('intro-sub-2-3', 'intro-sub-2-4', 'block');
@@ -494,10 +516,10 @@ getEl('demo-xp-aabc1').append(drawBlock('[a[[ab]c]]', 'demo-xp-item12', demoObjC
 getEl('demo-calc-4').innerHTML =  showCalc(rewardInc, Math.round(baseReward*Math.pow(rewardInc,2)))
 
 function showCalc(val1, val2) {
-  return `&nbsp; <span style="color:black"><b>${val1}</b></span> &#215; ${val2}xp &nbsp;`
+  return `&nbsp; <span style="color:black"><b>${val1}</b></span> &#215; ${val2}p &nbsp;`
 }
 
-getEl('sum-rec').innerHTML = rewardInc;
+// getEl('sum-rec').innerHTML = rewardInc;
 
 
 /* Comprehension quiz */

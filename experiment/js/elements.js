@@ -6,7 +6,7 @@ function drawMachine (id, steps, color) {
   let retDiv = createCustomElement('div', '', '');
 
   let scoreDiv = createCustomElement('div', 'machine-top', `machine-top-${id}`);
-  scoreDiv.innerHTML = `<strong>Total XP: <span id="total-score-${id}" style="color:red">0</span></strong>`;
+  scoreDiv.innerHTML = `<strong>Total Points: <span id="total-score-${id}" style="color:red">0</span></strong>`;
 
   let ele1 = createCustomElement('div', '', `dis-item-left-${id}`);
   let ele2 = createCustomElement('div', '', `dis-item-mid-${id}`);
@@ -114,7 +114,7 @@ function makeTransitionDiv(blockId, p) {
 
   let introText = (blockId[0] == 'p')? `Warm up with ${practiceIds.length} practice trials.` : `There are ${taskBlockSize} trials in total.`;
   if (showProb == true && blockId[0] == 't') {
-    introText += `<br><br>Make the most out of it! Your bonus depends on the total XPs you gather.`; //`<br><br>Fusion works out ${Math.round(p*10)} out of 10 times on average.`
+    introText += `<br><br>Make the most out of it! Your bonus depends on the total points you gather.`; //`<br><br>Fusion works out ${Math.round(p*10)} out of 10 times on average.`
   }
   retDiv.innerHTML = introText;
 
