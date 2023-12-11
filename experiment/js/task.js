@@ -8,8 +8,10 @@ let nullFeedback = 'Nothing came out';
 /* Data */
 let start_task_time = 0;
 let subjectData = {};
+let intructionCount = 1;
 
 subjectData['condition'] = cond;
+subjectData['intruction'] = intructionCount;
 
 
 /* Collect prolific id */
@@ -549,6 +551,9 @@ function handle_pass() {
   showNext("task", "block");
 }
 function handle_retry() {
+
+  subjectData['intruction'] += 1;
+
   hide("retry");
   hide("quiz");
   showNext("instruction", "block");
@@ -558,16 +563,16 @@ function handle_retry() {
   showNext('intro-p-2', 'block');
   showNext('intro-p-3', 'block');
   showNext('intro-sub-1');
-  hideAndShowNext('intro-sub-2-4', 'intro-sub-2-1', 'block');
+  hideAndShowNext('intro-sub-2-5', 'intro-sub-2-1', 'block');
   getEl('check-btn').style.display = 'flex';
 
-  // hide buttons
-  for (let i = 0; i < 10; i++) {
-    if (i % 4 != 0) {
-      getEl(`instruction-btn-`+i.toString()).style.opacity = 0;
-    }
-  }
-  getEl('instruction-btn-1').style.opacity = 1;
+  // // hide buttons
+  // for (let i = 0; i < 10; i++) {
+  //   if (i % 4 != 0) {
+  //     getEl(`instruction-btn-`+i.toString()).style.opacity = 0;
+  //   }
+  // }
+  // getEl('instruction-btn-1').style.opacity = 1;
 
 
   // draw new demo machine
