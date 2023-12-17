@@ -4,9 +4,9 @@ library(dplyr)
 options(scipen=999)
 
 
-dat = read.csv('./data/pilot/crystalPilot3.csv')
+dat = read.csv('../data/main1/crystalMain1.csv')
 
-start_index = 7
+start_index = 2
 end_index = nrow(dat)
 
 
@@ -14,6 +14,14 @@ end_index = nrow(dat)
 inv_fromJSON<-function(js) {
   js <- chartr("\\","\"",js)
   fromJSON(js)
+}
+
+# Fix subject data
+sw=as.data.frame((inv_fromJSON(dat$subject[[start_index]])))
+for (i in (start_index+1):end_index) {
+  x = inv_fromJSON(dat$subject[[i]])
+  sw = rbind(sw, as.data.frame(x))
+  print(i)
 }
 
 # Collect subject data
@@ -27,11 +35,10 @@ trial_info = dat %>%
   select(prolific_id=worker, assignment)
 df.sw = df.sw.aux %>%
   left_join(trial_info, by='prolific_id') %>%
-  select(prolific_id, date, time, assignment, age, sex, total_score, task_duration, engagement, difficulty, strategy, feedback, token, start_time)
+  select(prolific_id, date, time, assignment, age, sex, instruction=intruction, total_score, task_duration, engagement, difficulty, strategy, feedback, token, start_time)
 
 # Save raw subject data
-write.csv(df.sw, file='data/pilot/pilot3_sw.csv')
-
+write.csv(df.sw, file='../data/main1/main1_sw.csv')
 
 
 
@@ -56,7 +63,7 @@ for (i in start_index:end_index) {
   }
 }
 # Save raw trial data
-write.csv(df.tw.aux, file='data/pilot/pilot3_tw.csv')
+write.csv(df.tw.aux, file='../data/main1/main1_tw.csv')
 
 
 # Use id to replace prolific_id
@@ -99,9 +106,24 @@ df.tw = df.tw %>%
 # Save data
 df.sw = df.sw %>%
   mutate(age=as.numeric(age), total_score=as.numeric(total_score), task_duration=as.numeric(task_duration), engagement=as.numeric(engagement), difficulty=as.numeric(difficulty))
-save(df.tw, df.sw, file='data/pilot/pilot3.Rdata')
+save(df.tw, df.sw, file='../data/main1/main1.Rdata')
 
 
+# Fix missing prolific id
+ids = df.sw.aux %>% 
+  filter(nchar(prolific_id)>1) %>%
+  mutate(is_data=1) %>%
+  select(prolific_id, is_data)
 
+all_demographics = read.csv('../data/main1/prolific_export.csv')
+all_ids = all_demographics %>%
+  filter(Status=='APPROVED') %>%
+  mutate(is_demo=1) %>%
+  select(prolific_id=Participant.id, is)
 
+check_ids = all_ids %>%
+  left_join(ids, by='prolific_id')
+
+# '598afb77600a7a00018fabd7' is good!
+# '6045ac8a103c4c14db5e6d24' no data, miss-approved
 

@@ -2,7 +2,8 @@
 library(tidyr)
 library(dplyr)
 library(ggplot2)
-load('data/pilot/pilot3.Rdata')
+library(ggpubr)
+load('../data/main1/main1.Rdata')
 
 
 #### Power analysis ####
@@ -10,6 +11,51 @@ df.tw %>%
   mutate(explore=action=='F') %>%
   group_by(condition) %>%
   summarise(explore_rate=sum(explore)/70, n=n()/(10*7))
+
+test_data = df.tw %>% mutate(explore=action=='F')
+d_hh = test_data %>% filter(condition=='bhh') %>% pull(explore)
+d_hl = test_data %>% filter(condition=='bhl') %>% pull(explore)
+d_lh = test_data %>% filter(condition=='blh') %>% pull(explore)
+d_ll = test_data %>% filter(condition=='bll') %>% pull(explore)
+
+cohens_d <- function (x, y) {
+  mean_diff = mean(x) - mean(y)
+  svar1 = var(x)*length(x)
+  svar2 = var(y)*length(y)
+  sd_pooled = (svar1+svar2)/(length(x)+length(y)-2)
+  return( sqrt(mean_diff/sd_pooled) ) 
+}
+
+cohens_d(d_hh, d_hl)
+cohens_d(d_lh, d_ll)
+cohens_d(d_hh, d_lh)
+cohens_d(d_hl, d_ll)
+
+cohens_d(d_lh, d_hl)
+
+
+
+
+# ANOVA
+test_data = df.tw %>% 
+  mutate(explore=action=='F', pc=substr(condition, 2,2), wc=substr(condition, 3, 3)) %>%
+  select(id, task, step, condition, pc, wc, explore)
+
+test_data_grouped = test_data %>%
+  group_by(id, task, condition, pc, wc) %>%
+  summarise(explore=sum(explore)/n())
+
+ggboxplot(test_data_grouped, x = "wc", y = "explore", color='pc')
+
+m=aov(explore ~ pc * wc, data = test_data_grouped)
+summary(m)
+
+m1 = test_data_grouped %>% filter(condition=='bhh') %>% pull(explore) %>% mean()
+m2 = test_data_grouped %>% filter(condition=='bhl') %>% pull(explore) %>% mean()
+m3 = test_data_grouped %>% filter(condition=='blh') %>% pull(explore) %>% mean()
+m4 = test_data_grouped %>% filter(condition=='bll') %>% pull(explore) %>% mean()
+sqrt(-((m1-m2)-(m3-m4))/sd(test_data_grouped$explore))
+
 
 
 
@@ -126,7 +172,8 @@ ggplot(scores, aes(x=condition, y=score)) +
 exploration = df.tw %>%
   mutate(explore=as.numeric(action=='F')) %>%
   group_by(id, task, condition) %>%
-  summarise(explore_rate=sum(explore)/n(), exploration_count=sum(explore))
+  summarise(explore_rate=sum(explore)/n(), exploration_count=sum(explore)) %>%
+  mutate(p=substr(condition,2,2), w=substr(condition,3,3), condition=substr(condition, 2, 3))
 
 ggplot(exploration, aes(x=condition, y=explore_rate, fill=condition)) +
   geom_violin(alpha=0.5) +
@@ -138,18 +185,50 @@ ggplot(exploration, aes(x=condition, y=explore_rate, fill=condition)) +
 
 
 # Quick check significance
+aov(exploration_count~p+w+p*w, data=exploration) %>% summary()
+
+cohens_d<-function(x,y) {
+  d = abs(mean(x)-mean(y))
+  d1 = d/sd(x)
+  d2 = d/sd(y)
+  return (max(d1, d2))
+}
+
+pl=exploration %>% filter(p=='l') %>% pull(explore_rate)
+ph=exploration %>% filter(p=='h') %>% pull(explore_rate)
+
+cohens_d(pl,ph)
+
+cohens_d(ph, pl)
+
+wl=exploration %>% filter(w=='l') %>% pull(explore_rate)
+wh=exploration %>% filter(w=='h') %>% pull(explore_rate)
+
+cohens_d(wh, wl)
+
+bhl = exploration %>% filter(condition=='hl') %>% pull(explore_rate)
+blh = exploration %>% filter(condition=='lh') %>% pull(explore_rate)
+
+t.test(bhl, blh, paired = FALSE)
+cohens_d(bhl, blh)
+
+
+
+
 t.test(
-  exploration %>% filter(condition=='bhh') %>% pull(exploration_count),
-  exploration %>% filter(condition=='bhl') %>% pull(exploration_count),
+  exploration %>% filter(condition=='hh') %>% pull(exploration_count),
+  exploration %>% filter(condition=='hl') %>% pull(exploration_count),
 )
 t.test(
-  exploration %>% filter(condition=='blh') %>% pull(exploration_count),
-  exploration %>% filter(condition=='bll') %>% pull(exploration_count),
+  exploration %>% filter(condition=='lh') %>% pull(exploration_count),
+  exploration %>% filter(condition=='ll') %>% pull(exploration_count),
 )
 t.test(
-  exploration %>% filter(condition=='bhl') %>% pull(exploration_count),
-  exploration %>% filter(condition=='blh') %>% pull(exploration_count),
+  exploration %>% filter(condition=='hl') %>% pull(exploration_count),
+  exploration %>% filter(condition=='lh') %>% pull(exploration_count),
 )
+
+lm()
 
 
 # Rank by score
@@ -263,12 +342,8 @@ df.tw %>%
 
 # Clean data
 dd = df.tw %>%
-  filter(substr(task_id,1,1)=='t') %>%     # remove practice trials
-  mutate(task=as.numeric(substr(task_id,2,nchar(task_id))),
-         action=as.numeric(action=='E')) %>%
-  select(id, task, p, step=step_id, action, total_score) %>%
+  select(id, task, p, step, action, total_score) %>%
   arrange(id, p, task, step)
-dd['task'] = rep(rep(1:12,each=10), 10)    # re-order trials
 
 # total score per condition
 dd %>%
@@ -322,7 +397,7 @@ dd=dd %>%
 plot_ind_actions = dd %>%
   ggplot(aes(x=step, y=task, fill=action)) +
   geom_tile() +
-  facet_grid(~fid) +
+  facet_grid(~id) +
   scale_x_continuous(breaks=seq(10))+
   scale_y_continuous(breaks=seq(12))+
   theme(panel.background = element_blank()) +
@@ -372,7 +447,14 @@ plot_avg_scores
 
 
 
-
+df.tw %>%
+  filter(condition=='hh') %>%
+  ggplot(aes(x=step, y=task, fill=action)) +
+  geom_tile() +
+  facet_grid(~id) +
+  scale_x_continuous(breaks=seq(10))+
+  scale_y_continuous(breaks=seq(12))+
+  theme(panel.background = element_blank())
 
 
 

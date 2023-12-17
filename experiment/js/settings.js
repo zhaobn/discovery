@@ -14,7 +14,7 @@ const condSettings = {
 }
 
 const conditions = Object.keys(condSettings);
-const cond = 'blh'; //sampleFromList(conditions, 1); //isDev? 'lh': sampleFromList(conditions, 1);
+const cond = sampleFromList(conditions, 1); //isDev? 'lh': sampleFromList(conditions, 1);
 const showProb = true;
 
 const baseRate = condSettings[cond]['p'];
