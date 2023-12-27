@@ -16,13 +16,13 @@ inv_fromJSON<-function(js) {
   fromJSON(js)
 }
 
-# Fix subject data
-sw=as.data.frame((inv_fromJSON(dat$subject[[start_index]])))
-for (i in (start_index+1):end_index) {
-  x = inv_fromJSON(dat$subject[[i]])
-  sw = rbind(sw, as.data.frame(x))
-  print(i)
-}
+# # Fix subject data
+# sw=as.data.frame((inv_fromJSON(dat$subject[[start_index]])))
+# for (i in (start_index+1):end_index) {
+#   x = inv_fromJSON(dat$subject[[i]])
+#   sw = rbind(sw, as.data.frame(x))
+#   print(i)
+# }
 
 # Collect subject data
 sw<-sapply(sapply(dat$subject, inv_fromJSON, simplify=F), as.data.frame, simplify=F)
@@ -30,16 +30,22 @@ df.sw.aux<-sw[[start_index]]
 for (i in (start_index+1):end_index) {
   df.sw.aux<-rbind(df.sw.aux, sw[[i]])
 }
+# Fix values
+df.sw.aux = df.sw.aux %>% 
+  mutate(age=if_else(prolific_id=='60fd4f8bcf203e8452b79f1a', '22', age)) %>%
+  mutate(prolific_id=if_else(nchar(prolific_id)<1, '598afb77600a7a00018fabd7', prolific_id))
+
 # Add trial info
 trial_info = dat %>%
   select(prolific_id=worker, assignment)
 df.sw = df.sw.aux %>%
   left_join(trial_info, by='prolific_id') %>%
-  select(prolific_id, date, time, assignment, age, sex, instruction=intruction, total_score, task_duration, engagement, difficulty, strategy, feedback, token, start_time)
+  select(prolific_id, date, time, condition=assignment, age, sex, instruction=intruction, total_score, task_duration, engagement, difficulty, strategy, feedback, token, start_time) %>%
+  mutate(condition=substr(condition, 2, 3))
 
-# Save raw subject data
-write.csv(df.sw, file='../data/main1/main1_sw.csv')
-
+# # Save raw subject data
+# write.csv(df.sw, file='../data/main1/main1_sw.csv')
+# 
 
 
 # Collect trial data
@@ -62,8 +68,8 @@ for (i in start_index:end_index) {
     
   }
 }
-# Save raw trial data
-write.csv(df.tw.aux, file='../data/main1/main1_tw.csv')
+# # Save raw trial data
+# write.csv(df.tw.aux, file='../data/main1/main1_tw.csv')
 
 
 # Use id to replace prolific_id
@@ -84,14 +90,13 @@ df.tw = df.tw.aux %>%
 
 
 # Add condition
-condition_info = df.sw %>% select(id, condition=assignment)
+condition_info = df.sw %>% select(id, condition)
 df.tw = df.tw %>% left_join(condition_info, by='id')
 
 # Remove practice trials
 df.tw = df.tw %>% 
   filter(substr(task_id, 1, 1)!='p') %>%
   mutate(task_id=as.numeric(substr(task_id, 2, nchar(task_id))))
-
 
 # Compute time collapsed
 start_times = df.sw %>% select(id, start_time)
@@ -107,23 +112,23 @@ df.tw = df.tw %>%
 df.sw = df.sw %>%
   mutate(age=as.numeric(age), total_score=as.numeric(total_score), task_duration=as.numeric(task_duration), engagement=as.numeric(engagement), difficulty=as.numeric(difficulty))
 save(df.tw, df.sw, file='../data/main1/main1.Rdata')
+write.csv(df.sw, file='../data/main1/main1_subjects.csv')
+write.csv(df.tw, file='../data/main1/main1_trials.csv')
 
+# # Fix missing prolific id
+# ids = df.sw.aux %>% 
+#   filter(nchar(prolific_id)>1) %>%
+#   mutate(is_data=1) %>%
+#   select(prolific_id, is_data)
+# all_demographics = read.csv('../data/main1/prolific_export.csv')
+# all_ids = all_demographics %>%
+#   filter(Status=='APPROVED') %>%
+#   mutate(is_demo=1) %>%
+#   select(prolific_id=Participant.id, is)
+# check_ids = all_ids %>%
+#   left_join(ids, by='prolific_id')
+# 
+# # '598afb77600a7a00018fabd7' is good!
+# # '6045ac8a103c4c14db5e6d24' no data, miss-approved
 
-# Fix missing prolific id
-ids = df.sw.aux %>% 
-  filter(nchar(prolific_id)>1) %>%
-  mutate(is_data=1) %>%
-  select(prolific_id, is_data)
-
-all_demographics = read.csv('../data/main1/prolific_export.csv')
-all_ids = all_demographics %>%
-  filter(Status=='APPROVED') %>%
-  mutate(is_demo=1) %>%
-  select(prolific_id=Participant.id, is)
-
-check_ids = all_ids %>%
-  left_join(ids, by='prolific_id')
-
-# '598afb77600a7a00018fabd7' is good!
-# '6045ac8a103c4c14db5e6d24' no data, miss-approved
 

@@ -1,0 +1,304 @@
+---
+title: "Experiment 1 Analysis"
+author: "Bonan Zhao"
+date: "12/27/2023"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+---
+
+```{r packages, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
+library(patchwork)
+library(knitr)
+```
+
+```{r data, include=FALSE}
+load('../../data/main1/main1.Rdata')
+```
+
+# Experiment
+
+## Materials
+
+In this experiment we have:
+
+- Agent object properties: number of stripes and dots (randomly positioned).
+- Recipient object properties: number of blocks.
+- Result object properties: number of blocks.
+- Animation: an agent object moves towards a recipient object, and the recipient object changes into the result form by varying its original number of blocks.
+- **Ground-truth** rule is a mixture of multiplication and subtraction: `Blocks(R') <- Stripes(A) * Blocks(R) - Dots(A)`.
+
+And three **learning conditions**:
+
+1. `Construct`: First build the `Stripes(A) * Blocks(R)` sub-part, and then re-use it to build the ground truth rule
+  ![](../figs/exp_1/construct.png)
+  
+2. `Deconstruct`: reverse order of the `construct` condition
+  ![](../figs/exp_1/decon.png)
+  
+3. `Combine`: First build the `Stripes(A) * Blocks(R)` sub-part, and then build the `- Dots(A)` sub-part
+  ![](../figs/exp_1/combine.png)
+  
+
+**Generalization trials** are picked by a mixture of novelty & EIG re. potential causal rules.
+Their orders were randomized for every participant.
+
+* ![](../figs/exp_1/gen_trials.png)
+
+  
+## Procedure
+
+Each participant is randomly assigned to one of the three learning conditions. After reading instructions and passing a comprehension quiz, they first watched three learning examples, and then were asked to write down their guesses about the underlying causal relationships & made generalization predictions for eight pairs of novel objects. 
+After that, they watched another three learning examples, and then wrote down an updated guess and made 8 generalization predictions. 
+The pairs of generalization objects in both phases are the same, but their presentation orders were randomized.
+All learning examples were remained in the screen once they had appeared.
+Generalization trials appeared sequentially, and once a prediction was made the trial was replaced by the next one.
+
+<!-- Try it here: <https://eco.ppls.ed.ac.uk/bn_comp/> -->
+
+Pre-registration: <https://osf.io/ud7jc>
+
+
+# Pilot results
+
+
+Recruited N = 165 participants on Prolific (age = `r round(mean(df.sw$age),1)` ± `r round(sd(df.sw$age),1)`). 
+
+Mean time spent `r round(mean(df.sw$instructions_duration+df.sw$task_duration)/60000,2)` minutes.
+
+Base payment is £1.25, 
+and bonus are paid for both free-responses (£0.20 per input, 2 inputs in total) and generalization predictions (£0.02 per correct one with respect to ground-truth).
+
+
+```{r condition_sum, echo=FALSE}
+overview = df.sw %>% 
+  group_by(condition) %>%
+  summarise(n=n(), 
+            age=round(mean(age)),
+            intro_time=round(mean(instructions_duration)/60000,2),
+            task_time=round(mean(task_duration)/60000,2), 
+            difficulty=round(mean(difficulty),2),
+            engagement=round(mean(engagement),2)
+            )
+kable(overview, caption = 'Overview (cells are mean values, time in minutes, difficulty & engagement scales are 1-10)')
+```
+
+
+
+## Task difficulty
+
+Participants in the `deconstruct` condition took the longest time to finish the task, and reported the highest self-evaluated difficulty as well. Participants in the other two conditions, where sub-parts were built before seeing complex examples, took less time to finish the task and reported lower difficulty evaluations.
+
+
+```{r condition_plot, echo=FALSE}
+sum_data=df.sw %>% 
+  group_by(condition) %>%
+  summarise(task_time=mean(task_duration)/60000, 
+            difficulty=mean(difficulty)) %>%
+  ungroup()
+  
+ggplot(sum_data, aes(x=condition)) +
+  geom_bar(aes(y=task_time), stat='identity', fill='#69b3a2') +
+  geom_line(aes(y=difficulty, group=1), linetype='dashed') +
+  geom_point(aes(y=difficulty), size=2) +
+  scale_y_continuous(
+    name='Minutes',
+    sec.axis=sec_axis(~./1.2, name='Scales (10=very hard)')
+  ) +
+  labs(x='', title = 'Average task completion time (bars) and self-evaluated difficulty (dots)') +
+  theme_bw()
+
+```
+
+
+## Accuracy
+
+For generalization predictions, participants in the "deconstruct" condition have lowest accuracy after both Phase A and Phase B learning. 
+Participants in all three conditions have low generalization prediction accuracy after Phase A - their prior belief about dot feature's causal power must differ from our setup
+
+For self-reports, participants in the "deconstruct" condition fail catastrophically after Phase A, and then improve a lot after Phase B, but still lower than the other two conditions' Phase A accuracy level.
+
+
+```{r accuracy, echo=FALSE, message=FALSE}
+pred_acc = df.tw %>%
+  group_by(batch, condition) %>%
+  summarise(acc=sum(correct)/n()) %>%
+  ggplot(aes(x=batch,y=acc,group=condition)) +
+  geom_line(aes(color=condition),linetype="dashed", size=1.2) +
+  geom_point(aes(color=condition, shape=condition), size=3.5) +
+  labs(x='', y='', title='Pred. acc. (strict)') +
+  ylim(0,0.75) +
+  theme_bw()
+
+
+report_acc = labels %>%
+  select(ix, condition, match_a, match_b) %>%
+  gather(phase, correct, match_a, match_b) %>%
+  mutate(phase=toupper(substr(phase,7,7))) %>%
+  group_by(condition, phase) %>%
+  summarise(acc=sum(correct)/n()) %>%
+  ggplot(aes(x=phase, y=acc, group=condition)) +
+  geom_line(aes(color=condition),linetype="dashed", size=1.2) +
+  geom_point(aes(color=condition, shape=condition), size=3.5) +
+  labs(x='', y='', title='Rule acc. (partial)') +
+  ylim(0,0.75) +
+  theme_bw()
+
+report_acc_strict = labels %>%
+  select(ix, condition, match_a, match_b) %>%
+  gather(phase, correct, match_a, match_b) %>%
+  mutate(phase=toupper(substr(phase,7,7))) %>%
+  mutate(correct=if_else(correct<1, 0, 1)) %>%
+  group_by(condition, phase) %>%
+  summarise(acc=sum(correct)/n()) %>%
+  ggplot(aes(x=phase, y=acc, group=condition)) +
+  geom_line(aes(color=condition),linetype="dashed", size=1.2) +
+  geom_point(aes(color=condition, shape=condition), size=3.5) +
+  labs(x='', y='', title='Rule acc. (strict)') +
+  ylim(0,0.75) +
+  theme_bw()
+
+acc_combined = pred_acc + report_acc_strict + report_acc & theme(legend.position = "bottom")
+acc_combined + plot_layout(guides = "collect")
+
+acc_combined = pred_acc + report_acc_strict & theme(legend.position = "bottom")
+acc_combined + plot_layout(guides = "collect")
+
+
+```
+
+After Phase A, participants in the "combine" and "construct" conditions seem to apply the multiplication rule in generalization - but not always.
+
+```{r mult, echo=FALSE, message=FALSE}
+phase_a_acc = df.tw %>%
+  filter(batch=='A') %>%
+  mutate(stripe_bias=if_else(stripe==0, 1, stripe)) %>%
+  mutate(mult_acc=(prediction==stripe*block), biased_acc=(prediction==stripe_bias*block)) %>%
+  group_by(batch, condition) %>%
+  summarise(strict=sum(correct)/n(), mult=sum(mult_acc)/n(), biased=sum(biased_acc)/n()) %>%
+  gather(acc_type, value, strict, mult) %>% # biased
+  ggplot(aes(x=condition,y=value,fill=acc_type)) +
+  geom_bar(stat='identity', position='dodge') +
+  labs(x='', y='', title='Prediction accuracy after Phase A') +
+  theme_bw()
+```
+  
+
+## Self-reports
+
+Participants in the "deconstruct" condition have lowest self-report certainty, and they also tried to write more elaborated guesses. Overall it looks like a negative relationship between certainty and input length.
+
+```{r phases, echo=FALSE}
+sum_phase=df.sw %>%
+  mutate(len_a=str_length(input_a), len_b=str_length(input_b)) %>%
+  group_by(condition) %>%
+  summarise(certainty_a=mean(certainty_a), certainty_b=mean(certainty_b),
+            input_a_length=mean(len_a), input_b_length=mean(len_b))
+
+cert <- sum_phase %>%
+  gather(measure, value, certainty_a, certainty_b, input_a_length, input_b_length) %>%
+  filter(substr(measure,1,1)=='c') %>%
+  mutate(measure=toupper(substr(measure, 11, 11))) %>%
+  ggplot(aes(x=measure,y=value,group=condition)) +
+  geom_line(aes(color=condition),linetype="dashed", size=1.2) +
+  geom_point(aes(color=condition, shape=condition), size=3.5) +
+  labs(x='', y='', title='Certainty') +
+  theme_bw()
+
+len <- sum_phase %>%
+  gather(measure, value, certainty_a, certainty_b, input_a_length, input_b_length) %>%
+  filter(substr(measure,1,1)=='i') %>%
+  mutate(measure=toupper(substr(measure, 7, 7))) %>%
+  ggplot(aes(x=measure,y=value,group=condition)) +
+  geom_line(aes(color=condition),linetype="dashed", size=1.2) +
+  geom_point(aes(color=condition, shape=condition), size=3.5) +
+  labs(x='', y='', title='Input length (nchar)') +
+  theme_bw()
+
+combined = cert + len & theme(legend.position = "bottom")
+combined + plot_layout(guides = "collect")
+
+```  
+  
+
+## Labels
+
+![](../figs/exp_1/label_changes.png)
+
+
+# Model preds
+
+
+```{r preds, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=6}
+
+answers = df.tw %>%
+  group_by(trial) %>%
+  summarise(stripe=max(stripe), dot=max(dot), block=max(block)) %>%
+  mutate(gtruth=stripe*block-dot) %>%
+  mutate(prediction=if_else(gtruth<0, 0, gtruth)) %>%
+  mutate(trial=as.factor(as.character(trial)))
+
+answers$batch='A'
+aa = answers
+bb = aa
+bb$batch = 'B'
+answers = rbind(aa, bb)
+
+
+
+model.preds = data.frame(condition=character(0), phase=character(0), trial=numeric(0), prediction=numeric(0), value=numeric(0))
+for (cond in c('construct', 'combine', 'decon')) {
+  for (ph in c('a', 'b')) {
+    preds = read.csv(paste0('../../data/model_preds/exp_1/', cond, '_preds_', ph, '.csv'))
+    preds_fmt = preds %>%
+      select(terms, starts_with('prob')) %>%
+      gather(trial, value, starts_with('prob')) %>%
+      mutate(
+        condition=cond,
+        terms=terms,
+        trial=as.numeric(substr(trial, 6, nchar(trial))),
+        batch=toupper(ph)) %>%
+      select(condition, batch, trial, prediction=terms, value)
+    model.preds = rbind(model.preds, preds_fmt)
+  }
+}
+model.preds = model.preds %>% mutate(trial=as.factor(as.character(trial))) 
+
+
+
+df.tw %>%
+  mutate(trial=as.factor(as.character(trial))) %>%
+  ggplot( aes(y=trial, x=prediction, fill=trial)) +
+  geom_density_ridges(alpha=0.6, stat="binline", bins=20, scale=0.95) +
+  geom_point(data=answers, size=2) +
+  geom_density_ridges(data=model.preds, aes(height=value), stat="identity", alpha=0.4, scale=0.95) +
+  scale_x_discrete(limits=c(0,seq(max(df.tw$prediction)))) +
+  scale_y_discrete(limits=rev) +
+  facet_grid(batch~condition) +
+  labs(x='', y='') +
+  theme_bw() +
+  theme(legend.position = 'none')
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
