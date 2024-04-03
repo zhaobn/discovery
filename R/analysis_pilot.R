@@ -5,6 +5,7 @@ library(ggplot2)
 library(ggpubr)
 load('../data/main1/main1.Rdata')
 
+df.sw %>% count(sex)
 
 #### Power analysis ####
 df.tw %>%
@@ -228,7 +229,6 @@ t.test(
   exploration %>% filter(condition=='lh') %>% pull(exploration_count),
 )
 
-lm()
 
 
 # Rank by score

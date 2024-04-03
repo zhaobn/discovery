@@ -3,7 +3,10 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 library(wesanderson)
+library(MoMAColors)
 library(patchwork)
+
+cond_colors = moma.colors("VanGogh", 4)
 
 # get_sum <- function(w, p, n) {
 #   sum = 0
@@ -73,10 +76,12 @@ get_switch_day <- function(params, data, N=10) {
 }
 
 
+
 # Plot
-plot_attempt = function(params, N=10) {
+plot_attempt = function(params, N=10, colors=cond_colors, lpos='bottom') {
   dat = try_combos(params)
   switch_days = get_switch_day(params, dat)
+
   
   plt = dat %>% 
     mutate(param=paste0('p=',p,', w=',w)) %>%
@@ -85,11 +90,13 @@ plot_attempt = function(params, N=10) {
     geom_point(data=switch_days, aes(x=day, y=v), size=3) +
     theme_bw() +
     scale_x_continuous(breaks = seq(0,N)) +
-    scale_color_manual(values = wes_palette("Moonrise1", n = 4)) +
-    labs(y='expected value', x='switch day') +
+    #scale_color_manual(values = wes_palette("Moonrise1", n = 4)) +
+    scale_color_manual(values=colors) +
+    labs(y='Expected value', x='Switch step') +
     theme(panel.grid.minor=element_blank(),
           legend.title=element_blank(),
-          legend.position = 'right')
+          legend.position = lpos
+          )
   
   return(plt)
 }
@@ -97,9 +104,9 @@ plot_attempt = function(params, N=10) {
 
 # Adjust base pay
 params_1 = list(
-  list(p=0.2, w=2, r=500),
-  list(p=0.8, w=2, r=30),
-  list(p=0.2, w=3, r=200),
+  list(p=0.2, w=2, r=1),
+  list(p=0.8, w=2, r=1),
+  list(p=0.2, w=3, r=1),
   list(p=0.8, w=3, r=1)
 )
 params_2 = list(
@@ -108,16 +115,36 @@ params_2 = list(
   list(p=0.2, w=3, r=150),
   list(p=0.8, w=3, r=1)
 )
+params_3 = list(
+  list(p=0.8, w=1.5, r=1),
+  list(p=0.2, w=3, r=1),
+  list(p=0.5, w=1.8, r=1)
+)
 
-dat = try_combos(params_3)
+plot_attempt(params_3)
+
+dat = try_combos(params_2)
 dat %>%
   group_by(p, w) %>%
   slice(which.max(v))
 
 
-plot_attempt(params_2)
+scaled = plot_attempt(params_2)
+ps = plot_attempt(list(
+  list(p=0.2, w=1.5, r=1),
+  list(p=0.2, w=3, r=1)
+), 10, cond_colors[1:2], 'none')
+
+ws = plot_attempt(list(
+  list(p=0.2, w=3, r=1),
+  list(p=0.8, w=3, r=1)
+), 10, c(cond_colors[2],cond_colors[4]), 'none')
 
 
+
+(((ps | ws)/scaled) & theme(text = element_text(size=16))) + 
+  plot_annotation(tag_levels = 'a')
+ggsave("plots/sims.pdf", dpi=600, width = 8, height = 8)
 
 
 p1a = plot_attempt(list(

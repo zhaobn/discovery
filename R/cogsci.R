@@ -1,28 +1,31 @@
 
+#### prep ####
 library(tidyr)
 library(dplyr)
 library(stringr)
 library(ggplot2)
-library(MoMAColors)
+library(MoMAColors) # https://github.com/BlakeRMills/MoMAColors
 library(patchwork)
-load('../data/main1/main1.Rdata')
+
+source('helpers.R')
 
 theme_set(theme_bw())
 cond_levels = c('hh', 'hl', 'lh', 'll')
 cond_labels = c('high p high w', 'high p low w', 'low p high w', 'low p low w')
-#cond_labels_long = c('high prob, high reward', 'high prob, low reward', 'low prob, high reward', 'low prob, low reward')
 cond_colors = moma.colors("VanGogh", 4)
+
+# Load data
+df.sw = read.csv('../data/main1/main1_subjects.csv')
+df.tw = read.csv('../data/main1/main1_trials.csv')
 
 
 #### demographics ####
 hist(df.sw$age)
 df.sw %>% summarise(mean(age), sd(age))
 
-
 df.sw %>%
   mutate(is_female=sex=='female') %>%
   summarise(mean(is_female))
-
 
 hist(df.sw$task_duration)
 df.sw %>%
@@ -30,24 +33,7 @@ df.sw %>%
   summarise(mean(task_time), sd(task_time))
 
 
-# Does instruction fois matter?
-hist(df.sw$instruction, breaks=14)
-df_instruct = df.sw %>%
-  select(id, condition, age, instruction, total_score, task_duration) %>%
-  mutate(task_duration=round(task_duration/60000), is_many=instruction>3)
-ggplot(df_instruct, aes(x=is_many, y=total_score)) + geom_boxplot() + facet_grid(~condition)
-
-
 #### exploration rates ####
-
-
-cohens_d<-function(x,y) {
-  d = abs(mean(x)-mean(y))
-  d1 = d/sd(x)
-  d2 = d/sd(y)
-  return (max(d1, d2))
-}
-
 
 # Per person per task
 df_explore = df.tw %>%
@@ -64,13 +50,6 @@ plt_rate = ggplot(df_explore, aes(x=condition, y=explore_rate, fill=condition)) 
   labs(x='', y='Prop. fusion attempts') +
   theme(legend.position = 'none',  legend.text = element_text(margin = margin(t = 12)),
         text = element_text(size=20))
-
-
-df_explore %>%
-  filter(condition=='ll' & task %in% c(1, 7)) %>%
-  group_by(task) %>%
-  summarise(se=sd(explore_rate), explore_rate=mean(explore_rate))
-
 
 df_explore_fs = df.tw %>%
   mutate(explore=as.numeric(action=='F')) %>%
@@ -95,6 +74,7 @@ hl=df_explore_fs %>% filter(p=='h' & w == 'l') %>% pull(explore_rate)
 t.test(lh, hl)
 cohens_d(lh, hl)
 
+
 # Per step per condition
 df_step = df.tw %>%
   mutate(explore=as.numeric(action=='F')) %>%
@@ -114,26 +94,26 @@ plt_step = ggplot(pstat_step, aes(x=step, y=explore_rate, group=condition)) +
   theme(legend.position = c(0.15, 0.25),  
         legend.text = element_text(margin = margin(t = 12)),
         text = element_text(size=20))
-# ggplot(df_step, aes(x = step, y = explore_rate, group=id)) +
-#   geom_line(alpha = .5, aes(color=id)) +
-#   geom_line(data = pstat_step, aes(x=step, y=explore_rate, group=1), alpha = .8, size = 2) +
-#   facet_wrap(~condition) +
-#   theme(strip.background =element_rect(fill="white"))
 
 
-
-#### other ####
-
-# Total score
-# df_score_base = data.frame(condition=c('hh', 'hl', 'lh', 'll'), base=c(1, 150, 150, 500)) %>%
-#   mutate(condition=factor(condition, levels=cond_levels, labels=cond_labels))
-
+# Task scores
 df_score = df.tw %>%
   group_by(id, task, condition) %>%
   summarise(score=max(total_score))
+
 pstat_score = df_score %>%
   group_by(condition) %>%
   summarise(se=sd(score)/sqrt(n()), score=mean(score)) %>%
+  mutate(condition=factor(condition, levels=cond_levels, labels=cond_labels))
+
+# Add theoretical optimal
+dat = try_combos(params_2)
+optmal = data.frame(
+  condition=c('ll', 'lh', 'hl', 'hh'),
+  optimal=dat$v
+) %>%
+  group_by(condition) %>%
+  summarise(optimal=max(optimal)) %>%
   mutate(condition=factor(condition, levels=cond_levels, labels=cond_labels))
 plt_score=ggplot(pstat_score, aes(x=condition, y=score)) +
   geom_bar(stat = "identity", aes(fill=condition)) +
@@ -143,18 +123,6 @@ plt_score=ggplot(pstat_score, aes(x=condition, y=score)) +
   geom_point(data=optmal, aes(x=condition, y=optimal), size=5, shape=8) +
   #geom_jitter(data=df_score)
   theme(text = element_text(size=20), legend.position = 'none')
-
-
-
-
-# Add theoretical optimal
-optmal = data.frame(
-  condition=c('ll', 'lh', 'hl', 'hh'),
-  optimal=dat$v
-) %>%
-  group_by(condition) %>%
-  summarise(optimal=max(optimal)) %>%
-  mutate(condition=factor(condition, levels=cond_levels, labels=cond_labels))
 
 
 
@@ -178,7 +146,6 @@ plt_level = ggplot(df_items, aes(x=condition, y=item_level, fill=condition)) +
   geom_jitter(position = position_jitter(seed = 1, width = 0.2)) +
   labs(x='', y='Highest level per round') +
   theme(text = element_text(size=20), legend.position = 'none')
-
 
 df_item_fs = df.tw %>%
   group_by(id, task, condition) %>%
@@ -245,8 +212,6 @@ plt_swith = df_switch %>%
   facet_wrap(~condition) +
   theme(text = element_text(size=20), legend.position = 'none')
 
-
-
 df_switch_fs = df_switch %>%
   left_join(conds_info, by='id') %>%
   mutate(p=substr(condition, 1, 1), w=substr(condition, 2, 2))
@@ -285,23 +250,8 @@ switch_counts %>%
   group_by(condition) %>%
   summarise(n=sum(n))
 
-# Prep per task info data and save
-df.iw = df_switch %>%
-  left_join(conds_info, by='id') %>%
-  left_join(df_score, by=c('id', 'task', 'condition')) %>%
-  left_join(df_explore, by=c('id', 'task', 'condition')) %>%
-  left_join(df_items, by=c('id', 'task', 'condition'))
-df.iw = df.iw %>%
-  select(condition, id, task, switch_day, score, explore_rate, item_level)
 
-save(df.sw, df.tw, df.iw, file = '../data/main1/main1.Rdata')
-
-
-# Feedback effects
-
-# Strategy reports
-strategy_export = df.sw %>% select(id, condition, strategy)
-write.csv(strategy_export, file='../data/main1/main1_strategy.csv')
+# Export plots
 
 ((plt_rate / plt_level) | plt_step | plt_swith ) +  plot_annotation(tag_levels = 'a')
 
@@ -315,8 +265,65 @@ ggsave("plots/result-switch.pdf", dpi=600, width = 8, height = 12)
 plt_score
 ggsave("plots/result-score.pdf", dpi=600, width = 8, height = 5)
 
-# Learning effect?
 
+##### theoretical analysis ##### 
+
+get_switch_day <- function(params, data, N=10) {
+  switch_days = read.csv(text='p,w,day')
+  
+  for (i in 1:length(params)) {
+    p = params[[i]]['p'][[1]]
+    w = params[[i]]['w'][[1]]
+    d = N-ceiling(1+1/(p*(w-1)))+1
+    switch_days = rbind(switch_days, data.frame(p=p,w=w,day=d))
+  }
+  
+  switch_days = switch_days %>%
+    left_join(data, by=c('p', 'w', 'day')) %>%
+    mutate(param=paste0('p=',p,', w=',w))
+  
+  return (switch_days)
+}
+
+
+
+plot_attempt = function(params, N=10, colors=cond_colors, lpos='bottom') {
+  dat = try_combos(params)
+  switch_days = get_switch_day(params, dat)
+  
+  
+  plt = dat %>% 
+    mutate(param=paste0('p=',p,', w=',w)) %>%
+    ggplot(aes(x=day, y=v, color=param)) +
+    geom_line(size=0.8) +
+    geom_point(data=switch_days, aes(x=day, y=v), size=3) +
+    theme_bw() +
+    scale_x_continuous(breaks = seq(0,N)) +
+    #scale_color_manual(values = wes_palette("Moonrise1", n = 4)) +
+    scale_color_manual(values=colors) +
+    labs(y='Expected value', x='Switch day') +
+    theme(panel.grid.minor=element_blank(),
+          legend.title=element_blank(),
+          legend.position = lpos
+    )
+  
+  return(plt)
+}
+
+scaled = plot_attempt(params_2)
+ps = plot_attempt(list(
+  list(p=0.2, w=1.5, r=1),
+  list(p=0.2, w=3, r=1)
+), 10, cond_colors[1:2], 'none')
+
+ws = plot_attempt(list(
+  list(p=0.2, w=3, r=1),
+  list(p=0.8, w=3, r=1)
+), 10, c(cond_colors[2],cond_colors[4]), 'none')
+
+(((ps | ws)/scaled) & theme(text = element_text(size=16))) + 
+  plot_annotation(tag_levels = 'a')
+ggsave("plots/sims.pdf", dpi=600, width = 8, height = 8)
 
 
 
