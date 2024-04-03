@@ -53,7 +53,7 @@ testIds.forEach(tid => {
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  getEl('task-'+tid).style.display = 'none';
+  //getEl('task-'+tid).style.display = 'none';
 
 })
 
