@@ -1,37 +1,35 @@
 let isDev = true;
 
 /** Set up conditions */
-const condSettings = {
-  // 'all': { 'p': 0.2, 'w': 3, 'r': 20},
-  // 'alh': { 'p': 0.2, 'w': 4, 'r': 3},
-  // 'ahl': { 'p': 0.8, 'w': 1.2, 'r': 25},
-  // 'ahh': { 'p': 0.8, 'w': 2, 'r': 1},
-
-  'bll': { 'p': 0.2, 'w': 1.5, 'r': 500},
-  'blh': { 'p': 0.2, 'w': 3, 'r': 150},
-  'bhl': { 'p': 0.8, 'w': 1.5, 'r': 150},
-  'bhh': { 'p': 0.8, 'w': 3, 'r': 1},
+const knowledge = ['expert', 'noice'];
+const probs = {
+  'square': { 'pcircle': 0.2, 'psquare': 0.8, 'pcross': 0.2 },
+  'circle': { 'pcircle': 0.8, 'psquare': 0.2, 'pcross': 0.2 },
+  'cross': { 'pcircle': 0.2, 'psquare': 0.2, 'pcross': 0.8 }
 }
+let conditions = []
+knowledge.forEach(e => {
+  Object.keys(probs).forEach(p => conditions.push(e+'-'+p));
+});
 
-const conditions = Object.keys(condSettings);
-const cond = isDev? 'bhh': sampleFromList(conditions, 1);
-const showProb = true;
 
-const baseRate = condSettings[cond]['p'];
-const rewardInc = condSettings[cond]['w'];
-let baseReward = condSettings[cond]['r'];
-isDev? console.log(cond, baseRate, rewardInc, baseReward) : null;
+const cond = isDev? 'expert-square': sampleFromList(conditions, 1);
+const assignedKnowledge = cond.split('-')[0];
+const assignedProbCond = cond.split('-')[1];
+isDev? console.log(assignedKnowledge, assignedProbCond): null;
 
 
 
 /** Task-related settings */
+const baseReward = 100;
+const rewardInc = 1.5;
+const steps = 10;
 
 const nPractice = 2;
 const taskBlockSize = 7;
-const steps = 10;
+const demoProb = 0.5;
 
 const baseObj = ['a', 'b', 'c', 'd', 'e', 'f'];
-
 const allColors = [
   '#f44336',
   '#e81e63',
@@ -60,13 +58,26 @@ let machineColors = sampleFromList(allColors, taskBlockSize, false); //[ 'royalb
 
 let machineColor = demoMachineColor;
 
+// counterbalance which type is shown on the left in the
+const squareOnLeft = (Math.random() < 0.5)? 1 : 0;
+
+
 
 /** Prep setting to task configurations */
 
 let taskConfigsWithId = {};
 
 // Add practice trial config
-let pracConfig = { 'p': baseRate, 'w': rewardInc, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
+let pracConfig = {
+  'pcircle': probs[assignedProbCond]['pcircle'],
+  'psquare': probs[assignedProbCond]['psquare'],
+  'pcross': probs[assignedProbCond]['pcross'],
+  'w': rewardInc,
+  'color': demoMachineColor,
+  'objColor': demoObjColor,
+  'step': steps,
+  'r': baseReward
+};
 for (let i = 0; i < nPractice; i++) {
   let taskId = 'p' + (i+1).toString();
   taskConfigsWithId[taskId] = pracConfig;
@@ -74,10 +85,18 @@ for (let i = 0; i < nPractice; i++) {
 // Task trial config
 objColors.forEach((col, id) => {
   let taskId = 't'+(id+1).toString();
-  taskConfigsWithId[taskId] = { 'p': baseRate, 'w': rewardInc, 'step': steps, 'r': baseReward, 'objColor': col, 'color': machineColors[id] };
+  taskConfigsWithId[taskId] = {
+    'pcircle': probs[assignedProbCond]['pcircle'],
+    'psquare': probs[assignedProbCond]['psquare'],
+    'pcross': probs[assignedProbCond]['pcross'],
+    'w': rewardInc,
+    'step': steps,
+    'r': baseReward,
+    'objColor': col,
+    'color': machineColors[id] };
 })
 // Pad info for instruction demos
-let demoConfig = { 'p': 0.4, 'w': rewardInc, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
+let demoConfig = { 'pcircle': demoProb, 'psquare': demoProb, 'pcross': demoProb, 'w': rewardInc, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
 taskConfigsWithId['intro1'] = demoConfig;
 taskConfigsWithId['intro2'] = demoConfig;
 
@@ -131,7 +150,11 @@ taskIds.forEach(tid => {
     let dat = {};
     dat['task_id'] = tid;
     dat['step_id'] = i;
-    dat['p'] = allBaseRates[tid];
+    dat['knowledge'] = assignedKnowledge;
+    dat['squareOnLeft'] = squareOnLeft;
+    dat['pcircle'] = probs[assignedProbCond]['pcircle'],
+    dat['psquare'] = probs[assignedProbCond]['psquare'],
+    dat['pcross'] = probs[assignedProbCond]['pcross'],
     dat['w'] = allRewardInc[tid];
     dat['item_selection'] = [];
     dat['action'] = '';
@@ -144,4 +167,4 @@ taskIds.forEach(tid => {
   }
 
 })
-// console.log(trialData);
+//console.log(trialData);

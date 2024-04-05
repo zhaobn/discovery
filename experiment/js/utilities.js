@@ -186,7 +186,7 @@ function getItemWidth(size, type) {
   return length
 }
 
-function drawBlock(letter, id='', color, score=0, type='') {
+function drawBlock(shape, letter, id='', color, score=0, type='') {
 
   let blockBg = createCustomElement('div', 'item-holder', '');
 
@@ -199,6 +199,9 @@ function drawBlock(letter, id='', color, score=0, type='') {
   block.innerHTML = letter;
   if (color == '#ffeb3b' | color == '#cddc39' | color == '#ffc107') {
     block.style.color ='black';
+  }
+  if (shape == 'circle') {
+    block.style.borderRadius = '50%';
   }
 
   blockBg.append(block);

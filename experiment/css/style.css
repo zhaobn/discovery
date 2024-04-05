@@ -212,8 +212,14 @@ li {
   margin-left: 25px;
 }
 
+.item-box-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+}
 .item-box {
-  width: 96%;
+  width: 50%;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;

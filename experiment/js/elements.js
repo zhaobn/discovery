@@ -62,8 +62,23 @@ function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'s
   let retDiv = createCustomElement('div', 'main-box', `main-box-${id}`);
 
   let mainLeft = createCustomElement('div', 'main-left', `main-left-${id}`);
-  let itemDiv = createCustomElement('div', 'item-box', `item-box-${id}`);
-  itemList.forEach(el => { itemDiv.append(drawBlock(el, id + '-' + el, itemColor, baseReward)) });
+  let itemDiv = createCustomElement('div', 'item-box-wrapper', `item-wrapper-${id}`);
+
+  // create separate spaces for square items and circle items
+  squaresDiv = createCustomElement('div', 'item-box', `item-box-square-${id}`);
+  circlesDiv = createCustomElement('div', 'item-box', `item-box-circle-${id}`);
+  itemList.forEach(el => {
+    squaresDiv.append(drawBlock('square', el, id + '-' + el, itemColor, baseReward));
+    circlesDiv.append(drawBlock('circle', el, id + '-' + el, itemColor, baseReward));
+  });
+  if (squareOnLeft > 0) {
+    itemDiv.append(squaresDiv);
+    itemDiv.append(circlesDiv);
+  } else {
+    itemDiv.append(circlesDiv);
+    itemDiv.append(squaresDiv);
+  }
+
 
   mainLeft.append(drawMachine(id, steps, color));
   mainLeft.append(itemDiv);
@@ -90,7 +105,7 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
 
   let bannerText = `Practice trial ${id.substring(1)}/${practiceIds.length}`
 
-  let probInfo = showProb? ` (Fusion works out ${Math.round(config['p']*10)} out of 10 times)` : '';
+  let probInfo = ''; //showProb? ` (Fusion works out ${Math.round(config['p']*10)} out of 10 times)` : '';
   infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length}` + probInfo;
   infoBar.innerHTML += `<br><hr>`
 
@@ -109,13 +124,13 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
 
 
 
-function makeTransitionDiv(blockId, p) {
+function makeTransitionDiv(blockId) {
   let retDiv = createCustomElement('div', 'preview-box', 'preview-'+blockId);
 
   let introText = (blockId[0] == 'p')? `Warm up with ${practiceIds.length} practice trials.` : `There are ${taskBlockSize} trials in total.`;
-  if (showProb == true && blockId[0] == 't') {
-    introText += `<br><br>Make the most out of it! Your bonus depends on the total points you gather.`; //`<br><br>Fusion works out ${Math.round(p*10)} out of 10 times on average.`
-  }
+  // if (showProb == true && blockId[0] == 't') {
+  //   introText += `<br><br>Make the most out of it! Your bonus depends on the total points you gather.`; //`<br><br>Fusion works out ${Math.round(p*10)} out of 10 times on average.`
+  // }
   retDiv.innerHTML = introText;
 
   let btnDiv = createCustomElement('div', 'button-group-vc', 'preview-btn-group-'+blockId);
@@ -124,10 +139,4 @@ function makeTransitionDiv(blockId, p) {
   retDiv.append(btnDiv);
 
   return retDiv;
-}
-
-
-
-function drawInstructionExamples() {
-
 }

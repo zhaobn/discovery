@@ -40,7 +40,7 @@ practiceIds.forEach(pid => {
 })
 
 
-getEl('task').append(makeTransitionDiv('task', baseRate));
+getEl('task').append(makeTransitionDiv('task'));
 hide('preview-task');
 getEl('preview-next-btn-task').onclick = () => hideAndShowNext('preview-task', 'task-t1', 'block');
 testIds.forEach(tid => {
