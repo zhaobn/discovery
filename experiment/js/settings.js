@@ -13,7 +13,7 @@ knowledge.forEach(e => {
 });
 
 
-const cond = isDev? 'expert-square': sampleFromList(conditions, 1);
+const cond = isDev? 'expert-cross': sampleFromList(conditions, 1);
 const assignedKnowledge = cond.split('-')[0];
 const assignedProbCond = cond.split('-')[1];
 isDev? console.log(assignedKnowledge, assignedProbCond): null;
@@ -30,6 +30,15 @@ const taskBlockSize = 7;
 const demoProb = 0.5;
 
 const baseObj = ['a', 'b', 'c', 'd', 'e', 'f'];
+const shapes = ['square', 'circle' ];
+
+let allObjs = [];
+shapes.forEach(s => {
+  baseObj.forEach(o => {
+    allObjs.push(s + "-" + o)
+  })
+});
+
 const allColors = [
   '#f44336',
   '#e81e63',
@@ -113,10 +122,14 @@ let allScoreOnDisplay = {};
 let allScoreHistory = {};
 
 let allCombo = {};
+let allRecipes = {};
+
 let allObjRewards = {};
 let allObjLevels = {};
 
-let allBaseRates = {};
+let allBaseRatesSquare = {};
+let allBaseRatesCircle = {};
+let allBaseRatesInter = {};
 let allRewardInc = {};
 let allStepsLeft = {};
 
@@ -126,14 +139,17 @@ function initData(id) {
   allScoreOnDisplay[id] = 0;
   allScoreHistory[id] = [];
   allCombo[id] = {};
+  allRecipes[id] = {};
 
   allObjRewards[id] = {};
-  baseObj.forEach(obj => allObjRewards[id][obj] = baseReward);
+  allObjs.forEach(obj => allObjRewards[id][obj] = baseReward);
 
   allObjLevels[id] = {};
-  baseObj.forEach(obj => allObjLevels[id][obj] = '1');
+  allObjs.forEach(obj => allObjLevels[id][obj] = '1');
 
-  allBaseRates[id] = taskConfigsWithId[id]['p'];
+  allBaseRatesSquare[id] = taskConfigsWithId[id]['psquare'];
+  allBaseRatesCircle[id] = taskConfigsWithId[id]['pcircle'];
+  allBaseRatesInter[id] = taskConfigsWithId[id]['pcross'];
   allRewardInc[id] = taskConfigsWithId[id]['w'];
   allStepsLeft[id] = steps;
 

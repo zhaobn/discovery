@@ -68,8 +68,8 @@ function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'s
   squaresDiv = createCustomElement('div', 'item-box', `item-box-square-${id}`);
   circlesDiv = createCustomElement('div', 'item-box', `item-box-circle-${id}`);
   itemList.forEach(el => {
-    squaresDiv.append(drawBlock('square', el, id + '-' + el, itemColor, baseReward));
-    circlesDiv.append(drawBlock('circle', el, id + '-' + el, itemColor, baseReward));
+    squaresDiv.append(drawBlock('square', el, id + '-square-' + el, itemColor, baseReward));
+    circlesDiv.append(drawBlock('circle', el, id + '-circle-' + el, itemColor, baseReward));
   });
   if (squareOnLeft > 0) {
     itemDiv.append(squaresDiv);
