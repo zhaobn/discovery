@@ -19,7 +19,6 @@ const assignedProbCond = cond.split('-')[1];
 isDev? console.log(assignedKnowledge, assignedProbCond): null;
 
 
-
 /** Task-related settings */
 const baseReward = 100;
 const rewardInc = 1.5;

@@ -79,7 +79,6 @@ function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'s
     itemDiv.append(squaresDiv);
   }
 
-
   mainLeft.append(drawMachine(id, steps, color));
   mainLeft.append(itemDiv);
 
@@ -88,10 +87,8 @@ function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'s
   histPanel.innerHTML = (Object.keys(histObj).length < 0)? '' : 'Failed attempts' + `<div class="hist-box" id="hist-box-${id}"></div>`
   mainRight.append(histPanel);
 
-
   retDiv.append(mainLeft);
   retDiv.append(mainRight);
-
   return retDiv
 
 }
@@ -105,9 +102,40 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
 
   let bannerText = `Practice trial ${id.substring(1)}/${practiceIds.length}`
 
-  let probInfo = ''; //showProb? ` (Fusion works out ${Math.round(config['p']*10)} out of 10 times)` : '';
-  infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length}` + probInfo;
-  infoBar.innerHTML += `<br><hr>`
+  let probInfoPanel = createCustomElement('div', 'prob-info-panel', '');
+  let itemColor = config['objColor'];
+  let leftRadius = (squareOnLeft == 1)? '0' : '50';
+  let rightRadius = (squareOnLeft == 1)? '50' : '0';
+  let leftProb = (squareOnLeft == 1)? probs[assignedProbCond]['psquare']: probs[assignedProbCond]['pcircle'];
+  let rightProb = (squareOnLeft == 1)? probs[assignedProbCond]['pcircle']: probs[assignedProbCond]['psquare'];
+  let crossProb = probs[assignedProbCond]['pcross'];
+  probInfoPanel.innerHTML = `
+  <div class="intruct-p">
+    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span> +
+    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span>
+      works out ${leftProb*10} out of 10 times;
+    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span> +
+    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span>
+      works out ${rightProb*10} out of 10 times;
+  </div>
+  <div class="intruct-p">
+    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span> +
+    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span>,
+    or <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span> +
+    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span>,
+      works out ${crossProb*10} out of 10 times.
+  </div>
+  <hr>`
+
+
+  infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length}`;
+  if (assignedKnowledge == 'expert') {
+    infoBar.append(probInfoPanel);
+  } else {
+    infoBar.style.height = '50px';
+    infoBar.innerHTML += '<hr>'
+  }
+
 
   let taskDiv = drawTask(id, config['color'], config['step'], config['objColor'], itemList, histObj);
   let btnDiv = createCustomElement('div', 'button-group-vc', 'intro-btn-group-'+id);

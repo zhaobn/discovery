@@ -65,10 +65,17 @@ li {
 }
 
 .main-info {
-  height: 50px;
+  height: 120px;
   width: 780px;
   margin-top: 50px;
   font-size: 30px;
+}
+.prob-info-panel {
+  font-size: 20px;
+}
+.intruct-p {
+  display: flex;
+  align-items: center;
 }
 .main-box {
   /* height: 500px; */
@@ -249,7 +256,8 @@ li {
 }
 
 .hist-panel {
-  height: 100%;
+  /* background-color: gainsboro; */
+  height: 70%;
   width: 100%;
   text-align: center;
 
