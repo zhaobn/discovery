@@ -180,7 +180,7 @@ function getItemWidth(size, type) {
     length = (size == 'base')? length : length * size - 2;
   } else {
     if (size != 'base') {
-      length = Math.min(1.4**size * length, 100);
+      length = Math.min(1.2**size * length, 180);
     }
   }
   return length
