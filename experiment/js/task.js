@@ -59,7 +59,7 @@ testIds.forEach(tid => {
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  //getEl('task-'+tid).style.display = 'none';
+  getEl('task-'+tid).style.display = 'none';
 
 })
 
@@ -144,7 +144,6 @@ function recordData(id, action, result, r, total_r) {
 }
 
 function handleExtract(id, isDemo=false) { // id is task id
-
 
   let reward = allObjRewards[id][allDisplays[id][0]];
   allScoreOnDisplay[id] +=  reward;
@@ -269,8 +268,9 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
   // Reset machine
   allDisplays[id] = [];
   getEl(`fuse-btn-${id}`).disabled = true;
+
   if (isFuseDemo) {
-    if (allCombo[id][thisCombo] == 1) {
+    if (allRecipes[id][thisCombo].length > 0) {
       showNext('intro-btn-group-5');
       getEl('instruction-btn-5').style.opacity = 1;
     }
@@ -416,22 +416,25 @@ function introBtn00() {
 
 getEl('intro-demo-1').append(drawTask(introId, taskConfigsWithId[introId]['color'], taskConfigsWithId[introId]['step'], taskConfigsWithId[introId]['objColor']));
 getEl('hist-box-intro1').style.height = '300px';
-// baseObj.forEach(el => {
-//   let item = introId + '-' + el;
-//   getEl(item).onclick = () => {
-//     let label = item.split('-').splice(-1)[0]
+allObjs.forEach(el => {
+  let item = introId + '-' + el;
+  getEl(item).onclick = () => {
+    let [introId, shape, label] = item.split('-');
+    if (allDisplays[introId].length == 0) {
+      let toAdd = drawBlock(shape, label, '', demoObjColor);
+      toAdd.onclick = () => handleMachineItemClick('mid-'+shape, introId, true);
+      getEl(`dis-item-mid-${introId}`).append(toAdd);
 
-//     if (allDisplays[introId].length == 0) {
-//       let toAdd = drawBlock(label, '', demoObjColor);
-//       toAdd.onclick = () => handleMachineItemClick('mid', introId, true);
-//       getEl(`dis-item-mid-${introId}`).append(toAdd);
-
-//       allDisplays[introId].push(label);
-//       // getEl(`extract-btn-${id}`).disabled = false;
-//       getEl(`instruction-btn-1`).style.opacity = 1
-//       played += 1;
-//   }
-//   }});
+      allDisplays[introId].push(shape+'-'+label);
+      getEl(`extract-btn-${introId}`).disabled = false;
+      getEl(`instruction-btn-1`).style.opacity = 1
+      played += 1;
+  }}
+});
+getEl(`extract-btn-${introId}`).onclick = () => {
+  handleExtract(introId, true);
+  getEl('instruction-btn-3').style.opacity = 1;
+}
 
 function introBtn01() {
   hide('intro-p-1');
@@ -439,13 +442,8 @@ function introBtn01() {
   hide('intro-p-3');
   hide('intro-sub-1');
   showNext('intro-sub-1-2', 'block');
-  getEl(`extract-btn-${introId}`).disabled = false;
-  getEl(`extract-btn-${introId}`).onclick = () => {
-    handleExtract(introId, true);
-    getEl('instruction-btn-3').style.opacity = 1;
-  }
-
 }
+
 function introBtn03() {
   hideAndShowNext('intro-sub-1-3', 'intro-sub-1-4', 'block');
   setTimeout(() => { getEl(`instruction-btn-4`).style.opacity = 1;}, introBtnDelay);
@@ -456,9 +454,10 @@ function introBtn03() {
 let introIdFuse = 'intro2';
 getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step'], taskConfigsWithId[introIdFuse]['objColor']));
 getEl('hist-box-intro2').style.height = '300px';
-// baseObj.forEach(el => {
-//   let item =introIdFuse + '-' + el;
-//   getEl(item).onclick = () => handleItemClick(item, introIdFuse, true)});
+allObjs.forEach(el => {
+  let item = introIdFuse+'-'+el;
+  getEl(item).onclick = () => handleItemClick(item, introIdFuse, true);
+});
 getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, true, true);
 
 function introBtn05() {
@@ -466,16 +465,7 @@ function introBtn05() {
   hide('intro-btn-group-5');
   showNext('intro-sub-2-2', 'block');
   setTimeout(() => { getEl(`instruction-btn-6`).style.opacity = 1;}, introBtnDelay);
-
-  baseObj.forEach(el => {
-    let item =introIdFuse + '-' + el;
-    getEl(item).onclick = () => handleItemClick(item, introIdFuse)});
-
-  getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
-  getEl(`extract-btn-${introIdFuse}`).onclick = () => {
-    handleExtract(introIdFuse, true);
-    getEl('instruction-btn-6').style.opacity = 1;
-  }
+  getEl('intro-demo-2').style.display = 'none';
 }
 
 
@@ -538,26 +528,25 @@ function introBtn08() {
 /* Draw items for demo reward structure */
 getEl('instruct-rate').innerHTML = rewardInc,
 
-getEl('demo-xp-a1').append(drawBlock('a', 'demo-xp-item1', demoObjColor, baseReward))
-getEl('demo-xp-b1').append(drawBlock('b', 'demo-xp-item2', demoObjColor, baseReward))
-getEl('demo-xp-ab1').append(drawBlock('[ab]', 'demo-xp-item3', demoObjColor, Math.round(baseReward*rewardInc), 'demo'))
+getEl('demo-xp-a1').append(drawBlock('square', 'a', 'demo-xp-item1', demoObjColor, baseReward))
+getEl('demo-xp-b1').append(drawBlock('square', 'b', 'demo-xp-item2', demoObjColor, baseReward))
+getEl('demo-xp-ab1').append(drawBlock('square', '[ab]', 'demo-xp-item3', demoObjColor, Math.round(baseReward*rewardInc), 'demo'))
 getEl('demo-calc-1').innerHTML = showCalc(rewardInc, baseReward)
 
-getEl('demo-xp-b2').append(drawBlock('b', 'demo-xp-item4', demoObjColor, baseReward))
-getEl('demo-xp-ab2').append(drawBlock('[ab]', 'demo-xp-item5', demoObjColor, Math.round(baseReward*rewardInc)))
-getEl('demo-xp-abb1').append(drawBlock('[[ab]b]', 'demo-xp-item6', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
-getEl('demo-calc-2').innerHTML = showCalc(rewardInc, Math.round(baseReward*rewardInc))
-
-
-getEl('demo-xp-ab3').append(drawBlock('[ab]', 'demo-xp-item7', demoObjColor, Math.round(rewardInc*baseReward)))
-getEl('demo-xp-ab4').append(drawBlock('[ab]', 'demo-xp-item8', demoObjColor, Math.round(rewardInc*baseReward)))
-getEl('demo-xp-abab1').append(drawBlock('[[ab][ab]]', 'demo-xp-item9', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
+getEl('demo-xp-b2').append(drawBlock('circle', 'b', 'demo-xp-item4', demoObjColor, baseReward))
+getEl('demo-xp-ab2').append(drawBlock('circle', '[ab]', 'demo-xp-item5', demoObjColor, Math.round(baseReward*rewardInc)))
+getEl('demo-xp-abb1').append(drawBlock('circle', '[[ab]b]', 'demo-xp-item6', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
 getEl('demo-calc-3').innerHTML = showCalc(rewardInc, Math.round(baseReward*rewardInc))
 
+// getEl('demo-xp-ab3').append(drawBlock('circle', '[ab]', 'demo-xp-item7', demoObjColor, Math.round(rewardInc*baseReward)))
+// getEl('demo-xp-ab4').append(drawBlock('circle', '[ab]', 'demo-xp-item8', demoObjColor, Math.round(rewardInc*baseReward)))
+// getEl('demo-xp-abab1').append(drawBlock('circle', '[[ab][ab]]', 'demo-xp-item9', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward), 'demo'))
+// getEl('demo-calc-2').innerHTML = showCalc(rewardInc, Math.round(baseReward*rewardInc))
 
-getEl('demo-xp-a2').append(drawBlock('a', 'demo-xp-item10', demoObjColor, baseReward))
-getEl('demo-xp-abc1').append(drawBlock('[[ab]c]', 'demo-xp-item11', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward)))
-getEl('demo-xp-aabc1').append(drawBlock('[a[[ab]c]]', 'demo-xp-item12', demoObjColor, Math.round(baseReward*Math.pow(rewardInc,3)), 'demo'))
+
+getEl('demo-xp-a2').append(drawBlock('circle', 'e', 'demo-xp-item10', demoObjColor, baseReward))
+getEl('demo-xp-abc1').append(drawBlock('square', '[[ab]c]', 'demo-xp-item11', demoObjColor, Math.round(Math.pow(rewardInc,2)*baseReward)))
+getEl('demo-xp-aabc1').append(drawBlock('square', '[e[[ab]c]]', 'demo-xp-item12', demoObjColor, Math.round(baseReward*Math.pow(rewardInc,3)), 'demo'))
 getEl('demo-calc-4').innerHTML =  showCalc(rewardInc, Math.round(baseReward*Math.pow(rewardInc,2)))
 
 function showCalc(val1, val2) {
@@ -565,6 +554,10 @@ function showCalc(val1, val2) {
 }
 
 // getEl('sum-rec').innerHTML = rewardInc;
+getEl('intro-p-info-square').innerHTML = (assignedKnowledge=='expert')? `This works ${probs[assignedProbCond]['psquare']*10} out of 10 times.` : '';
+getEl('intro-p-info-circle').innerHTML = (assignedKnowledge=='expert')? `This works ${probs[assignedProbCond]['pcircle']*10} out of 10 times.` : '';
+getEl('intro-p-info-cross').innerHTML = (assignedKnowledge=='expert')? `This works ${probs[assignedProbCond]['pcross']*10} out of 10 times.` : '';
+
 
 
 /* Comprehension quiz */
