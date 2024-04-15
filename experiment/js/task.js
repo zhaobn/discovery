@@ -473,6 +473,8 @@ function introBtn06() {
   hideAndShowNext('intro-sub-2-2', 'intro-sub-2-5', 'block');
   setTimeout(() => { getEl(`instruction-btn-10`).style.opacity = 1;}, introBtnDelay);
 
+  getEl('intro-demo-2').style.display = 'block';
+
   for (let i = 1; i < 11; i++) {
     let unitColor = (i < 9)? 'white' : machineColor;
     getEl(introIdFuse+'-unit-'+i.toString()).style.backgroundColor = unitColor;
@@ -482,9 +484,11 @@ function introBtn06() {
 
   getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
   getEl(`extract-btn-${introIdFuse}`).onclick = () => handleExtract(introIdFuse, true);
-  baseObj.forEach(el => {
+  allObjs.forEach(el => {
     let item =introIdFuse + '-' + el;
     getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
+
+
 
 }
 function introBtn07() {
@@ -554,9 +558,9 @@ function showCalc(val1, val2) {
 }
 
 // getEl('sum-rec').innerHTML = rewardInc;
-getEl('intro-p-info-square').innerHTML = (assignedKnowledge=='expert')? `This works ${probs[assignedProbCond]['psquare']*10} out of 10 times.` : '';
-getEl('intro-p-info-circle').innerHTML = (assignedKnowledge=='expert')? `This works ${probs[assignedProbCond]['pcircle']*10} out of 10 times.` : '';
-getEl('intro-p-info-cross').innerHTML = (assignedKnowledge=='expert')? `This works ${probs[assignedProbCond]['pcross']*10} out of 10 times.` : '';
+getEl('intro-p-info-square').innerHTML = (assignedKnowledge=='expert')? `This works out ${probs[assignedProbCond]['psquare']*10} out of 10 times.` : '';
+getEl('intro-p-info-circle').innerHTML = (assignedKnowledge=='expert')? `This works out ${probs[assignedProbCond]['pcircle']*10} out of 10 times.` : '';
+getEl('intro-p-info-cross').innerHTML = (assignedKnowledge=='expert')? `This works out ${probs[assignedProbCond]['pcross']*10} out of 10 times.` : '';
 
 
 

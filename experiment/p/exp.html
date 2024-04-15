@@ -11,7 +11,7 @@
 
   <body>
 
-    <div id="welcome" class="base" style="display:none;" >
+    <div id="welcome" class="base" >
       <h1>Information for participants</h1>
       <div id="consent-info">
 
@@ -239,10 +239,10 @@
 
 
 
-    <div id="instruction" class="base">
+    <div id="instruction" class="base"  style="display:none;">
       <h1>Instruction</h1>
 
-      <div id="instruction-1" style="display:none;">
+      <div id="instruction-1" >
         <div style="padding-left:5px;">
           <div id="intro-sub-1-0" >
             <p>Thank you for playing my game!</p>
@@ -303,9 +303,9 @@
         </div>
       </div>
 
-      <div id="instruction-2" >
+      <div id="instruction-2" style="display:none;">
 
-        <div id="intro-sub-2-1" style="display: none;">
+        <div id="intro-sub-2-1" >
           <p>Engineers have added a <b>Fuse</b> button to your machine</p>
           <p>If you put two crystals into the machine, and click the Fuse button, the machine will try to fuse the two crystals together.</p>
           <p><strong>Sometimes fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. </p>
@@ -314,7 +314,7 @@
         </div>
 
 
-        <div id="intro-demo-2" style="display: none;"></div>
+        <div id="intro-demo-2"></div>
 
 
         <div class='button-group-vc' id="intro-btn-group-5">
@@ -322,14 +322,20 @@
         </div>
 
 
-        <div id="intro-sub-2-2" style="display:none;">
-          <p>Each new crystal you discover is worth <b><span id="instruct-rate"></span> times more points than the most valuable crystal used to produce it.</b></p>
-          <p>Here are some examples:</p>
+        <div id="intro-sub-2-2" style="display: none;">
+          <p>How do crystals combine?</p>
+          <ul>
+            <li>Square and square makes a new square. <span id="intro-p-info-square"></span></li>
+            <li>Circle and circle makes a new circle. <span id="intro-p-info-circle"></span></li>
+            <li>Square and circle, or circle and square, leads to either a square or a circle. <span id="intro-p-info-cross"></span></li>
+          </ul>
+
+
+          <p>Each new crystal you discover is worth <b><span id="instruct-rate"></span> times more points than the most valuable crystal used to produce it.</b> For example:</p>
           <div>
             <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-a1"></span>, <span class="demo-xp" id="demo-xp-b1"></span> ) => <span class="demo-calc" id="demo-calc-1"></span> => <span class="demo-xp" id="demo-xp-ab1"></span></div>
             <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-b2"></span>, <span class="demo-xp" id="demo-xp-ab2"></span> ) => <span class="demo-calc" id="demo-calc-3"></span> => <span class="demo-xp" id="demo-xp-abb1"></span></div>
             <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-a2"></span>, <span class="demo-xp" id="demo-xp-abc1"></span> ) => <span class="demo-calc" id="demo-calc-4"></span> => <span class="demo-xp" id="demo-xp-aabc1"></span></div>
-
           </div>
 
           <div class='button-group-vc'>
@@ -337,23 +343,10 @@
          </div>
         </div>
 
-        <div id="intro-sub-2-3">
-          <p>How do crystals combine?</p>
-          <ul>
-            <li>Square and square makes a new square. <span id="intro-p-info-square"></span></li>
-            <li>Circle and circle makes a new circle. <span id="intro-p-info-circle"></span></li>
-            <li>Square and circle, or circle and square, leads to either square or circle. <span id="intro-p-info-cross"></span></li>
-          </ul>
-          <div class='button-group-vc'>
-            <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">End instruction</button>
-          </div>
-        </div>
-
 
         <div id="intro-sub-2-5" style="display: none;">
-          <p>Almost there.</p>
-          <p>So far, you have collected points by using the Extract button, and found a new crystal by using the Fuse button. You have also learned how many points a new crystal produced by the fusion process is worth.</p>
-          <p>However, you will only have <strong>10 opportunities to press buttons for each machine!</strong> Fusing new combinations and Extracting crystals each use one button press. If you accidentally repeat a previously discovered or failed fusion, it will not consume a chance to use the machine. You can see combinations you have tried on the list on the right hand side of the machine.</p>
+          <p>In each game, you will only have <strong>10 opportunities to press buttons!</strong> Fusing <i>new</i> combinations and Extracting crystals each use one button press.</p>
+          <!-- <p>If you accidentally repeat a previously discovered or failed fusion, it will not consume a chance to use the machine. You can see combinations you have tried on the list on the right hand side of the machine.</p> -->
           <p>The number of button presses remaining is indicated by the bars on the top rim of the machine. There are now two bars left – take two more actions with this machine (push Extract or Fuse buttons) to end the instructions.</p>
           <div class='button-group-vc'>
             <button class='intro-button' id='instruction-btn-9' style="opacity:0" onclick="hideAndShowNext('instruction-2', 'instruction-3', 'block')">End instruction</button>

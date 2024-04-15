@@ -1,7 +1,7 @@
 let isDev = true;
 
 /** Set up conditions */
-const knowledge = ['expert', 'noice'];
+const knowledge = ['expert', 'novice'];
 const probs = {
   'square': { 'pcircle': 0.2, 'psquare': 0.8, 'pcross': 0.2 },
   'circle': { 'pcircle': 0.8, 'psquare': 0.2, 'pcross': 0.2 },
@@ -13,7 +13,7 @@ knowledge.forEach(e => {
 });
 
 
-const cond = isDev? 'expert-cross': sampleFromList(conditions, 1);
+const cond = isDev? 'novice-cross': sampleFromList(conditions, 1);
 const assignedKnowledge = cond.split('-')[0];
 const assignedProbCond = cond.split('-')[1];
 isDev? console.log(assignedKnowledge, assignedProbCond): null;
