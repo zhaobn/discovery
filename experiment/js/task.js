@@ -470,7 +470,7 @@ function introBtn05() {
 
 
 function introBtn06() {
-  hideAndShowNext('intro-sub-2-2', 'intro-sub-2-5', 'block');
+  hideAndShowNext('intro-sub-2-3', 'intro-sub-2-5', 'block');
   setTimeout(() => { getEl(`instruction-btn-10`).style.opacity = 1;}, introBtnDelay);
 
   getEl('intro-demo-2').style.display = 'block';
@@ -562,7 +562,11 @@ getEl('intro-p-info-square').innerHTML = ''; // (assignedKnowledge=='expert')? `
 getEl('intro-p-info-circle').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['pcircle']*10} out of 10 times.` : '';
 getEl('intro-p-info-cross').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['pcross']*10} out of 10 times.` : '';
 
-getEl('intro-p-info-explanation').innerHTML = (cond=='expert') ?  'From past tests, scientists have figured out how likely each types of combination will work out, and you will see this information for each batch of gems that you are making.': '';
+getEl('intro-p-info-explanation').innerHTML = (cond=='expert') ?
+  'Scientists have also figured out <b>how likely each types of combination will work out</b>, and you will see this information for each game that you are playing.':
+  'But it is not clear how frequently each type of combine will work out.';
+getEl('intro-p-info-explanation').innerHTML += '<br><br>';
+getEl('intro-p-info-explanation').innerHTML += 'Make use of this information wisely. Remember, you want to maximize the total points collected in each game!'
 
 
 /* Comprehension quiz */

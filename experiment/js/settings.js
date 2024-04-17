@@ -27,7 +27,7 @@ const steps = 10;
 const nPractice = 2;
 
 // new design - make each participant do all probs
-const nRepeat = 4;
+const nRepeat = 3;
 let probConds = [];
 Object.keys(probs).forEach(el => probConds = probConds.concat(Array(nRepeat).fill(el)));
 probConds = shuffleArray(probConds);
