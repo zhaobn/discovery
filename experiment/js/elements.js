@@ -106,9 +106,9 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
   let itemColor = config['objColor'];
   let leftRadius = (squareOnLeft == 1)? '0' : '50';
   let rightRadius = (squareOnLeft == 1)? '50' : '0';
-  let leftProb = (squareOnLeft == 1)? probs[assignedProbCond]['psquare']: probs[assignedProbCond]['pcircle'];
-  let rightProb = (squareOnLeft == 1)? probs[assignedProbCond]['pcircle']: probs[assignedProbCond]['psquare'];
-  let crossProb = probs[assignedProbCond]['pcross'];
+  let leftProb = (squareOnLeft == 1)? config['psquare']: config['pcircle'];
+  let rightProb = (squareOnLeft == 1)? config['pcircle']: config['psquare'];
+  let crossProb = config['pcross'];
   probInfoPanel.innerHTML = `
   <div class="intruct-p">
     <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span> +

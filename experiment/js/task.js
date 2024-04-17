@@ -39,7 +39,7 @@ practiceIds.forEach(pid => {
   getEl(`fuse-btn-${pid}`).onclick = () => handleFuse(pid);
   getEl('task-next-btn-' + pid).onclick = () => giveFeedback(pid);
 
-  getEl('task-'+pid).style.display = 'none';
+  //getEl('task-'+pid).style.display = 'none';
 })
 
 
@@ -59,7 +59,7 @@ testIds.forEach(tid => {
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  getEl('task-'+tid).style.display = 'none';
+  //getEl('task-'+tid).style.display = 'none';
 
 })
 
@@ -558,10 +558,11 @@ function showCalc(val1, val2) {
 }
 
 // getEl('sum-rec').innerHTML = rewardInc;
-getEl('intro-p-info-square').innerHTML = (assignedKnowledge=='expert')? `This works out ${probs[assignedProbCond]['psquare']*10} out of 10 times.` : '';
-getEl('intro-p-info-circle').innerHTML = (assignedKnowledge=='expert')? `This works out ${probs[assignedProbCond]['pcircle']*10} out of 10 times.` : '';
-getEl('intro-p-info-cross').innerHTML = (assignedKnowledge=='expert')? `This works out ${probs[assignedProbCond]['pcross']*10} out of 10 times.` : '';
+getEl('intro-p-info-square').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['psquare']*10} out of 10 times.` : '';
+getEl('intro-p-info-circle').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['pcircle']*10} out of 10 times.` : '';
+getEl('intro-p-info-cross').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['pcross']*10} out of 10 times.` : '';
 
+getEl('intro-p-info-explanation').innerHTML = (cond=='expert') ?  'From past tests, scientists have figured out how likely each types of combination will work out, and you will see this information for each batch of gems that you are making.': '';
 
 
 /* Comprehension quiz */

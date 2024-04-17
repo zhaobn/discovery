@@ -11,7 +11,7 @@
 
   <body>
 
-    <div id="welcome" class="base" >
+    <div id="welcome" class="base"  style="display:none;">
       <h1>Information for participants</h1>
       <div id="consent-info">
 
@@ -239,10 +239,10 @@
 
 
 
-    <div id="instruction" class="base"  style="display:none;">
+    <div id="instruction" class="base"  >
       <h1>Instruction</h1>
 
-      <div id="instruction-1" >
+      <div id="instruction-1" style="display:none;">
         <div style="padding-left:5px;">
           <div id="intro-sub-1-0" >
             <p>Thank you for playing my game!</p>
@@ -303,9 +303,9 @@
         </div>
       </div>
 
-      <div id="instruction-2" style="display:none;">
+      <div id="instruction-2" >
 
-        <div id="intro-sub-2-1" >
+        <div id="intro-sub-2-1" style="display:none;">
           <p>Engineers have added a <b>Fuse</b> button to your machine</p>
           <p>If you put two crystals into the machine, and click the Fuse button, the machine will try to fuse the two crystals together.</p>
           <p><strong>Sometimes fusion leads to a new crystal, </strong>and the resulting crystal will be shown in the smaller box. </p>
@@ -314,7 +314,7 @@
         </div>
 
 
-        <div id="intro-demo-2"></div>
+        <div id="intro-demo-2" style="display:none;"></div>
 
 
         <div class='button-group-vc' id="intro-btn-group-5">
@@ -322,15 +322,7 @@
         </div>
 
 
-        <div id="intro-sub-2-2" style="display: none;">
-          <p>How do crystals combine?</p>
-          <ul>
-            <li>Square and square makes a new square. <span id="intro-p-info-square"></span></li>
-            <li>Circle and circle makes a new circle. <span id="intro-p-info-circle"></span></li>
-            <li>Square and circle, or circle and square, leads to either a square or a circle. <span id="intro-p-info-cross"></span></li>
-          </ul>
-
-
+        <div id="intro-sub-2-2" style="display:none;">
           <p>Each new crystal you discover is worth <b><span id="instruct-rate"></span> times more points than the most valuable crystal used to produce it.</b> For example:</p>
           <div>
             <div class="intruct-r"> &#8226; Fuse ( <span class="demo-xp" id="demo-xp-a1"></span>, <span class="demo-xp" id="demo-xp-b1"></span> ) => <span class="demo-calc" id="demo-calc-1"></span> => <span class="demo-xp" id="demo-xp-ab1"></span></div>
@@ -339,10 +331,24 @@
           </div>
 
           <div class='button-group-vc'>
-            <button class='intro-button' id='instruction-btn-6' style="opacity:1" onclick="introBtn06()">&gt;&gt;</button>
+            <button class='intro-button' id='instruction-btn-6a' style="opacity:1" onclick="hideAndShowNext('intro-sub-2-2', 'intro-sub-2-3', 'block')">&gt;&gt;</button>
          </div>
         </div>
 
+
+        <div id="intro-sub-2-3">
+          <p>We know that</p>
+          <ul>
+            <li>Square and square always makes a new square. <span id="intro-p-info-square"></span></li>
+            <li>Circle and circle always makes a new circle. <span id="intro-p-info-circle"></span></li>
+            <li>Square and circle, or circle and square, can lead to either a square or a circle. <span id="intro-p-info-cross"></span></li>
+          </ul>
+          <p id="intro-p-info-explanation"></p>
+
+          <div class='button-group-vc'>
+            <button class='intro-button' id='instruction-btn-6' style="opacity:1" onclick="introBtn06()">&gt;&gt;</button>
+         </div>
+        </div>
 
         <div id="intro-sub-2-5" style="display: none;">
           <p>In each game, you will only have <strong>10 opportunities to press buttons!</strong> Fusing <i>new</i> combinations and Extracting crystals each use one button press.</p>
@@ -427,7 +433,7 @@
 
 
 
-    <div id="task" class="base" style="display:none;"></div>
+    <div id="task" class="base" style="display:none;" ></div>
 
 
 

@@ -7,16 +7,16 @@ const probs = {
   'circle': { 'pcircle': 0.8, 'psquare': 0.2, 'pcross': 0.2 },
   'cross': { 'pcircle': 0.2, 'psquare': 0.2, 'pcross': 0.8 }
 }
-let conditions = []
-knowledge.forEach(e => {
-  Object.keys(probs).forEach(p => conditions.push(e+'-'+p));
-});
 
+// let conditions = []
+// knowledge.forEach(e => {
+//   Object.keys(probs).forEach(p => conditions.push(e+'-'+p));
+// });
 
-const cond = isDev? 'novice-cross': sampleFromList(conditions, 1);
-const assignedKnowledge = cond.split('-')[0];
-const assignedProbCond = cond.split('-')[1];
-isDev? console.log(assignedKnowledge, assignedProbCond): null;
+const cond = isDev? 'expert': sampleFromList(knowledge, 1);
+const assignedKnowledge = cond; //conditions.split('-')[0];
+// const assignedProbCond = cond.split('-')[1];
+// isDev? console.log(assignedKnowledge, assignedProbCond): null;
 
 
 /** Task-related settings */
@@ -25,9 +25,16 @@ const rewardInc = 1.5;
 const steps = 10;
 
 const nPractice = 2;
-const taskBlockSize = 7;
-const demoProb = 0.5;
 
+// new design - make each participant do all probs
+const nRepeat = 4;
+let probConds = [];
+Object.keys(probs).forEach(el => probConds = probConds.concat(Array(nRepeat).fill(el)));
+probConds = shuffleArray(probConds);
+const taskBlockSize = probConds.length;
+
+
+const demoProb = 0.5;
 const baseObj = ['a', 'b', 'c', 'd', 'e', 'f'];
 const shapes = ['square', 'circle' ];
 
@@ -74,12 +81,11 @@ const squareOnLeft = (Math.random() < 0.5)? 1 : 0;
 /** Prep setting to task configurations */
 
 let taskConfigsWithId = {};
-
 // Add practice trial config
 let pracConfig = {
-  'pcircle': probs[assignedProbCond]['pcircle'],
-  'psquare': probs[assignedProbCond]['psquare'],
-  'pcross': probs[assignedProbCond]['pcross'],
+  'pcircle': demoProb,
+  'psquare': demoProb,
+  'pcross': demoProb,
   'w': rewardInc,
   'color': demoMachineColor,
   'objColor': demoObjColor,
@@ -90,19 +96,23 @@ for (let i = 0; i < nPractice; i++) {
   let taskId = 'p' + (i+1).toString();
   taskConfigsWithId[taskId] = pracConfig;
 }
+
+
 // Task trial config
 objColors.forEach((col, id) => {
   let taskId = 't'+(id+1).toString();
   taskConfigsWithId[taskId] = {
-    'pcircle': probs[assignedProbCond]['pcircle'],
-    'psquare': probs[assignedProbCond]['psquare'],
-    'pcross': probs[assignedProbCond]['pcross'],
+    'pcircle': probs[probConds[id]]['pcircle'],
+    'psquare': probs[probConds[id]]['psquare'],
+    'pcross': probs[probConds[id]]['pcross'],
     'w': rewardInc,
     'step': steps,
     'r': baseReward,
     'objColor': col,
     'color': machineColors[id] };
 })
+// console.log(taskConfigsWithId)
+
 // Pad info for instruction demos
 let demoConfig = { 'pcircle': demoProb, 'psquare': demoProb, 'pcross': demoProb, 'w': rewardInc, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
 taskConfigsWithId['intro1'] = demoConfig;
@@ -159,17 +169,16 @@ allMachineIds.forEach(tid => { initData(tid) });
 
 /** Prep data to save */
 let trialData = {};
-taskIds.forEach(tid => {
-
+taskIds.forEach((tid, idx) => {
   for (let i = 1; i <= taskConfigsWithId[tid]['step']; i++) {
     let dat = {};
     dat['task_id'] = tid;
     dat['step_id'] = i;
-    dat['knowledge'] = assignedKnowledge;
+    dat['knowledge'] = cond;
     dat['squareOnLeft'] = squareOnLeft;
-    dat['pcircle'] = probs[assignedProbCond]['pcircle'],
-    dat['psquare'] = probs[assignedProbCond]['psquare'],
-    dat['pcross'] = probs[assignedProbCond]['pcross'],
+    dat['pcircle'] = taskConfigsWithId[tid]['pcircle'],
+    dat['psquare'] = taskConfigsWithId[tid]['psquare'],
+    dat['pcross'] = taskConfigsWithId[tid]['pcross'],
     dat['w'] = allRewardInc[tid];
     dat['item_selection'] = [];
     dat['action'] = '';
@@ -182,4 +191,4 @@ taskIds.forEach(tid => {
   }
 
 })
-//console.log(trialData);
+// console.log(trialData);
