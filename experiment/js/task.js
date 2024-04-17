@@ -39,7 +39,7 @@ practiceIds.forEach(pid => {
   getEl(`fuse-btn-${pid}`).onclick = () => handleFuse(pid);
   getEl('task-next-btn-' + pid).onclick = () => giveFeedback(pid);
 
-  //getEl('task-'+pid).style.display = 'none';
+  getEl('task-'+pid).style.display = 'none';
 })
 
 
@@ -59,7 +59,7 @@ testIds.forEach(tid => {
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  //getEl('task-'+tid).style.display = 'none';
+  getEl('task-'+tid).style.display = 'none';
 
 })
 

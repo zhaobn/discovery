@@ -61,11 +61,18 @@ const allColors = [
   '#ffeb3b',
   '#ffc107',
   '#ff9800',
-  '#ff5722'
+  '#ff5722',
+  // from chat-gpt
+  '#FFC107',
+  '#4CAF50',
+  '#1976D2',
+  '#66CCCC',
+
 ]
 let objColors =  sampleFromList(allColors, taskBlockSize, false); //[ 'rgb(0 114 178)', 'rgb(86 180 233)','rgb(230 159 0)','rgb(213 94 0)', 'rgb(204 121 167)', 'rgb(0 0 0)', 'rgb(0 153 76)', 'rgb(102 0 102)' ];
 //objColors = sampleFromList(objColors, taskBlockSize, false);
 const demoObjColor = 'silver';
+
 
 const demoMachineColor = 'gray';
 let machineColors = sampleFromList(allColors, taskBlockSize, false); //[ 'royalblue', 'darkgreen', 'darkred', 'darkslategray', 'lightcoral', 'lightseagreen', 'mediumpurple', 'rosybrown' ];
