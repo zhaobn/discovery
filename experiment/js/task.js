@@ -520,7 +520,7 @@ function introBtn08() {
 
   getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, false, true);
   getEl(`extract-btn-${introIdFuse}`).onclick = () => handleExtract(introIdFuse, true);
-  baseObj.forEach(el => {
+  allObjs.forEach(el => {
     let item =introIdFuse + '-' + el;
     getEl(item).onclick = () => handleItemClick(item, introIdFuse, false)});
 
@@ -619,7 +619,7 @@ function handle_retry() {
   getEl('intro-demo-2').innerHTML = '';
   getEl('intro-demo-2').append(drawTask(introIdFuse, taskConfigsWithId[introIdFuse]['color'], taskConfigsWithId[introIdFuse]['step'], taskConfigsWithId[introIdFuse]['objColor']));
   getEl('hist-box-intro2').style.height = '300px';
-  baseObj.forEach(el => {
+  allObjs.forEach(el => {
     let item =introIdFuse + '-' + el;
     getEl(item).onclick = () => handleItemClick(item, introIdFuse, true)});
   getEl(`fuse-btn-${introIdFuse}`).onclick = () => handleFuse(introIdFuse, true, true);
