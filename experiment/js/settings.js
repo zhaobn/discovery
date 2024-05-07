@@ -13,10 +13,11 @@ const probs = {
 //   Object.keys(probs).forEach(p => conditions.push(e+'-'+p));
 // });
 
-const cond = isDev? 'expert': sampleFromList(knowledge, 1);
+// const cond = isDev? 'expert': sampleFromList(knowledge, 1);
+const cond = sampleFromList(knowledge, 1);
 const assignedKnowledge = cond; //conditions.split('-')[0];
 // const assignedProbCond = cond.split('-')[1];
-// isDev? console.log(assignedKnowledge, assignedProbCond): null;
+isDev? console.log(assignedKnowledge): null;
 
 
 /** Task-related settings */
