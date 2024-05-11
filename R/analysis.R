@@ -1,6 +1,7 @@
 
 library(tidyr)
 library(dplyr)
+library(rstatix)
 library(stringr)
 library(ggplot2)
 library(MoMAColors)
@@ -54,7 +55,8 @@ df_explore = df.tw %>%
   mutate(explore=as.numeric(action=='F')) %>%
   group_by(id, task, condition) %>%
   summarise(explore_rate=sum(explore)/n()) %>%
-  mutate(condition=factor(condition, levels=cond_levels, labels=cond_labels))
+  mutate(condition=factor(condition, levels=cond_levels, labels=cond_labels)) %>%
+  ungroup()
 plt_rate = ggplot(df_explore, aes(x=condition, y=explore_rate, fill=condition)) +
   geom_violin(alpha=0.5) +
   geom_boxplot(width=0.2) +
@@ -69,7 +71,8 @@ plt_rate = ggplot(df_explore, aes(x=condition, y=explore_rate, fill=condition)) 
 df_explore %>%
   filter(condition=='ll' & task %in% c(1, 7)) %>%
   group_by(task) %>%
-  summarise(se=sd(explore_rate), explore_rate=mean(explore_rate))
+  summarise(se=sd(explore_rate), explore_rate=mean(explore_rate)) %>%
+  ungroup()
 
 
 df_explore_fs = df.tw %>%
@@ -94,6 +97,39 @@ lh=df_explore_fs %>% filter(p=='l' & w == 'h') %>% pull(explore_rate)
 hl=df_explore_fs %>% filter(p=='h' & w == 'l') %>% pull(explore_rate)
 t.test(lh, hl)
 cohens_d(lh, hl)
+
+
+# repeated-measure anova
+df_explore = df.tw %>%
+  mutate(explore=as.numeric(action=='F')) %>%
+  group_by(id, task, condition) %>%
+  summarise(explore_rate=sum(explore)/n()) %>%
+  mutate(p=substr(condition,1,1),w=substr(condition, 2, 2)) %>%
+  ungroup()
+res.aov <- anova_test(
+  data = df_explore, dv = explore_rate, wid = id,
+  between = c(p, w),
+  within = task,
+)
+get_anova_table(res.aov)
+
+
+# repeated measure for the symmetric conditions
+df_explore_sym = df.tw %>%
+  mutate(explore=as.numeric(action=='F')) %>%
+  group_by(id, task, condition) %>%
+  summarise(explore_rate=sum(explore)/n()) %>%
+  mutate(p=substr(condition,1,1),w=substr(condition, 2, 2)) %>%
+  filter(condition %in% c('lh', 'hl')) %>%
+  ungroup()
+res.aov <- anova_test(
+  data = df_explore_sym, dv = explore_rate, wid = id,
+  between = condition,
+  within = task,
+)
+get_anova_table(res.aov)
+
+
 
 # Per step per condition
 df_step = df.tw %>%
@@ -204,6 +240,28 @@ wh=df_item_fs %>% filter(w=='h') %>% pull(item_level)
 cohens_d(wh, wl)
 
 aov(item_level~p+w+p:w, data=df_item_fs) %>% summary()
+
+
+
+df_item_r = df.tw %>%
+  group_by(id, task, condition) %>%
+  summarise(score=max(immediate_score)) %>%
+  mutate(item_level = ifelse(score < 1, 0,
+                             round(case_when(
+                               condition=='hl'~ log(score/150, 1.5),
+                               condition=='hh'~ log(score, 3),
+                               condition=='lh'~ log(score/150, 3),
+                               condition=='ll'~ log(score/500, 1.5),
+                             )))) %>%
+  mutate(p=substr(condition,1,1),w=substr(condition, 2, 2)) %>%
+  ungroup()
+  
+res.aov <- anova_test(
+  data = df_item_r, dv = item_level, wid = id,
+  between = c(p, w),
+  within = task,
+)
+get_anova_table(res.aov)
 
 
 # Back and forth
