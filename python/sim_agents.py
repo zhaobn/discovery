@@ -10,7 +10,7 @@ import seaborn as sns
 
 # %%
 D = 10
-W = 1.5
+W = 3
 R = 10
 items = ['square', 'circle']
 probs = {
@@ -18,7 +18,7 @@ probs = {
   'circle-circle': 0.2,
   'square-circle': 0.2,
 }
-p_arms = list(probs.values())
+demo_ps = list(probs.values())
 
 
 Ks = list(range(1, 11))
@@ -58,7 +58,7 @@ def get_switching_point(my_list, marker):
   return s_point
 
 # %%
-def novice_agent(prior):
+def novice_agent(prior, w=W, p_arms=demo_ps):
   highest_rewards = [R] * len(items)
   belief = [(prior, prior)] * len(p_arms)
 
@@ -72,7 +72,7 @@ def novice_agent(prior):
     returns = []
     for i in range(len(p_arms)):
       prob = beta_mean(belief[i][0], belief[i][1])
-      d_star = switch_point(W, prob, D-d)
+      d_star = switch_point(w, prob, D-d)
 
       if i == 0 or i == 1:
         base_r = highest_rewards[i]
@@ -103,11 +103,11 @@ def novice_agent(prior):
         belief[arm_chosen] = (belief[arm_chosen][0]+1, belief[arm_chosen][1])
         # increase highest reward of the corresponding category
         if arm_chosen == 0 or arm_chosen == 1:
-          highest_rewards[arm_chosen] = round(highest_rewards[arm_chosen]*W)
+          highest_rewards[arm_chosen] = round(highest_rewards[arm_chosen]*w)
         elif random.random() < 0.5:
-          highest_rewards[0] = round(highest_rewards[0]*W)
+          highest_rewards[0] = round(highest_rewards[0]*w)
         else:
-          highest_rewards[1] = round(highest_rewards[1]*W)
+          highest_rewards[1] = round(highest_rewards[1]*w)
 
       else:
         belief[arm_chosen] = (belief[arm_chosen][0], belief[arm_chosen][1]+1)
@@ -123,9 +123,44 @@ def novice_agent(prior):
 # novice_agent(2)
 
 # %%
+# Play with parameter values
+def try_w(w, arms):
+  dat = []
+  for _ in range(1000):
+    for k in Ks:
+      sim_result = novice_agent(k, w, arms)
+      dat.append(sim_result)
+
+  swith_points = [result[1] for result in dat]
+  mean_switch_point = sum(swith_points)/len(swith_points)
+
+  total_rewards = [result[2] for result in dat]
+  mean_total_rewards = sum(total_rewards)/len(total_rewards)
+
+  expert_p = arms[choose_largest(arms)]
+  expert_switch_point = switch_point(w, expert_p, D)
+  expert_optimal_reward = expected_return(w, expert_p, expert_switch_point, D)
+
+  return([expert_p, w, expert_switch_point, mean_switch_point, expert_optimal_reward, mean_total_rewards])
+
+try_w(1.5, [0.8, 0.2, 0.2])
+
+# %%
+dat = []
+for p in [0.5, 0.6, 0.7, 0.8, 0.9]:
+  p_vec = [p, 0.2, 0.2]
+  for w in [1.2, 1.5, 2, 2.5, 3]:
+    dat.append(try_w(w, p_vec))
+
+columns = ['high_p', 'w', 'expert_switch_point', 'sim_switch_point', 'expert_optimal_reward', 'sim_total_rewards']
+df_w = pd.DataFrame(dat, columns=columns)
+df_w
+df_w.to_csv("try_params.csv", index=False)
+
+# %%
 dat = []
 
-for _ in range(10000):
+for _ in range(1000):
   for k in Ks:
     sim_result = novice_agent(k)
     dat.append(sim_result)
@@ -149,16 +184,20 @@ grouped_df.columns = ['Switch Point (Mean)', 'Switch Point (Std.)',
 
 # Resetting the index to make 'prior' a column again
 grouped_df.reset_index(inplace=True)
-
 grouped_df
-grouped_df.to_csv("sim_10k.csv", index=False)
+#grouped_df.to_csv("sim_10k.csv", index=False)
+
 
 # %%
+grouped_df = pd.read_csv('sim_10k.csv',index_col=None)
+
 expert_switch_point = switch_point(W, 0.8, D)
 expert_optimal_reward = expected_return(W, 0.8, expert_switch_point, D)
 
+
+
 # Create subplots
-fig, axs = plt.subplots(2, 1, figsize=(10, 10))
+fig, axs = plt.subplots(2, 1, figsize=(8, 10))
 
 # Plot for Total Reward
 axs[0].errorbar(grouped_df['prior'], grouped_df['Total Reward (Mean)'],
@@ -185,7 +224,7 @@ axs[1].legend()
 # Adjust layout
 plt.tight_layout()
 
-# Save the plot as an image file
-plt.savefig('sim_10k_plots.png')
+
 
 # %%
+# Save
