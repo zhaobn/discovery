@@ -171,11 +171,13 @@ function getItemSize(label) {
 }
 function getItemHeight(size, type) {
   let length = (type == 'small')? 20 : 40;
-  let nrows = Math.ceil(size / 5);
-  if (size != 'base' && type != 'small') {
-    length = length + (nrows-1) * (length)/5;
-  } else if (type == 'small') {
-    length = length * nrows;
+  if (size != 'base') {
+    let nrows = Math.ceil(size / 5);
+    if (type == 'small') {
+      length = length * nrows;
+    } else {
+      length = length + (nrows-1) * (length)/5;
+    }
   }
   return length
 
@@ -202,6 +204,8 @@ function drawBlock(shape, letter, id='', color, score=0, type='') {
   let itemHight = getItemWidth(size, type);
   let itemWidth = getItemHeight(size, type);
 
+  //console.log(size, itemHight, itemWidth)
+
   if (shape == 'square') {
     block.style.height = itemWidth.toString() + 'px';
     block.style.width = itemHight.toString() + 'px';
@@ -217,17 +221,17 @@ function drawBlock(shape, letter, id='', color, score=0, type='') {
     block.className = 'item-triangle-down';
     block.style.height = '0';
     block.style.width = '0';
-    block.style.borderLeft = '20px solid transparent';
-    block.style.borderRight = '20px solid transparent';
-    block.style.borderTop = '40px solid '+color;
+    block.style.borderLeft = Math.round(itemHight/2).toString() + 'px solid transparent';
+    block.style.borderRight = Math.round(itemHight/2).toString() + 'px solid transparent';
+    block.style.borderTop = itemWidth.toString() + 'px solid '+color;
   }
   if (shape == 'triangle') {
     block.className = 'item-triangle-up';
     block.style.height = '0';
     block.style.width = '0';
-    block.style.borderLeft = '20px solid transparent';
-    block.style.borderRight = '20px solid transparent';
-    block.style.borderBottom = '40px solid '+color;
+    block.style.borderLeft = Math.round(itemHight/2).toString() + 'px solid transparent';
+    block.style.borderRight = Math.round(itemHight/2).toString() + 'px solid transparent';
+    block.style.borderBottom = itemWidth.toString() + 'px solid '+color;
   }
 
   block.innerHTML = '<p>'+letter+'</p>';

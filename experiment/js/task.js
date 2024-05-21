@@ -21,25 +21,27 @@ function handle_prolific() {
 }
 
 
-
 /* Create task */
 
 getEl('task').append(makeTransitionDiv('practice', 0));
 getEl('preview-next-btn-practice').onclick = () => hideAndShowNext('preview-practice', 'task-p1', 'block');
 practiceIds.forEach(pid => {
   let config = taskConfigsWithId[pid];
-  getEl('task').append(drawTaskWithInfo(pid, config, baseObj))
+
+  getEl('task').append(drawTaskWithInfo(pid, config, baseObj));
+  let crystalShapes = taskConfigsWithId[pid]['shapes'];
   baseObj.forEach(el => {
-    let squareItem = pid + '-square-' + el;
-    let circleItem = pid + '-circle-' + el;
-    getEl(squareItem).onclick = () => handleItemClick(squareItem, pid);
-    getEl(circleItem).onclick = () => handleItemClick(circleItem, pid);
+    crystalShapes.forEach(sh => {
+      let itemId = [pid, sh, el].join('-');
+      getEl(itemId).onclick = () => handleItemClick(itemId, pid);
+    })
   });
+
   getEl(`extract-btn-${pid}`).onclick = () => handleExtract(pid);
   getEl(`fuse-btn-${pid}`).onclick = () => handleFuse(pid);
   getEl('task-next-btn-' + pid).onclick = () => giveFeedback(pid);
 
-  getEl('task-'+pid).style.display = 'none';
+  //getEl('task-'+pid).style.display = 'none';
 })
 
 
@@ -49,12 +51,15 @@ getEl('preview-next-btn-task').onclick = () => hideAndShowNext('preview-task', '
 testIds.forEach(tid => {
   let config = taskConfigsWithId[tid];
   getEl('task').append(drawTaskWithInfo(tid, config, baseObj))
+
+  let crystalShapes = taskConfigsWithId[tid]['shapes'];
   baseObj.forEach(el => {
-    let squareItem = tid + '-square-' + el;
-    let circleItem = tid + '-circle-' + el;
-    getEl(squareItem).onclick = () => handleItemClick(squareItem, tid);
-    getEl(circleItem).onclick = () => handleItemClick(circleItem, tid);
+    crystalShapes.forEach(sh => {
+      let itemId = [tid, sh, el].join('-');
+      getEl(itemId).onclick = () => handleItemClick(itemId, tid);
+    })
   });
+
   getEl(`extract-btn-${tid}`).onclick = () => handleExtract(tid);
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
@@ -201,21 +206,14 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
     let labelB = readLabel(itemB);
     let labels = [labelA, labelB].sort();
 
-    let successRate = 0;
-    let resultShape = '';
     let resultLabel = '[' + labels.join('') + ']';
 
-    if (shapeA == 'circle' && shapeB == 'circle') {
-      successRate = allBaseRatesCircle[id];
-      resultShape = 'circle';
-    } else if (shapeA == 'square' && shapeB == 'square') {
-      successRate = allBaseRatesSquare[id];
-      resultShape = 'square';
-    } else {
-      successRate = allBaseRatesInter[id];
-      resultShape =  (Math.random() < 0.5)? 'square' : 'circle';
-    }
+    let highCombo = taskConfigsWithId[id]['highCombo'].split('-').sort();
+    let successRate = (shapeA == highCombo[0] && shapeB == highCombo[1])? taskConfigsWithId[id]['highP'] : taskConfigsWithId[id]['lowP']
+
+    let resultShape = (shapeA==shapeB)? shapeB: (Math.random >= 0.5? shapeA : shapeB);
     // console.log(successRate, resultShape, resultLabel)
+    console.log(highCombo)
 
     if (Math.random() < successRate) {
 
@@ -280,7 +278,7 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
 function addToHistoryPanel (id, itemA, itemB) {
 
   let histInfo = createCustomElement('div', 'hist-cell', '');
-  histInfo.append(drawBlock(readShape(itemA), readLabel(itemA), '', taskConfigsWithId[id]['objColor'], 0, 'small',));
+  histInfo.append(drawBlock(readShape(itemA), readLabel(itemA), '', taskConfigsWithId[id]['objColor'], 0, 'small'));
   histInfo.append('+');
   histInfo.append(drawBlock(readShape(itemB), readLabel(itemB), '', taskConfigsWithId[id]['objColor'], 0, 'small'));
 
@@ -289,15 +287,12 @@ function addToHistoryPanel (id, itemA, itemB) {
 
 }
 function addToInventory (id, item) {
+
   let itemId = id + '-' + item
   let newItem = drawBlock(readShape(item), readLabel(item), itemId, taskConfigsWithId[id]['objColor'],  allObjRewards[id][item], '');
 
-  if (readShape(item) == 'square') {
-    getEl(`item-box-square-${id}`).append(newItem);
-  } else {
-    getEl(`item-box-circle-${id}`).append(newItem);
-  }
-
+  let divIndex = taskConfigsWithId[id]['shapes'].indexOf(readShape(item));
+  getEl(`item-box-s${divIndex+1}-${id}`).append(newItem);
   getEl(itemId).onclick = () => handleItemClick(itemId, id);
 
 }

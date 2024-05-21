@@ -9,7 +9,7 @@ knowledge.forEach(e => {
   density.forEach(d => conditions.push(e+'-'+d));
 });
 
-const cond = isDev? 'expert-high': sampleFromList(conditions, 1);
+const cond = isDev? 'expert-low': sampleFromList(conditions, 1);
 console.log(cond)
 
 const assignedKnowledge = cond.split('-')[0];
@@ -32,7 +32,8 @@ const baseObj = ['a', 'b', 'c', 'd', 'e', 'f'];
 const allShapes = ['square', 'circle', 'triangle', 'diamond' ];
 
 
-const shapes = (assignedDensity == 'low') ? sampleFromList(allShapes, 2, false) : allShapes;
+let shapes = (assignedDensity == 'low') ? sampleFromList(allShapes, 2, false) : allShapes;
+shapes = shuffleArray(shapes);
 let allObjs = [];
 shapes.forEach(s => {
   baseObj.forEach(o => {

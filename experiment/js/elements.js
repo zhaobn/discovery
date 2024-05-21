@@ -59,8 +59,6 @@ function drawMachine (id, steps, color) {
 
 function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'showup': 1}, ) {
 
-  console.log(taskConfigsWithId[id])
-
   let retDiv = createCustomElement('div', 'main-box', `main-box-${id}`);
 
   let mainLeft = createCustomElement('div', 'main-left', `main-left-${id}`);
@@ -69,30 +67,30 @@ function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'s
   // create separate spaces for items
   let shapes = taskConfigsWithId[id]['shapes'];
   if (assignedDensity == 'low') {
-    leftDiv = createCustomElement('div', 'item-box', `item-box-left-${id}`);
-    rightDiv = createCustomElement('div', 'item-box', `item-box-right-${id}`);
+    s1Div = createCustomElement('div', 'item-box', `item-box-s1-${id}`);
+    s2Div = createCustomElement('div', 'item-box', `item-box-s2-${id}`);
     itemList.forEach(el => {
-      leftDiv.append(drawBlock(shapes[0], el, id + '-left-' + el, itemColor, baseReward));
-      rightDiv.append(drawBlock(shapes[0], el, id + '-right-' + el, itemColor, baseReward));
+      s1Div.append(drawBlock(shapes[0], el, id + '-' + shapes[0] + '-' + el, itemColor, baseReward));
+      s2Div.append(drawBlock(shapes[1], el, id + '-' + shapes[1] + '-' + el, itemColor, baseReward));
     });
-    itemDiv.append(leftDiv);
-    itemDiv.append(rightDiv);
+    itemDiv.append(s1Div);
+    itemDiv.append(s2Div);
 
   } else {
-    leftDiv = createCustomElement('div', 'item-box', `item-box-left-${id}`);
-    rightDiv = createCustomElement('div', 'item-box', `item-box-right-${id}`);
-    leftMidDiv = createCustomElement('div', 'item-box', `item-box-leftmid-${id}`);
-    rightMidDiv = createCustomElement('div', 'item-box', `item-box-rightmid-${id}`);
+    s1Div = createCustomElement('div', 'item-box', `item-box-s1-${id}`);
+    s2Div = createCustomElement('div', 'item-box', `item-box-s2-${id}`);
+    s3Div = createCustomElement('div', 'item-box', `item-box-s3-${id}`);
+    s4Div = createCustomElement('div', 'item-box', `item-box-s4-${id}`);
     itemList.forEach(el => {
-      leftDiv.append(drawBlock(shapes[0], el, id + '-left-' + el, itemColor, baseReward));
-      rightDiv.append(drawBlock(shapes[1], el, id + '-right-' + el, itemColor, baseReward));
-      leftMidDiv.append(drawBlock(shapes[2], el, id + '-leftmid-' + el, itemColor, baseReward));
-      rightMidDiv.append(drawBlock(shapes[3], el, id + '-rightmid-' + el, itemColor, baseReward));
+      s1Div.append(drawBlock(shapes[0], el, id + '-' + shapes[0] + '-' + el, itemColor, baseReward));
+      s2Div.append(drawBlock(shapes[1], el, id + '-' + shapes[1] + '-' + el, itemColor, baseReward));
+      s3Div.append(drawBlock(shapes[2], el, id + '-' + shapes[2] + '-' + el, itemColor, baseReward));
+      s4Div.append(drawBlock(shapes[3], el, id + '-' + shapes[3] + '-' + el, itemColor, baseReward));
     });
-    itemDiv.append(leftDiv);
-    itemDiv.append(rightDiv);
-    itemDiv.append(leftMidDiv);
-    itemDiv.append(rightMidDiv);
+    itemDiv.append(s1Div);
+    itemDiv.append(s2Div);
+    itemDiv.append(s3Div);
+    itemDiv.append(s4Div);
   }
 
 
