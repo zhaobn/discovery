@@ -59,25 +59,42 @@ function drawMachine (id, steps, color) {
 
 function drawTask(id, color, steps, itemColor, itemList = baseObj, histObj = {'showup': 1}, ) {
 
+  console.log(taskConfigsWithId[id])
+
   let retDiv = createCustomElement('div', 'main-box', `main-box-${id}`);
 
   let mainLeft = createCustomElement('div', 'main-left', `main-left-${id}`);
   let itemDiv = createCustomElement('div', 'item-box-wrapper', `item-wrapper-${id}`);
 
-  // create separate spaces for square items and circle items
-  squaresDiv = createCustomElement('div', 'item-box', `item-box-square-${id}`);
-  circlesDiv = createCustomElement('div', 'item-box', `item-box-circle-${id}`);
-  itemList.forEach(el => {
-    squaresDiv.append(drawBlock('square', el, id + '-square-' + el, itemColor, baseReward));
-    circlesDiv.append(drawBlock('circle', el, id + '-circle-' + el, itemColor, baseReward));
-  });
-  if (squareOnLeft > 0) {
-    itemDiv.append(squaresDiv);
-    itemDiv.append(circlesDiv);
+  // create separate spaces for items
+  let shapes = taskConfigsWithId[id]['shapes'];
+  if (assignedDensity == 'low') {
+    leftDiv = createCustomElement('div', 'item-box', `item-box-left-${id}`);
+    rightDiv = createCustomElement('div', 'item-box', `item-box-right-${id}`);
+    itemList.forEach(el => {
+      leftDiv.append(drawBlock(shapes[0], el, id + '-left-' + el, itemColor, baseReward));
+      rightDiv.append(drawBlock(shapes[0], el, id + '-right-' + el, itemColor, baseReward));
+    });
+    itemDiv.append(leftDiv);
+    itemDiv.append(rightDiv);
+
   } else {
-    itemDiv.append(circlesDiv);
-    itemDiv.append(squaresDiv);
+    leftDiv = createCustomElement('div', 'item-box', `item-box-left-${id}`);
+    rightDiv = createCustomElement('div', 'item-box', `item-box-right-${id}`);
+    leftMidDiv = createCustomElement('div', 'item-box', `item-box-leftmid-${id}`);
+    rightMidDiv = createCustomElement('div', 'item-box', `item-box-rightmid-${id}`);
+    itemList.forEach(el => {
+      leftDiv.append(drawBlock(shapes[0], el, id + '-left-' + el, itemColor, baseReward));
+      rightDiv.append(drawBlock(shapes[1], el, id + '-right-' + el, itemColor, baseReward));
+      leftMidDiv.append(drawBlock(shapes[2], el, id + '-leftmid-' + el, itemColor, baseReward));
+      rightMidDiv.append(drawBlock(shapes[3], el, id + '-rightmid-' + el, itemColor, baseReward));
+    });
+    itemDiv.append(leftDiv);
+    itemDiv.append(rightDiv);
+    itemDiv.append(leftMidDiv);
+    itemDiv.append(rightMidDiv);
   }
+
 
   mainLeft.append(drawMachine(id, steps, color));
   mainLeft.append(itemDiv);
@@ -103,29 +120,29 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
   let bannerText = `Practice trial ${id.substring(1)}/${practiceIds.length}`
 
   let probInfoPanel = createCustomElement('div', 'prob-info-panel', '');
-  let itemColor = config['objColor'];
-  let leftRadius = (squareOnLeft == 1)? '0' : '50';
-  let rightRadius = (squareOnLeft == 1)? '50' : '0';
-  let leftProb = (squareOnLeft == 1)? config['psquare']: config['pcircle'];
-  let rightProb = (squareOnLeft == 1)? config['pcircle']: config['psquare'];
-  let crossProb = config['pcross'];
-  probInfoPanel.innerHTML = `
-  <div class="intruct-p">
-    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span> +
-    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span>
-      works out ${leftProb*10} out of 10 times;
-    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span> +
-    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span>
-      works out ${rightProb*10} out of 10 times;
-  </div>
-  <div class="intruct-p">
-    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span> +
-    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span>,
-    or <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span> +
-    <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span>,
-      works out ${crossProb*10} out of 10 times.
-  </div>
-  <hr>`
+  // let itemColor = config['objColor'];
+  // let leftRadius = (squareOnLeft == 1)? '0' : '50';
+  // let rightRadius = (squareOnLeft == 1)? '50' : '0';
+  // let leftProb = (squareOnLeft == 1)? config['psquare']: config['pcircle'];
+  // let rightProb = (squareOnLeft == 1)? config['pcircle']: config['psquare'];
+  // let crossProb = config['pcross'];
+  // probInfoPanel.innerHTML = `
+  // <div class="intruct-p">
+  //   <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span> +
+  //   <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span>
+  //     works out ${leftProb*10} out of 10 times;
+  //   <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span> +
+  //   <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span>
+  //     works out ${rightProb*10} out of 10 times;
+  // </div>
+  // <div class="intruct-p">
+  //   <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span> +
+  //   <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span>,
+  //   or <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${rightRadius}%"></span> +
+  //   <span class="item-element" style="height:20px;width:20px;background-color:${itemColor};border-radius:${leftRadius}%"></span>,
+  //     works out ${crossProb*10} out of 10 times.
+  // </div>
+  // <hr>`
 
 
   infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length}`;

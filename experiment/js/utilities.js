@@ -199,15 +199,40 @@ function drawBlock(shape, letter, id='', color, score=0, type='') {
   let block = createCustomElement('div', 'item-element', id);
   let size = getItemSize(letter);
 
-  block.style.height = getItemHeight(size, type).toString() + 'px';
-  block.style.width = getItemWidth(size, type).toString() + 'px';
-  block.style.backgroundColor = color;
-  block.innerHTML = letter;
-  if (color == '#ffeb3b' | color == '#cddc39' | color == '#ffc107') {
-    block.style.color ='black';
+  let itemHight = getItemWidth(size, type);
+  let itemWidth = getItemHeight(size, type);
+
+  if (shape == 'square') {
+    block.style.height = itemWidth.toString() + 'px';
+    block.style.width = itemHight.toString() + 'px';
+    block.style.backgroundColor = color;
   }
   if (shape == 'circle') {
+    block.style.height = itemWidth.toString() + 'px';
+    block.style.width = itemHight.toString() + 'px';
+    block.style.backgroundColor = color;
     block.style.borderRadius = '50%';
+  }
+  if (shape == 'diamond') {
+    block.className = 'item-triangle-down';
+    block.style.height = '0';
+    block.style.width = '0';
+    block.style.borderLeft = '20px solid transparent';
+    block.style.borderRight = '20px solid transparent';
+    block.style.borderTop = '40px solid '+color;
+  }
+  if (shape == 'triangle') {
+    block.className = 'item-triangle-up';
+    block.style.height = '0';
+    block.style.width = '0';
+    block.style.borderLeft = '20px solid transparent';
+    block.style.borderRight = '20px solid transparent';
+    block.style.borderBottom = '40px solid '+color;
+  }
+
+  block.innerHTML = '<p>'+letter+'</p>';
+  if (color == '#ffeb3b' | color == '#cddc39' | color == '#ffc107') {
+    block.style.color ='black';
   }
 
   blockBg.append(block);

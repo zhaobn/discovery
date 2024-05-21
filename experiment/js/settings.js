@@ -2,22 +2,18 @@ let isDev = true;
 
 /** Set up conditions */
 const knowledge = ['expert', 'novice'];
-const probs = {
-  'square': { 'pcircle': 0.2, 'psquare': 0.8, 'pcross': 0.2 },
-  'circle': { 'pcircle': 0.8, 'psquare': 0.2, 'pcross': 0.2 },
-  'cross': { 'pcircle': 0.2, 'psquare': 0.2, 'pcross': 0.8 }
-}
+const density = ['low', 'high'];
 
-// let conditions = []
-// knowledge.forEach(e => {
-//   Object.keys(probs).forEach(p => conditions.push(e+'-'+p));
-// });
+let conditions = []
+knowledge.forEach(e => {
+  density.forEach(d => conditions.push(e+'-'+d));
+});
 
-// const cond = isDev? 'expert': sampleFromList(knowledge, 1);
-const cond = sampleFromList(knowledge, 1);
-const assignedKnowledge = cond; //conditions.split('-')[0];
-// const assignedProbCond = cond.split('-')[1];
-isDev? console.log(assignedKnowledge): null;
+const cond = isDev? 'expert-high': sampleFromList(conditions, 1);
+console.log(cond)
+
+const assignedKnowledge = cond.split('-')[0];
+const assignedDensity = cond.split('-')[1];
 
 
 /** Task-related settings */
@@ -26,19 +22,17 @@ const rewardInc = 1.5;
 const steps = 10;
 
 const nPractice = 2;
-
-// new design - make each participant do all probs
-const nRepeat = 3;
-let probConds = [];
-Object.keys(probs).forEach(el => probConds = probConds.concat(Array(nRepeat).fill(el)));
-probConds = shuffleArray(probConds);
-const taskBlockSize = probConds.length;
-
+const taskBlockSize = 7;
 
 const demoProb = 0.5;
-const baseObj = ['a', 'b', 'c', 'd', 'e', 'f'];
-const shapes = ['square', 'circle' ];
+const highProb = 0.8
+const lowProb = 0.2;
 
+const baseObj = ['a', 'b', 'c', 'd', 'e', 'f'];
+const allShapes = ['square', 'circle', 'triangle', 'diamond' ];
+
+
+const shapes = (assignedDensity == 'low') ? sampleFromList(allShapes, 2, false) : allShapes;
 let allObjs = [];
 shapes.forEach(s => {
   baseObj.forEach(o => {
@@ -64,16 +58,14 @@ const allColors = [
   '#ff9800',
   '#ff5722',
   // from chat-gpt
-  '#FFC107',
-  '#4CAF50',
-  '#1976D2',
-  '#66CCCC',
-
+  // '#FFC107',
+  // '#4CAF50',
+  // '#1976D2',
+  // '#66CCCC',
 ]
 let objColors =  sampleFromList(allColors, taskBlockSize, false); //[ 'rgb(0 114 178)', 'rgb(86 180 233)','rgb(230 159 0)','rgb(213 94 0)', 'rgb(204 121 167)', 'rgb(0 0 0)', 'rgb(0 153 76)', 'rgb(102 0 102)' ];
 //objColors = sampleFromList(objColors, taskBlockSize, false);
 const demoObjColor = 'silver';
-
 
 const demoMachineColor = 'gray';
 let machineColors = sampleFromList(allColors, taskBlockSize, false); //[ 'royalblue', 'darkgreen', 'darkred', 'darkslategray', 'lightcoral', 'lightseagreen', 'mediumpurple', 'rosybrown' ];
@@ -81,19 +73,40 @@ let machineColors = sampleFromList(allColors, taskBlockSize, false); //[ 'royalb
 
 let machineColor = demoMachineColor;
 
-// counterbalance which type is shown on the left in the
-const squareOnLeft = (Math.random() < 0.5)? 1 : 0;
-
-
 
 /** Prep setting to task configurations */
+let allUniqueCombinations = new Set();
+for (let i = 0; i < shapes.length; i++) {
+  for (let j = i; j < shapes.length; j++) {
+    allUniqueCombinations.add(shapes[i] + '-' + shapes[j]);
+  }
+}
+let combinations = Array.from(allUniqueCombinations);
+let highCombos = [];
+if (assignedDensity=='low') {
+  for (let i = 0; i < Math.floor(taskBlockSize/combinations.length) ; i++) {
+    highCombos = highCombos.concat(combinations);
+  }
+  let residue = taskBlockSize % combinations.length
+  if ( residue == 1) {
+    highCombos.push(sampleFromList(combinations, residue))
+  } else if (residue > 1) {
+    highCombos.concat(sampleFromList(combinations, residue, false))
+  }
+} else {
+  highCombos = sampleFromList(combinations, taskBlockSize, false);
+}
+highCombos = shuffleArray(highCombos);
+// console.log(highCombos);
 
 let taskConfigsWithId = {};
+
 // Add practice trial config
 let pracConfig = {
-  'pcircle': demoProb,
-  'psquare': demoProb,
-  'pcross': demoProb,
+  'highP': demoProb,
+  'lowP': demoProb,
+  'shapes': shapes,
+  'highCombo': sampleFromList(combinations, 1),
   'w': rewardInc,
   'color': demoMachineColor,
   'objColor': demoObjColor,
@@ -110,9 +123,10 @@ for (let i = 0; i < nPractice; i++) {
 objColors.forEach((col, id) => {
   let taskId = 't'+(id+1).toString();
   taskConfigsWithId[taskId] = {
-    'pcircle': probs[probConds[id]]['pcircle'],
-    'psquare': probs[probConds[id]]['psquare'],
-    'pcross': probs[probConds[id]]['pcross'],
+    'highP': highProb,
+    'lowP': lowProb,
+    'shapes': shapes,
+    'highCombo': highCombos[id],
     'w': rewardInc,
     'step': steps,
     'r': baseReward,
@@ -122,7 +136,17 @@ objColors.forEach((col, id) => {
 // console.log(taskConfigsWithId)
 
 // Pad info for instruction demos
-let demoConfig = { 'pcircle': demoProb, 'psquare': demoProb, 'pcross': demoProb, 'w': rewardInc, 'color': demoMachineColor, 'objColor': demoObjColor, 'step': steps, 'r': baseReward };
+let demoConfig = {
+  'highP': demoProb,
+  'lowP': demoProb,
+  'shapes': shapes,
+  'highCombo': sampleFromList(combinations, 1),
+  'w': rewardInc,
+  'color': demoMachineColor,
+  'objColor': demoObjColor,
+  'step': steps,
+  'r': baseReward
+};
 taskConfigsWithId['intro1'] = demoConfig;
 taskConfigsWithId['intro2'] = demoConfig;
 
@@ -143,6 +167,7 @@ let allRecipes = {};
 
 let allObjRewards = {};
 let allObjLevels = {};
+let allHighCombos = {};
 
 let allBaseRatesSquare = {};
 let allBaseRatesCircle = {};
@@ -164,9 +189,7 @@ function initData(id) {
   allObjLevels[id] = {};
   allObjs.forEach(obj => allObjLevels[id][obj] = '1');
 
-  allBaseRatesSquare[id] = taskConfigsWithId[id]['psquare'];
-  allBaseRatesCircle[id] = taskConfigsWithId[id]['pcircle'];
-  allBaseRatesInter[id] = taskConfigsWithId[id]['pcross'];
+  allHighCombos[id] = taskConfigsWithId[id]['highCombo'];
   allRewardInc[id] = taskConfigsWithId[id]['w'];
   allStepsLeft[id] = steps;
 
@@ -182,11 +205,9 @@ taskIds.forEach((tid, idx) => {
     let dat = {};
     dat['task_id'] = tid;
     dat['step_id'] = i;
-    dat['knowledge'] = cond;
-    dat['squareOnLeft'] = squareOnLeft;
-    dat['pcircle'] = taskConfigsWithId[tid]['pcircle'],
-    dat['psquare'] = taskConfigsWithId[tid]['psquare'],
-    dat['pcross'] = taskConfigsWithId[tid]['pcross'],
+    dat['knowledge'] = assignedKnowledge;
+    dat['density'] = assignedDensity;
+    dat['highCombo'] = taskConfigsWithId[tid]['highCombo'];
     dat['w'] = allRewardInc[tid];
     dat['item_selection'] = [];
     dat['action'] = '';
