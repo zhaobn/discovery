@@ -41,7 +41,7 @@ practiceIds.forEach(pid => {
   getEl(`fuse-btn-${pid}`).onclick = () => handleFuse(pid);
   getEl('task-next-btn-' + pid).onclick = () => giveFeedback(pid);
 
-  //getEl('task-'+pid).style.display = 'none';
+  getEl('task-'+pid).style.display = 'none';
 })
 
 
@@ -64,7 +64,7 @@ testIds.forEach(tid => {
   getEl(`fuse-btn-${tid}`).onclick = () => handleFuse(tid);
   getEl('task-next-btn-' + tid).onclick = () => giveFeedback(tid);
 
-  //getEl('task-'+tid).style.display = 'none';
+  getEl('task-'+tid).style.display = 'none';
 
 })
 
@@ -213,7 +213,6 @@ function handleFuse(id, isFuseDemo = false, isDemo=false) {
 
     let resultShape = (shapeA==shapeB)? shapeB: (Math.random >= 0.5? shapeA : shapeB);
     // console.log(successRate, resultShape, resultLabel)
-    console.log(highCombo)
 
     if (Math.random() < successRate) {
 
@@ -375,7 +374,7 @@ function giveFeedback(id) {
     } else {
       let bonusScores = Object.fromEntries(Object.entries(allScoreOnDisplay).filter(([key]) => key[0]=='t'));
       let totalScore = Math.round(Object.values(bonusScores).reduce((a,b)=>a+b,0));
-      let bonus = (cond[0]=='a') ? Math.round(totalScore/2000*100)/100 : Math.round(totalScore/30000*100)/100;
+      let bonus = Math.round(totalScore/20000*100)/100;
       getEl('score-sum').innerHTML = totalScore;
       getEl('bonus-sum').innerHTML = bonus;
       nextTaskId = 'score-feedback';
@@ -552,12 +551,7 @@ function showCalc(val1, val2) {
   return `&nbsp; <span style="color:black"><b>${val1}</b></span> &#215; ${val2}p &nbsp;`
 }
 
-// getEl('sum-rec').innerHTML = rewardInc;
-getEl('intro-p-info-square').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['psquare']*10} out of 10 times.` : '';
-getEl('intro-p-info-circle').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['pcircle']*10} out of 10 times.` : '';
-getEl('intro-p-info-cross').innerHTML = ''; // (assignedKnowledge=='expert')? `This works out ${demoConfig['pcross']*10} out of 10 times.` : '';
-
-getEl('intro-p-info-explanation').innerHTML = (cond=='expert') ?
+getEl('intro-p-info-explanation').innerHTML = (assignedKnowledge=='expert') ?
   'Scientists have also figured out <b>how likely each types of combination will work out</b>, and you will see this information for each game that you are playing.':
   'But it is not clear how frequently each type of combine will work out.';
 getEl('intro-p-info-explanation').innerHTML += '<br><br>';

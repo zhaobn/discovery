@@ -1,15 +1,15 @@
-let isDev = true;
+let isDev = false;
 
 /** Set up conditions */
 const knowledge = ['expert', 'novice'];
-const density = ['low', 'high'];
+const density = ['high']; // ['low', 'high'];
 
 let conditions = []
 knowledge.forEach(e => {
   density.forEach(d => conditions.push(e+'-'+d));
 });
 
-const cond = isDev? 'expert-low': sampleFromList(conditions, 1);
+const cond = sampleFromList(conditions, 1);
 console.log(cond)
 
 const assignedKnowledge = cond.split('-')[0];

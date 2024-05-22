@@ -231,7 +231,7 @@ li {
   align-content: flex-start;
   cursor: default;
   /* padding: 10px; */
-  margin: 5px;
+  margin: 0px;
 }
 .item-element, .item-triangle-down, .item-triangle-up {
   color: white;
