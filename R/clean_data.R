@@ -5,9 +5,9 @@ library(tidyr)
 options(scipen=999)
 
 
-dat = read.csv('../data/pilot-exp/crystalEpPilot3.csv')
+dat = read.csv('../data/pilot-exp/crystalEpDenPilot.csv')
 
-start_index = 21
+start_index = 17
 end_index = nrow(dat)
 
 
@@ -18,7 +18,7 @@ inv_fromJSON<-function(js) {
 }
 
 # Fix subject data
-# sw=as.data.frame((inv_fromJSON(dat$subject[[start_index]])))
+sw=as.data.frame((inv_fromJSON(dat$subject[[start_index]])))
 # for (i in (start_index+1):end_index) {
 #   # x = inv_fromJSON(dat$subject[[i]])
 #   # sw = rbind(sw, as.data.frame(x))
@@ -34,9 +34,17 @@ for (i in (start_index+1):end_index) {
 }
 
 # # Fix values
-# df.sw.aux = df.sw.aux %>% 
+# df.sw.aux = df.sw.aux %>%
 #   mutate(age=if_else(prolific_id=='60fd4f8bcf203e8452b79f1a', '22', age)) %>%
 #   mutate(prolific_id=if_else(nchar(prolific_id)<1, '598afb77600a7a00018fabd7', prolific_id))
+df.sw.aux.1 = df.sw.aux
+df.sw.aux.1['prolific_id'] = 'missing'
+df.sw.aux.1 = df.sw.aux.1 %>% select(colnames(df.sw.aux.2))
+
+df.sw.aux.2 = df.sw.aux
+df.sw.aux.2 = df.sw.aux.2 %>%
+  select(colnames(df.sw.aux.1))
+df.sw.aux = rbind(df.sw.aux.1, df.sw.aux.2)
 
 # get bonus
 bonus_dat = df.sw.aux %>% select(prolific_id, total_score) %>%
@@ -80,15 +88,20 @@ df.sw = df.sw.aux %>%
 
 
 
+# Manul ID
+df.sw.aux['id'] = seq(nrow(df.sw.aux))
+df.tw.aux['id'] = rep(1:nrow(df.sw.aux), each = 90)
+
+
 # Add condition
-condition_info = df.sw %>% select(id, condition)
+condition_info = df.sw.aux %>% select(id, condition)
 # tw_names = c('id', 'condition', 'task_id', 'step_id', 'action', 'item_selection', 'feedback', 'immediate_score', 'total_score', 'timestamp')
-tw_names_2 = c('id', 'condition', 'task_id', 'squareOnLeft', 'pcircle', 'psquare', 'pcross', 'step_id', 'action', 'item_selection', 'feedback', 'immediate_score', 'total_score', 'timestamp')
+tw_names_2 = c('id', 'condition', 'task_id', 'knowledge', 'density', 'highCombo', 'step_id', 'action', 'item_selection', 'feedback', 'immediate_score', 'total_score', 'timestamp')
 df.tw = df.tw.aux %>%
-  left_join(ids, by='prolific_id') %>%
   left_join(condition_info, by='id') %>%
   select(all_of(tw_names_2))
-
+df.sw = df.sw.aux %>%
+  select('id',"condition", "intruction" ,"total_score","age","sex","engagement", "difficulty","strategy","feedback", "date", "time","task_duration", "start_time")
 
 
 # # Pull together task info
@@ -126,9 +139,9 @@ df.tw = df.tw %>%
 # Save data
 df.sw = df.sw %>%
   mutate(age=as.numeric(age), total_score=as.numeric(total_score), task_duration=as.numeric(task_duration), engagement=as.numeric(engagement), difficulty=as.numeric(difficulty))
-save(df.tw, df.sw, file='../data/pilot-exp/pilot3.Rdata')
-write.csv(df.sw, file='../data/pilot-exp/pilot3_subjects.csv')
-write.csv(df.tw, file='../data/pilot-exp/pilot3_trials.csv')
+save(df.tw, df.sw, file='../data/pilot-exp/pilotDen.Rdata')
+write.csv(df.sw, file='../data/pilot-exp/pilotDen_subjects.csv')
+write.csv(df.tw, file='../data/pilot-exp/pilotDen_trials.csv')
 
 # # Fix missing prolific id
 # ids = df.sw.aux %>% 

@@ -76,7 +76,12 @@ ggplot(df.match.1, aes(x=step_id, y=match_rate, color=condition)) +
   geom_line() +
   theme_bw()
   
-
+df.fusion.1 = df.tw.1 %>%
+  group_by(condition, step_id) %>%
+  summarise(fusion_rate=sum(action=='F')/n())
+ggplot(df.fusion.1, aes(x=step_id, y=fusion_rate, color=condition)) +
+  geom_line() +
+  theme_bw()
 
 
 #### Pilot 2 ####
@@ -188,10 +193,39 @@ df.fusion.3 = df.tw.3 %>%
 ggplot(df.fusion.3, aes(x=step_id, y=fusion_rate, color=condition)) +
   geom_line() +
   theme_bw()
-
+df.fusion.t3 = df.tw %>%
+  group_by(condition, task_id) %>%
+  summarise(fusion_rate=sum(action=='F')/n())
+ggplot(df.fusion.t3, aes(x=task_id, y=fusion_rate, color=condition)) +
+  geom_line() +
+  theme_bw()
 
 # task time
 make_plot(df.sw.3, 'task_duration', 'Pilot 3: Task duration (ms)')
+
+
+
+#### Pilot Den ####
+
+# explore rate per task
+
+df.fusion.task = df.tw %>%
+  group_by(condition, task_id) %>%
+  summarise(fusion_rate=sum(action=='F')/n())
+ggplot(df.fusion.task, aes(x=task_id, y=fusion_rate, color=condition)) +
+  geom_line() +
+  theme_bw()
+
+
+
+
+
+
+
+
+
+
+
 
 
 
