@@ -4,7 +4,7 @@
 
 
   <head>
-    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/style.css" >
     <title>Alien crystals</title>
   </head>
 
@@ -239,15 +239,15 @@
 
 
 
-    <div id="instruction" class="base">
+    <div id="instruction" class="base" >
       <h1>Instruction</h1>
 
       <div id="instruction-1" >
         <div style="padding-left:5px;">
           <div id="intro-sub-1-0" >
             <p>Thank you for playing my game!</p>
-            <p><strong>These instructions may take about 5 minutes to read. Please follow them carefully. <span style="color:red;">There will be a quiz*!</span></strong></p>
-            <p>* If your responses indicate that you have not paid attention, you may need to repeat the instructions.</p>
+            <p><strong>These instructions may take about 5 minutes to read. Please follow them carefully. <span style="color:red;">There will be a quiz!</span></strong></p>
+            <p>If your responses indicate that you have not paid attention, you may need to repeat the instructions.</p>
             <div class='button-group-vc' id="intro-btn-group-0">
               <button class='intro-button' id='instruction-btn-0' onclick="hideAndShowNext('intro-sub-1-0', 'intro-sub-1-1', 'block')">&gt;&gt;</button>
             </div>
@@ -270,8 +270,10 @@
 
           <div id="intro-sub-1-2" style="display:none;">
             <p>For your mission, a production team will supply alien crystals to you, as many as you need. These supplies are labeled below the machine.</p>
-            <p>Researchers already measured the energy points of some of the alien crystals, indicated by the gray numbers below each label.</p>
-            <p><b>Note that the crystals available to you will be different in each round.</b> The label on each crystal just refers to the order in which it was received - for example, crystal <q>a</q> is just the first crystal you receive in each batch, but what crystal that corresponds to may be different in every batch.</p>
+            <!-- <p>Researchers already measured the energy points of some of the alien crystals, indicated by the gray numbers below each label.</p> -->
+            <p><b>Energy points</b> of the crystals are indicated by the <b>gray numbers</b> below each label.</p>
+            <!-- <p><b>Note that the crystals available to you will be different in each round.</b> The label on each crystal just refers to the order in which it was received - for example, crystal <q>a</q> is just the first crystal you receive in each batch, but what crystal that corresponds to may be different in every batch.</p> -->
+            <p><b>Each round you receive different crystals.</b> Labels just refer to orders. For example, crystal <q>a</q> is the first crystal you receive in each batch, and it can refer to different crystals from round to round.</p>
 
             <div class='button-group-vc' id="intro-sub-2">
               <button class='intro-button' id='instruction-btn-2' onclick="hideAndShowNext('intro-sub-1-2', 'intro-sub-1-3', 'block')">&gt;&gt;</button>
@@ -337,10 +339,10 @@
 
 
         <div id="intro-sub-2-3" style="display:none;">
-          <p>We know that</p>
+          <p>Here's what we know:</p>
           <ul>
             <li>Combining two crystals of the same shape makes a new crystal of that shape.</li>
-            <li>Combining two crystals of different shapes, makes a new crystal that shares one of the shapes used to make it.</li>
+            <li>Combining two crystals of different shapes makes a new crystal with one of the shapes used.</li>
           </ul>
           <p id="intro-p-info-explanation"></p>
 
@@ -350,7 +352,7 @@
         </div>
 
         <div id="intro-sub-2-5" style="display: none;">
-          <p>In each game, you will only have <strong>10 opportunities to press buttons</strong>. Fusing <i>new</i> combinations and Extracting crystals each use one button press.</p>
+          <p>In each game, you have <strong>10 buttons presses</strong>. Fusing <i>new</i> combinations and Extracting crystals each use one button press.</p>
           <!-- <p>If you accidentally repeat a previously discovered or failed fusion, it will not consume a chance to use the machine. You can see combinations you have tried on the list on the right hand side of the machine.</p> -->
           <p>The number of button presses remaining is indicated by the bars on the top rim of the machine. There are now two bars left – take two more actions with this machine (push Extract or Fuse buttons) to end the instructions.</p>
           <div class='button-group-vc'>

@@ -104,8 +104,8 @@ let taskConfigsWithId = {};
 
 // Add practice trial config
 let pracConfig = {
-  'highP': demoProb,
-  'lowP': demoProb,
+  'highP': highProb, // demoProb
+  'lowP': lowProb, // demoProb
   'shapes': shapes,
   'highCombo': sampleFromList(combinations, 1),
   'w': rewardInc,
