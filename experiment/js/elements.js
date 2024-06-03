@@ -130,8 +130,6 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
 
   let infoBar = createCustomElement('div', 'main-info', '');
 
-  let bannerText = `Practice trial ${id.substring(1)}/${practiceIds.length}`
-
   let probInfoPanel = createCustomElement('div', 'prob-info-panel', '');
   let itemColor = config['objColor'];
 
@@ -157,7 +155,8 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
 
   }
 
-  infoBar.innerHTML = id[0] == 'p'?  bannerText: `<strong>Task ${id.substring(1)}</strong>/${testIds.length}`;
+  let blockSize = id[0] == 'p'? nPractice : taskBlockSize;
+  infoBar.innerHTML = `<strong>Task ${id.substring(1)}</strong>/${blockSize}`;
   if (assignedKnowledge == 'expert') {
     infoBar.append(probInfoPanel);
   } else {
@@ -184,10 +183,15 @@ function drawTaskWithInfo(id, config, itemList = baseObj, histObj = {'showup': 1
 function makeTransitionDiv(blockId) {
   let retDiv = createCustomElement('div', 'preview-box', 'preview-'+blockId);
 
-  let introText = (blockId[0] == 'p')? `Warm up with ${practiceIds.length} practice trials.` : `There are ${taskBlockSize} trials in total.`;
-  // if (showProb == true && blockId[0] == 't') {
-  //   introText += `<br><br>Make the most out of it! Your bonus depends on the total points you gather.`; //`<br><br>Fusion works out ${Math.round(p*10)} out of 10 times on average.`
-  // }
+  //introText = (blockId[0] == 'p')? `Warm up with ${practiceIds.length} practice trials.` : `There are ${taskBlockSize} trials in total.`;
+  let introText = '';
+  if (blockId[0] == 'p') {
+    introText = `Here are ${nPractice} tasks for you to get ready.<br><br>They won't count towards your bonus, but your performance on subsequent tasks will!`
+  } else {
+    introText = `Now, maximize your total points for these ${taskBlockSize} tasks!`
+  }
+  //introText = (blockId[0] == 'p')? `Warm up with ${practiceIds.length} practice trials.` : `There are ${taskBlockSize} trials in total.`;
+
   retDiv.innerHTML = introText;
 
   let btnDiv = createCustomElement('div', 'button-group-vc', 'preview-btn-group-'+blockId);

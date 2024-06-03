@@ -16,7 +16,7 @@ subjectData['intruction'] = intructionCount;
 
 /* Collect prolific id */
 function handle_prolific() {
-  subjectData['prolific_id'] = getEl('prolific_id_text').value;
+  subjectData['prolific_id'] = removeSpecial(getEl('prolific_id_text').value);
   hideAndShowNext('prolific_id', 'instruction', 'block');
 }
 

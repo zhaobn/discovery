@@ -2,7 +2,7 @@ let isDev = false;
 
 /** Set up conditions */
 const knowledge = ['expert', 'novice'];
-const density = ['high']; // ['low', 'high'];
+const density = ['low', 'high'];
 
 let conditions = []
 knowledge.forEach(e => {
@@ -10,7 +10,7 @@ knowledge.forEach(e => {
 });
 
 const cond = sampleFromList(conditions, 1);
-console.log(cond)
+//console.log(cond)
 
 const assignedKnowledge = cond.split('-')[0];
 const assignedDensity = cond.split('-')[1];
@@ -21,8 +21,10 @@ const baseReward = 100;
 const rewardInc = 1.5;
 const steps = 10;
 
-const nPractice = 2;
-const taskBlockSize = 7;
+const nPractice = 5;
+const taskBlockSize = 5;
+const totalBlockSize = nPractice + taskBlockSize;
+
 
 const demoProb = 0.5;
 const highProb = 0.8
@@ -64,15 +66,19 @@ const allColors = [
   // '#1976D2',
   // '#66CCCC',
 ]
-let objColors =  sampleFromList(allColors, taskBlockSize, false); //[ 'rgb(0 114 178)', 'rgb(86 180 233)','rgb(230 159 0)','rgb(213 94 0)', 'rgb(204 121 167)', 'rgb(0 0 0)', 'rgb(0 153 76)', 'rgb(102 0 102)' ];
+let objColors =  sampleFromList(allColors, totalBlockSize, false); //[ 'rgb(0 114 178)', 'rgb(86 180 233)','rgb(230 159 0)','rgb(213 94 0)', 'rgb(204 121 167)', 'rgb(0 0 0)', 'rgb(0 153 76)', 'rgb(102 0 102)' ];
 //objColors = sampleFromList(objColors, taskBlockSize, false);
 const demoObjColor = 'silver';
+const pracObjColors = objColors.slice(0, nPractice);
+const taskObjColors = objColors.slice(-taskBlockSize);
+
 
 const demoMachineColor = 'gray';
-let machineColors = sampleFromList(allColors, taskBlockSize, false); //[ 'royalblue', 'darkgreen', 'darkred', 'darkslategray', 'lightcoral', 'lightseagreen', 'mediumpurple', 'rosybrown' ];
+let machineColors = sampleFromList(allColors, totalBlockSize, false); //[ 'royalblue', 'darkgreen', 'darkred', 'darkslategray', 'lightcoral', 'lightseagreen', 'mediumpurple', 'rosybrown' ];
 //machineColors = sampleFromList(machineColors, taskBlockSize, false);
-
 let machineColor = demoMachineColor;
+const pracMachineColors = machineColors.slice(0, nPractice);
+const taskMachineColors = machineColors.slice(-taskBlockSize);
 
 
 /** Prep setting to task configurations */
@@ -85,7 +91,7 @@ for (let i = 0; i < shapes.length; i++) {
 let combinations = Array.from(allUniqueCombinations);
 let highCombos = [];
 if (assignedDensity=='low') {
-  for (let i = 0; i < Math.floor(taskBlockSize/combinations.length) ; i++) {
+  for (let i = 0; i <= Math.floor(taskBlockSize/combinations.length) ; i++) {
     highCombos = highCombos.concat(combinations);
   }
   let residue = taskBlockSize % combinations.length
@@ -94,6 +100,7 @@ if (assignedDensity=='low') {
   } else if (residue > 1) {
     highCombos.concat(sampleFromList(combinations, residue, false))
   }
+  highCombos.slice(0, taskBlockSize)
 } else {
   highCombos = sampleFromList(combinations, taskBlockSize, false);
 }
@@ -103,25 +110,22 @@ highCombos = shuffleArray(highCombos);
 let taskConfigsWithId = {};
 
 // Add practice trial config
-let pracConfig = {
-  'highP': highProb, // demoProb
-  'lowP': lowProb, // demoProb
-  'shapes': shapes,
-  'highCombo': sampleFromList(combinations, 1),
-  'w': rewardInc,
-  'color': demoMachineColor,
-  'objColor': demoObjColor,
-  'step': steps,
-  'r': baseReward
-};
-for (let i = 0; i < nPractice; i++) {
-  let taskId = 'p' + (i+1).toString();
-  taskConfigsWithId[taskId] = pracConfig;
-}
-
+pracObjColors.forEach((col, id) => {
+  let taskId = 'p' + (id+1).toString();
+  taskConfigsWithId[taskId] = {
+    'highP': highProb,
+    'lowP': lowProb,
+    'shapes': shapes,
+    'highCombo': highCombos[id],
+    'w': rewardInc,
+    'step': steps,
+    'r': baseReward,
+    'objColor': col,
+    'color': pracMachineColors[id] };
+})
 
 // Task trial config
-objColors.forEach((col, id) => {
+taskObjColors.forEach((col, id) => {
   let taskId = 't'+(id+1).toString();
   taskConfigsWithId[taskId] = {
     'highP': highProb,
