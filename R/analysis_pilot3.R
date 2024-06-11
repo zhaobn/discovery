@@ -8,7 +8,13 @@ library(stringr)
 
 library(viridis)
 
-load('../data/pilot-exp/pilotDen.Rdata')
+load('../data/pilot-exp/pilotSplit.Rdata')
+df.tw = df.tw %>%
+  mutate(condition=factor(condition, 
+                          levels=c('expert-high', 'novice-high', 'expert-low', 'novice-low')))
+df.sw = df.sw %>%
+  mutate(condition=factor(condition, 
+                          levels=c('expert-high', 'novice-high', 'expert-low', 'novice-low')))
 
 make_plot <- function(data, val_col, plt_title) {
   plt <- ggplot(data, aes(x = condition, y = !!sym(val_col), fill = condition)) +
@@ -38,6 +44,7 @@ make_plot(df.sw, 'difficulty', 'Self-reported difficulty')
 
 # fusion rate
 explore_data = df.tw %>%
+  filter(task_type=='task') %>%
   group_by(id, condition) %>%
   summarise(n_fusion=sum(action=='F'), n=n()) %>%
   mutate(fusion_rate=n_fusion/n)
@@ -45,6 +52,7 @@ make_plot(explore_data, 'fusion_rate', 'Fusion rate')
 
 # Fusion rate per task
 explore_task = df.tw %>%
+  filter(task_type=='task', density=='low') %>%
   group_by(condition, id, task_id) %>%
   summarise(fusion_rate=sum(action=='F')/n()) %>%
   group_by(condition, task_id) %>%
@@ -54,6 +62,8 @@ ggplot(explore_task, aes(x=task_id, y=fusion_rate, color=condition)) +
   geom_line() +
   geom_ribbon(aes(ymin=fusion_rate-se, ymax=fusion_rate+se, fill=condition), alpha=0.2, color=NA) +
   theme_bw()
+
+
 
 
 # Fusion rate Experiment 1
@@ -115,7 +125,7 @@ concat_str <- function(vec) {
   return(s)
 }
 compute_bnf <- function(pid, tid) {
-  dt = df.tw %>% filter(id==pid & task_id==tid)
+  dt = df.tw %>% filter(id==pid & task_id==tid & task_type=='task')
   actions = concat_str(dt$action)
   if (str_count(actions,'EF') == 0) {
     switch_d = str_count(actions,'F')
@@ -126,7 +136,7 @@ compute_bnf <- function(pid, tid) {
 }
 df_switch = read.csv(text='id,task,switch_day')
 for (i in df.sw$id) {
-  for (t in 1:7) {
+  for (t in 1:5) {
     d = compute_bnf(i, t)
     df_switch = rbind(df_switch, data.frame(id=i, task=t, switch_day=d))
   }
@@ -168,6 +178,7 @@ plt_swith %>%
   labs(x='Switch step', y='Number of rounds') +
   scale_x_continuous( breaks = seq(0,10))+
   facet_grid(condition~task) +
+  #facet_wrap(~condition)
   theme_bw() +
   theme(legend.position = 'none')
 
@@ -175,6 +186,7 @@ plt_swith %>%
 
 # item levels
 df_items = df.tw %>%
+  filter(task_type=='task') %>%
   group_by(id, task_id, condition) %>%
   summarise(score=max(immediate_score)) %>%
   mutate(item_level = round(log(score/100, 1.5)))

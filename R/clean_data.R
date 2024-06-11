@@ -5,9 +5,9 @@ library(tidyr)
 options(scipen=999)
 
 
-dat = read.csv('../data/pilot-exp/crystalEpDenPilot.csv')
+dat = read.csv('../data/pilot-exp/crystalEpDenPilot2.csv')
 
-start_index = 17
+start_index = 2
 end_index = nrow(dat)
 
 
@@ -37,19 +37,11 @@ for (i in (start_index+1):end_index) {
 # df.sw.aux = df.sw.aux %>%
 #   mutate(age=if_else(prolific_id=='60fd4f8bcf203e8452b79f1a', '22', age)) %>%
 #   mutate(prolific_id=if_else(nchar(prolific_id)<1, '598afb77600a7a00018fabd7', prolific_id))
-df.sw.aux.1 = df.sw.aux
-df.sw.aux.1['prolific_id'] = 'missing'
-df.sw.aux.1 = df.sw.aux.1 %>% select(colnames(df.sw.aux.2))
-
-df.sw.aux.2 = df.sw.aux
-df.sw.aux.2 = df.sw.aux.2 %>%
-  select(colnames(df.sw.aux.1))
-df.sw.aux = rbind(df.sw.aux.1, df.sw.aux.2)
 
 # get bonus
 bonus_dat = df.sw.aux %>% select(prolific_id, total_score) %>%
-  mutate(bonus=round(total_score/30000*100)/100)
-write.csv(bonus_dat, file='../data/pilot-exp/bonus3.csv')
+  mutate(bonus=round(total_score/20000*100)/100)
+write.csv(bonus_dat, file='../data/pilot-exp/bonus4.csv')
 
 
 # Collect trial data
@@ -90,7 +82,7 @@ df.sw = df.sw.aux %>%
 
 # Manul ID
 df.sw.aux['id'] = seq(nrow(df.sw.aux))
-df.tw.aux['id'] = rep(1:nrow(df.sw.aux), each = 90)
+df.tw.aux['id'] = rep(1:nrow(df.sw.aux), each = 100)
 
 
 # Add condition
@@ -121,16 +113,20 @@ df.sw = df.sw.aux %>%
 #   select('id', 'condition', 'knowledge', 'high_feat', 'age', 'sex', 'total_score', 'engagement', 'difficulty', 'strategy', 'feedback', 'date', 'time', 'task_duration', 'intruction', 'start_time')
 # 
 
-# Remove practice trials
-df.tw = df.tw %>% 
-  filter(substr(task_id, 1, 1)!='p') %>%
-  mutate(task_id=as.numeric(substr(task_id, 2, nchar(task_id))))
+# # Remove practice trials
+# df.tw = df.tw %>% 
+#   filter(substr(task_id, 1, 1)!='p') %>%
+#   mutate(task_id=as.numeric(substr(task_id, 2, nchar(task_id))))
 
 # Compute time collapsed
 start_times = df.sw %>% select(id, start_time)
 df.tw = df.tw %>% 
   left_join(start_times, by='id') %>%
   mutate(task_sec=(timestamp-start_time)/1000)
+df.tw = df.tw %>%
+  mutate(task_type=ifelse(substr(task_id,1,1)=='t', 'task', 'practice'),
+         task_id=as.numeric(substr(task_id, 2, nchar(task_id)))) %>%
+  select("id","condition","task_type","task_id","knowledge","density","highCombo","step_id","action","item_selection" ,"feedback","immediate_score","total_score","timestamp","start_time","task_sec")
 
 # df.tw = df.tw %>%
 #   mutate(known=as.numeric(substr(condition, 1, 1)=='k')) %>%
@@ -139,9 +135,9 @@ df.tw = df.tw %>%
 # Save data
 df.sw = df.sw %>%
   mutate(age=as.numeric(age), total_score=as.numeric(total_score), task_duration=as.numeric(task_duration), engagement=as.numeric(engagement), difficulty=as.numeric(difficulty))
-save(df.tw, df.sw, file='../data/pilot-exp/pilotDen.Rdata')
-write.csv(df.sw, file='../data/pilot-exp/pilotDen_subjects.csv')
-write.csv(df.tw, file='../data/pilot-exp/pilotDen_trials.csv')
+save(df.tw, df.sw, file='../data/pilot-exp/pilotSplit.Rdata')
+write.csv(df.sw, file='../data/pilot-exp/pilotSplit_subjects.csv')
+write.csv(df.tw, file='../data/pilot-exp/pilotSplit_trials.csv')
 
 # # Fix missing prolific id
 # ids = df.sw.aux %>% 
