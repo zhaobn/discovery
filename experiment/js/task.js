@@ -625,14 +625,21 @@ getEl('prequiz').onchange = () => compIsFilled() ? getEl('check-btn').disabled =
 
 
 /* Bebrief */
+getEl('debrief-impression-q').innerHTML = assignedKnowledge=='expert'?
+  `<b>6.&nbsp;</b>How does knowing how often certain fusion works out help you in the game?` :
+  '<b>6.&nbsp;</b>How often do fusions work out in this game, in your opinion? Do you find certain combinations seem to work more often compared to others?';
+
 getEl('postquiz').onchange = () => isFilled('postquiz')? getEl('done-btn').disabled = false: null;
 
 function is_done(complete_code) {
   let inputs = getEl('postquiz').elements;
   Object.keys(inputs).forEach(id => subjectData[inputs[id].name] = inputs[id].value);
 
+  // console.log(subjectData)
+
   // Clean up free responses
   subjectData['strategy'] = removeSpecial(subjectData['strategy']);
+  subjectData['impression'] = removeSpecial(subjectData['impression']);
   subjectData['feedback'] = removeSpecial(subjectData['feedback']);
 
   const end_time = new Date();
