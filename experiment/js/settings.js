@@ -2,7 +2,7 @@ let isDev = false;
 
 /** Set up conditions */
 const knowledge = ['expert', 'novice'];
-const density = ['low', 'high'];
+const density = ['high'];
 
 let conditions = []
 knowledge.forEach(e => {
