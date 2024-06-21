@@ -9,6 +9,12 @@ h1 {
 li {
   margin: 20px 0 ;
 }
+textarea {
+  width:85%;
+  height:80px;
+  font-size:20px;
+  margin-top: -10px;
+}
 .base{
   height: 600px;
   width: 800px;

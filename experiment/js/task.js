@@ -625,9 +625,9 @@ getEl('prequiz').onchange = () => compIsFilled() ? getEl('check-btn').disabled =
 
 
 /* Bebrief */
-getEl('debrief-impression-q').innerHTML = assignedKnowledge=='expert'?
-  `<b>6.&nbsp;</b>How does knowing how often certain fusion works out help you in the game?` :
-  '<b>6.&nbsp;</b>How often do fusions work out in this game, in your opinion? Do you find certain combinations seem to work more often compared to others?';
+// getEl('debrief-impression-q').innerHTML = assignedKnowledge=='expert'?
+//   `<b>6.&nbsp;</b>How does knowing how often certain fusion works out help you in the game?` :
+//   '<b>6.&nbsp;</b>How often do fusions work out in this game, in your opinion? Do you find certain combinations seem to work more often compared to others?';
 
 getEl('postquiz').onchange = () => isFilled('postquiz')? getEl('done-btn').disabled = false: null;
 
