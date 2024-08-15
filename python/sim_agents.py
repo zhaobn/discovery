@@ -14,9 +14,9 @@ import seaborn as sns
 
 
 # %%
-D = 12
+D = 10
 W = 1.5
-R = 10
+R = 100
 
 # %%
 def prep_data(n_item):
@@ -171,7 +171,7 @@ novice_agent(2, 4, 'top')
 # Play with parameter values
 def try_w(w, arms):
   dat = []
-  for _ in range(1000):
+  for _ in range(100):
     for k in Ks:
       sim_result = novice_agent(k, w, arms)
       dat.append(sim_result)

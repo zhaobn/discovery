@@ -327,6 +327,31 @@ ggsave("plots/sims.pdf", dpi=600, width = 8, height = 8)
 
 
 
+# Plot for talk sides - fusion rate changes over time
+fusion_learning = df.tw %>%
+  mutate(is_fusion=action=='F') %>%
+  group_by(id, task, condition) %>%
+  summarise(fusion_rate = sum(is_fusion)/n())
+
+fusion_learning_stats = fusion_learning %>%
+  group_by(task, condition) %>%
+  summarise(se=sd(fusion_rate)/sqrt(n()), fusion_rate=mean(fusion_rate)) %>%
+  mutate(condition=factor(condition, levels=cond_levels, labels=cond_labels))
+
+ggplot(fusion_learning_stats, aes(x=task, y=fusion_rate, color=condition)) +
+  geom_line() +
+  geom_ribbon(aes(ymin=fusion_rate-se, ymax=fusion_rate+se, fill=condition), alpha=0.3, color = NA) +
+  scale_fill_manual(values=cond_colors) +
+  scale_color_manual(values=cond_colors) +
+  scale_x_continuous(breaks = seq(7)) +
+  labs(y='Fusion rate') +
+  theme(text = element_text(size = 20),
+        legend.position = 'bottom')
+
+
+
+
+
 
 
 
